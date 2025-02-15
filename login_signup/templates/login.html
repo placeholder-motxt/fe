@@ -1,0 +1,197 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOTXT - Login</title>
+    <style>
+        :root {
+            --primary: #A7BBD2;
+            --secondary: #71E5E5;
+            --accent: #9BFCEB;
+            --button: #4BDEC3;
+            --hover-tile: #BBEFEF;
+            --text: #000000;
+            --background: #FFFFFF;
+        }
+
+        [data-theme="dark"] {
+            --primary: #2A3B4D;
+            --secondary: #1E6262;
+            --accent: #2D7D74;
+            --button: #1F9B85;
+            --hover-tile: #365656;
+            --text: #FFFFFF;
+            --background: #1A1A1A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            padding: 1rem 2rem;
+        }
+
+        .navbar h1 a {
+            color: #5CCE3F;
+            font-size: 1.5rem;
+            text-decoration: none;
+        }
+
+        .container {
+            position: relative;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .login-form {
+            background-color: var(--background);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            z-index: 1;
+        }
+
+        .login-form h2 {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--secondary);
+            border-radius: 5px;
+            background-color: var(--background);
+            color: var(--text);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--button);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .signup-link a {
+            color: var(--secondary);
+            text-decoration: none;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 1rem;
+            right: 2rem;
+            width: 10%;
+            padding: 0.5rem;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        /* New image style */
+        .bottom-left-img {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80%;
+            height: auto;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1><a href="../">MoTxT</a></h1>
+    </nav>
+
+    <div class="container">
+        <form class="login-form">
+            <h2>Welcome Back</h2>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" required>
+            </div>
+            <button type="submit">Login</button>
+            <div class="signup-link">
+                <p>Don't have an account? <a href="../signup">Sign up</a></p>
+            </div>
+        </form>
+        <img src="{% static 'images/lengkap.png' %}" alt="Decorative Image" class="bottom-left-img">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
+        }
+    </script>
+</body>
+</html>
