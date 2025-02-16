@@ -22,5 +22,6 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include("landing_page.urls")),
+    path('repository/', include("repository.urls")),
     re_path(r"^static/(?P<path>.*)$", serve, {"document_root": settings.STATIC_ROOT})
 ]
