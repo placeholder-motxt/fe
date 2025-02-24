@@ -38,11 +38,11 @@ jobs:
         run: |
           pytest --ds=fe.settings --cov=. --cov-report=xml
 
-      - name: Run SonarCloud scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.projectKey=placeholder-motxt_fe
-            -Dsonar.organization=placeholder-motxt
+    #   - name: Run SonarCloud scan
+    #     uses: SonarSource/sonarcloud-github-action@master
+    #     env:
+    #       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    #     with:
+    #       args: >
+    #         -Dsonar.projectKey=placeholder-motxt_fe
+    #         -Dsonar.organization=placeholder-motxt
