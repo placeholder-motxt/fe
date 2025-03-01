@@ -1,6 +1,6 @@
 from django.urls import path
 
-from convert_page.views import *
+from convert_page.views import convert_page
 
 
 app_name = "convert_page"
