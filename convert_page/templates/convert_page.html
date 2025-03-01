@@ -83,58 +83,59 @@
     </header>
     <!-- Main Content -->
     <main class="flex-grow flex items-center justify-center py-8">
-        <div class="container max-w-md w-full p-4 rounded-2xl container-shadow bg-white">
-            <div class="text-center">
-                <h1 class="text-3xl font-semibold text-[var(--secondary)] mb-6">Convert Your Files</h1>
-                
-                <!-- Drop Zone -->
-                <div class="drop-zone rounded-lg p-6 mb-4">
-                    <div class="relative group">
-                        <button class="w-full px-6 py-4 bg-[var(--button)] text-white rounded-lg 
-                                    hover:bg-[var(--button-hover)] transition-all 
-                                    flex items-center justify-center space-x-2">
-                            <svg class="file-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-7-7zm0 18H6V4h7v16zm3-8h-2v2h-2v-2H9v-2h2V8h2v2h2v2zm2-10H5v16h14V4z"/>
-                            </svg>
-                            <span id="uploadText" class="font-medium">Upload file to Convert</span>
-                        </button>
-                        <input type="file" accept=".jet" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                               id="fileInput">
-                    </div>
-                </div>
+        <div class="container max-w-md w-full p-4">
+            <!-- Move "Convert Your Files" outside the box -->
+            <h1 class="text-center text-[var(--text)] text-3xl font-semibold mb-6">What do you want to Convert?</h1>
 
-                <!-- File info and Convert button -->
-                <div id="fileInfoSection" class="hidden mb-4">
-                    <div class="flex items-center justify-between bg-[var(--hover-tile)] rounded-lg p-4">
-                        <div class="flex items-center space-x-2">
-                            <svg class="file-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-7-7zm0 18H6V4h7v16zm3-8h-2v2h-2v-2H9v-2h2V8h2v2h2v2zm2-10H5v16h14V4z"/>
-                            </svg>
-                            <span id="fileNameDisplay" class="font-semibold text-[var(--secondary)]"></span>
+            <!-- Box Container -->
+            <div class="rounded-2xl container-shadow bg-white p-4">
+                <div class="text-center">
+                    <!-- Drop Zone -->
+                    <div class="drop-zone rounded-lg p-6 mb-4">
+                        <div class="relative group">
+                            <button class="w-full px-6 py-4 bg-[var(--button)] text-white rounded-lg 
+                                        hover:bg-[var(--button-hover)] transition-all 
+                                        flex items-center justify-center space-x-2">
+                                <svg class="file-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-7-7zm0 18H6V4h7v16zm3-8h-2v2h-2v-2H9v-2h2V8h2v2h2v2zm2-10H5v16h14V4z"/>
+                                </svg>
+                                <span id="uploadText" class="font-medium">Upload file to Convert</span>
+                            </button>
+                            <input type="file" accept=".jet" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                   id="fileInput">
                         </div>
-                        <button class="delete-btn">×</button>
                     </div>
-                    
-                    <!-- Redesigned Convert Button -->
-                    <button id="convertButton" class="w-full mt-4">Convert</button>
+                    <!-- File info and Convert button -->
+                    <div id="fileInfoSection" class="hidden mb-4">
+                        <div class="flex items-center justify-between bg-[var(--hover-tile)] rounded-lg p-4">
+                            <div class="flex items-center space-x-2">
+                                <svg class="file-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-7-7zm0 18H6V4h7v16zm3-8h-2v2h-2v-2H9v-2h2V8h2v2h2v2zm2-10H5v16h14V4z"/>
+                                </svg>
+                                <span id="fileNameDisplay" class="font-semibold text-[var(--secondary)]"></span>
+                            </div>
+                            <button class="delete-btn">×</button>
+                        </div>
+                        
+                        <!-- Redesigned Convert Button -->
+                        <button id="convertButton" class="w-full mt-4">Convert</button>
+                    </div>
+                    <p class="text-[var(--secondary)] text-sm mt-4">
+                        Don't have a diagram? <a href="#"> Click me! </a> <br>
+                    </p>
                 </div>
-
-                <p class="text-[var(--secondary)] text-sm mt-4">
-                    Supported formats: .JET files only <br>
-                </p>
             </div>
         </div>
     </main>
     <!-- Footer with Image -->
     <footer class="relative">
-        <img src="{% static 'images/bottom3.png' %}" alt="Decorative Image" 
+        <img src="{% static 'images/bottom3.png' %}" 
              class="absolute bottom-0 left-0 w-full h-auto object-cover">
     </footer>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const dropZone = document.querySelector('.drop-zone');
             const fileInput = document.getElementById('fileInput');
-            const uploadText = document.getElementById('uploadText');
             const fileInfoSection = document.getElementById('fileInfoSection');
             const fileNameDisplay = document.getElementById('fileNameDisplay');
             const deleteBtn = document.querySelector('.delete-btn');
