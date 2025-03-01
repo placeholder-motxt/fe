@@ -8,11 +8,6 @@ import json
 def convert_page(request: HttpRequest):
     if request.method == 'POST':
         # Check if a file was uploaded
-
-        # csrf_token = request.COOKIES.get('csrftoken')  # Retrieve CSRF token from cookies
-        # if not csrf_token or csrf_token != request.session.get('csrf_token'):
-        #     return JsonResponse({'error': 'CSRF token validation failed'}, status=403)
-
         if 'file' not in request.FILES:
             return JsonResponse({'error': 'No file uploaded'}, status=400)
 
