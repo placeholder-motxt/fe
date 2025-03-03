@@ -16,9 +16,19 @@
             <div class="line bg-[var(--text)] w-6 h-0.5"></div>
         </div>
         <div class="toggle-switch">
-            <input type="checkbox" id="toggle" class="hidden">
-            <label for="toggle" class="block w-6 h-6 rounded-full bg-gray-300 cursor-pointer"></label>
-        </div>
+            <!-- Checkbox with proper accessibility -->
+            <input 
+                type="checkbox" 
+                id="toggle" 
+                class="visually-hidden"  
+                aria-label="Toggle theme"  
+            >
+            <!-- Label with matching 'for' attribute -->
+            <label 
+                for="toggle" 
+                class="block w-6 h-6 rounded-full bg-gray-300 cursor-pointer"
+                aria-hidden="true"  
+            ></label>
     </header>
     <main class="flex-grow flex items-center justify-center py-8">
         <div class="container max-w-md w-full p-4 rounded-2xl container-shadow bg-white">
@@ -54,7 +64,7 @@
         </div>
     </main>
     <footer class="relative">
-        <img src="{% static 'images/bottom3.png' %}" alt="Decorative Image" 
+        <img src="{% static 'images/bottom3.png' %}" alt="Decorative" 
              class="absolute bottom-0 left-0 w-full h-auto object-cover">
     </footer>
     <script src="{% static 'js/script.js' %}"></script>

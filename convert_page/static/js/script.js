@@ -99,10 +99,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
             const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.startsWith(name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            for (const cookie of cookies) {  // Use `for-of` instead of `for`
+                const trimmedCookie = cookie.trim();
+                if (trimmedCookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(trimmedCookie.substring(name.length + 1));
                     break;
                 }
             }
