@@ -1,0 +1,83 @@
+:root {
+    --primary: #A7BBD2;
+    --secondary: #71E5E5;
+    --accent: #9BFCEB;
+    --button: #4BDEC3;
+    --hover-tile: #BBEFEF;
+    --text: #000000;
+    --background: #FFFFFF;
+}
+
+[data-theme="dark"] {
+    --primary: #2A3B4D;
+    --secondary: #1E6262;
+    --accent: #2D7D74;
+    --button: #1F9B85;
+    --hover-tile: #365656;
+    --text: #FFFFFF;
+    --background: #1A1A1A;
+}
+
+.drop-zone {
+    border: 2px dashed var(--secondary);
+    transition: all 0.3s ease;
+}
+
+.drop-zone.dragover {
+    border-color: var(--button);
+    background-color: var(--hover-tile);
+    transform: scale(1.02);
+}
+
+.container-shadow {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.file-icon {
+    width: 18%;
+    height: 18%;
+    fill: var(--secondary);
+    margin-right: 8px;
+}
+
+.delete-btn {
+    color: var(--background);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.delete-btn:hover {
+    color: var(--button);
+}
+
+button {
+    width: 15%;
+    padding: 1rem;
+    background-color: var(--button);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: var(--hover-tile);
+}
+
+.redirect-button {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: var(--button);
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.redirect-button:hover {
+    background-color: var(--hover-tile);
+}

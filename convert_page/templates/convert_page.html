@@ -4,72 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frame 3</title>
+    <title>Convert Your Files</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #A7BBD2;
-            --secondary: #71E5E5;
-            --accent: #9BFCEB;
-            --button: #4BDEC3;
-            --hover-tile: #BBEFEF;
-            --text: #000000;
-            --background: #FFFFFF;
-        }
-        [data-theme="dark"] {
-            --primary: #2A3B4D;
-            --secondary: #1E6262;
-            --accent: #2D7D74;
-            --button: #1F9B85;
-            --hover-tile: #365656;
-            --text: #FFFFFF;
-            --background: #1A1A1A;
-        }
-        .drop-zone {
-            border: 2px dashed var(--secondary);
-            transition: all 0.3s ease;
-        }
-        .drop-zone.dragover {
-            border-color: var(--button);
-            background-color: var(--hover-tile);
-            transform: scale(1.02);
-        }
-        .container-shadow {
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        }
-        .file-icon {
-            width: 18%;
-            height: 18%;
-            fill: var(--secondary);
-            margin-right: 8px;
-        }
-        .delete-btn {
-            color: var(--background);
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-        .delete-btn:hover {
-            color: var(--button);
-        }
-        button {
-            width: 15%;
-            padding: 1rem;
-            background-color: var(--button);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-        button:hover {
-            background-color: var(--hover-tile);
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body class="bg-white flex flex-col min-h-screen text-black">
-    <!-- Header -->
     <header class="flex justify-between items-center p-4 bg-white shadow-lg">
         <div class="hamburger-menu cursor-pointer">
             <div class="line bg-[var(--text)] w-6 h-0.5 mb-1"></div>
@@ -78,180 +17,46 @@
         </div>
         <div class="toggle-switch">
             <input type="checkbox" id="toggle" class="hidden">
-            <label for="toggle" class="block w-6 h-6 rounded-full bg-gray-300 cursor-pointer" aria-label="Toggle switch"></label>
+            <label for="toggle" class="block w-6 h-6 rounded-full bg-gray-300 cursor-pointer"></label>
         </div>
     </header>
-    <!-- Main Content -->
     <main class="flex-grow flex items-center justify-center py-8">
-        <div class="container max-w-md w-full p-4">
-            <!-- Move "Convert Your Files" outside the box -->
-            <h1 class="text-center text-[var(--text)] text-3xl font-semibold mb-6">What do you want to Convert?</h1>
-
-            <!-- Box Container -->
-            <div class="rounded-2xl container-shadow bg-white p-4">
-                <div class="text-center">
-                    <!-- Drop Zone -->
-                    <div class="drop-zone rounded-lg p-6 mb-4">
-                        <div class="relative group">
-                            <button class="w-full px-6 py-4 bg-[var(--button)] text-white rounded-lg 
-                                        hover:bg-[var(--button-hover)] transition-all 
-                                        flex items-center justify-center space-x-2">
-                                <svg class="file-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-7-7zm0 18H6V4h7v16zm3-8h-2v2h-2v-2H9v-2h2V8h2v2h2v2zm2-10H5v16h14V4z"/>
-                                </svg>
-                                <span id="uploadText" class="font-medium">Upload file to Convert</span>
-                            </button>
-                            <input type="file" accept=".jet" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                   id="fileInput">
-                        </div>
-                    </div>
-                    <!-- File info and Convert button -->
-                    <div id="fileInfoSection" class="hidden mb-4">
-                        <div class="flex items-center justify-between bg-[var(--hover-tile)] rounded-lg p-4">
-                            <div class="flex items-center space-x-2">
-                                <svg class="file-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-7-7zm0 18H6V4h7v16zm3-8h-2v2h-2v-2H9v-2h2V8h2v2h2v2zm2-10H5v16h14V4z"/>
-                                </svg>
-                                <span id="fileNameDisplay" class="font-semibold text-[var(--secondary)]"></span>
-                            </div>
-                            <button class="delete-btn">×</button>
-                        </div>
-                        
-                        <!-- Redesigned Convert Button -->
-                        <button id="convertButton" class="w-full mt-4">Convert</button>
-                    </div>
-                    <p class="text-[var(--secondary)] text-sm mt-4">
-                        Don't have a diagram? <a href="#"> Click me! </a> <br>
-                    </p>
+        <div class="container max-w-md w-full p-4 rounded-2xl container-shadow bg-white">
+            <h1 class="text-center text-[var(--text)] text-3xl font-semibold mb-6">Convert Your Files</h1>
+            <div class="drop-zone rounded-lg p-6 mb-4">
+                <div class="relative group">
+                    <button class="w-full px-6 py-4 bg-[var(--button)] text-white rounded-lg 
+                                hover:bg-[var(--button-hover)] transition-all 
+                                flex items-center justify-center space-x-2">
+                        <svg class="file-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-7-7zm0 18H6V4h7v16zm3-8h-2v2h-2v-2H9v-2h2V8h2v2h2v2zm2-10H5v16h14V4z"/>
+                        </svg>
+                        <span id="uploadText" class="font-medium">Upload file to Convert</span>
+                    </button>
+                    <input type="file" accept=".jet" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="fileInput">
                 </div>
+            </div>
+            <div id="fileInfoSection" class="hidden mb-4">
+                <div class="flex items-center justify-between bg-[var(--hover-tile)] rounded-lg p-4">
+                    <div class="flex items-center space-x-2">
+                        <svg class="file-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-7-7zm0 18H6V4h7v16zm3-8h-2v2h-2v-2H9v-2h2V8h2v2h2v2zm2-10H5v16h14V4z"/>
+                        </svg>
+                        <span id="fileNameDisplay" class="font-semibold text-[var(--secondary)]"></span>
+                    </div>
+                    <button class="delete-btn">×</button>
+                </div>
+                <button id="convertButton" class="w-full mt-4">Convert</button>
+            </div>
+            <div class="text-center mb-6">
+                Don't have a diagram? <a href="#">Click me!</a>
             </div>
         </div>
     </main>
-    <!-- Footer with Image -->
     <footer class="relative">
-        <img 
-            src="{% static 'images/bottom3.png' %}" 
-            alt="" 
-            class="absolute bottom-0 left-0 w-full h-auto object-cover">
+        <img src="{% static 'images/bottom3.png' %}" alt="Decorative Image" 
+             class="absolute bottom-0 left-0 w-full h-auto object-cover">
     </footer>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const dropZone = document.querySelector('.drop-zone');
-            const fileInput = document.getElementById('fileInput');
-            const fileInfoSection = document.getElementById('fileInfoSection');
-            const fileNameDisplay = document.getElementById('fileNameDisplay');
-            const deleteBtn = document.querySelector('.delete-btn');
-            const convertBtn = document.getElementById('convertButton');
-    
-            // File validation function
-            function validateFile(file) {
-                return file.name.toLowerCase().endsWith('.jet');
-            }
-    
-            // Update display function
-            function updateDisplay(file) {
-                if (!file) {
-                    fileInfoSection.classList.add('hidden');
-                    dropZone.style.display = 'block';
-                    return;
-                }
-                fileNameDisplay.textContent = file.name;
-                fileInfoSection.classList.remove('hidden');
-                dropZone.style.display = 'none';
-            }
-    
-            // Reset file input
-            function resetFileInput() {
-                fileInput.value = '';
-                updateDisplay(null);
-            }
-    
-            // Event listeners for drag-and-drop
-            dropZone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                dropZone.classList.add('dragover');
-            });
-    
-            dropZone.addEventListener('dragleave', () => {
-                dropZone.classList.remove('dragover');
-            });
-    
-            dropZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                dropZone.classList.remove('dragover');
-                const file = e.dataTransfer.files[0];
-                if (!validateFile(file)) {
-                    alert('Only .JET files are allowed');
-                    return;
-                }
-                fileInput.files = e.dataTransfer.files;
-                updateDisplay(file);
-            });
-    
-            // Event listener for file input change
-            fileInput.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if (file && !validateFile(file)) {
-                    alert('Only .JET files are allowed');
-                    e.target.value = '';
-                    return;
-                }
-                updateDisplay(file);
-            });
-    
-            // Delete button to reset file input
-            deleteBtn.addEventListener('click', () => {
-                resetFileInput();
-            });
-    
-            // Convert button to send file to server and display JSON body in a popup
-            convertBtn.addEventListener('click', () => {
-                const file = fileInput.files[0];
-                if (!file) {
-                    alert('Please select a file to convert.');
-                    return;
-                }
-    
-                // Create FormData object to send the file
-                const formData = new FormData();
-                formData.append('file', file);
-    
-                // Send AJAX POST request
-                fetch('/convert_page/', {  // Replace with your actual URL
-                    method: 'POST',
-                    body: formData,
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        alert(`Error: ${data.error}`);
-                    } else {
-                        // Display the JSON body in a popup window
-                        const jsonBody = JSON.stringify(data.json_body, null, 2); // Pretty-print JSON
-                        const popupWindow = window.open('', '_blank');
-                        popupWindow.document.write(`
-                            <html>
-                                <head>
-                                    <title>JSON Body</title>
-                                    <style>
-                                        body { font-family: Arial, sans-serif; white-space: pre-wrap; padding: 20px; }
-                                    </style>
-                                </head>
-                                <body>
-                                    <h1>JSON Body</h1>
-                                    <pre>${jsonBody}</pre>
-                                </body>
-                            </html>
-                        `);
-                        popupWindow.document.close();
-                    }
-                })
-                .catch(error => {
-                    alert('An error occurred while uploading the file.');
-                    console.error('Error:', error);
-                });
-            });
-        });
-    </script>
+    <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>
