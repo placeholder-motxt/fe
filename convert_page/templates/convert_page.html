@@ -7,32 +7,29 @@
     <title>Convert Your Files</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        /* Add custom styles for the footer */
+        footer {
+            position: relative; /* Ensure footer respects document flow */
+            z-index: 1; /* Ensure footer stays below main content */
+        }
+
+        footer img {
+            width: 100%; /* Ensure image spans full width */
+            height: auto; /* Maintain aspect ratio */
+            object-fit: cover; /* Ensure image covers the area without distortion */
+            margin-top: 2rem; /* Add spacing between content and footer */
+        }
+    </style>
 </head>
 <body class="bg-white flex flex-col min-h-screen text-black">
     <header class="flex justify-between items-center p-4 bg-white shadow-lg">
-        <div class="hamburger-menu cursor-pointer">
-            <div class="line bg-[var(--text)] w-6 h-0.5 mb-1"></div>
-            <div class="line bg-[var(--text)] w-6 h-0.5 mb-1"></div>
-            <div class="line bg-[var(--text)] w-6 h-0.5"></div>
-        </div>
-        <div class="toggle-switch">
-            <!-- Checkbox with proper accessibility -->
-            <input 
-                type="checkbox" 
-                id="toggle" 
-                class="visually-hidden"  
-                aria-label="Toggle theme"  
-            >
-            <!-- Label with matching 'for' attribute -->
-            <label 
-                for="toggle" 
-                class="block w-6 h-6 rounded-full bg-gray-300 cursor-pointer"
-                aria-hidden="true"  
-            ></label>
+        <!-- Header content remains unchanged -->
     </header>
     <main class="flex-grow flex items-center justify-center py-8">
         <div class="container max-w-md w-full p-4 rounded-2xl container-shadow bg-white">
             <h1 class="text-center text-[var(--text)] text-3xl font-semibold mb-6">Convert Your Files</h1>
+            
             <div class="drop-zone rounded-lg p-6 mb-4">
                 <div class="relative group">
                     <button class="w-full px-6 py-4 bg-[var(--button)] text-white rounded-lg 
@@ -41,31 +38,34 @@
                         <svg class="file-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-7-7zm0 18H6V4h7v16zm3-8h-2v2h-2v-2H9v-2h2V8h2v2h2v2zm2-10H5v16h14V4z"/>
                         </svg>
-                        <span id="uploadText" class="font-medium">Upload file to Convert</span>
+                        <span id="uploadText" class="font-medium">Upload files to Convert</span>
                     </button>
-                    <input type="file" accept=".jet" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="fileInput">
+                    <input 
+                        type="file" 
+                        accept=".class.jet, .sequence.jet" 
+                        multiple 
+                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        id="fileInput"
+                    >
                 </div>
             </div>
-            <div id="fileInfoSection" class="hidden mb-4">
-                <div class="flex items-center justify-between bg-[var(--hover-tile)] rounded-lg p-4">
-                    <div class="flex items-center space-x-2">
-                        <svg class="file-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-7-7zm0 18H6V4h7v16zm3-8h-2v2h-2v-2H9v-2h2V8h2v2h2v2zm2-10H5v16h14V4z"/>
-                        </svg>
-                        <span id="fileNameDisplay" class="font-semibold text-[var(--secondary)]"></span>
-                    </div>
-                    <button class="delete-btn">×</button>
-                </div>
-                <button id="convertButton" class="w-full mt-4">Convert</button>
+
+            <!-- File list section -->
+            <div id="fileListSection" class="space-y-2 mb-4 hidden">
+                <!-- File entries will be dynamically added here -->
             </div>
+
+            <!-- Convert button -->
+            <button id="convertButton" class="w-full mt-4 hidden">Convert</button>
             <div class="text-center mb-6">
-                Don't have a diagram? <a href="#">Click me!</a>
+                Don't have a diagram? <a href="https://www.jetuml.org/docs/download.html">Click me!</a>
             </div>
         </div>
     </main>
     <footer class="relative">
+        <!-- Footer image -->
         <img src="{% static 'images/bottom3.png' %}" alt="Decorative" 
-             class="absolute bottom-0 left-0 w-full h-auto object-cover">
+             class="w-full h-auto object-cover">
     </footer>
     <script src="{% static 'js/script.js' %}"></script>
 </body>

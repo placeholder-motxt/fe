@@ -33,21 +33,38 @@ class BaseFileProcessor(ABC):
     def process(self, file) -> dict:
         pass
 
-class JetFileProcessor(BaseFileProcessor):
-    def __init__(self):
-        self.validator = FileValidator()
-        self.parser = JSONParser()
+class JetFileProcessor:
+    def process_multiple(self, files):
+        filenames = []
+        contents = []
 
-    def process(self, file):
-        try:
-            self.validator.validate_extension(file)
-            content = file.read().decode('utf-8')
-            return self.parser.parse(content)
-        except ValueError as e:
-            # Ensure these messages match the tests
-            if "Invalid file type" in str(e):
-                raise ValueError('Invalid file type. Only .jet files are allowed')
-            elif "Invalid JSON" in str(e):
-                raise ValueError('Invalid JSON content in the file')
-            else:
-                raise e
+        for file in files:
+            # Validate file extension
+            if not file.name.lower().endswith(('.class.jet', '.sequence.jet')):
+                raise ValueError('Invalid file type. Only .class.jet and .sequence.jet files are allowed')
+
+            # Read and parse file content
+            try:
+                content = json.loads(file.read().decode('utf-8'))
+            except json.JSONDecodeError:
+                raise ValueError(f'Invalid JSON content in file: {file.name}')
+            except UnicodeDecodeError:
+                raise ValueError(f'Invalid UTF-8 encoding in file: {file.name}')
+
+            # Append filename and content
+            filenames.append(file.name)
+            contents.append([content])  # Wrap content in a list
+
+        # Check for duplicate filenames
+        if len(filenames) != len(set(filenames)):
+            raise ValueError('Duplicate filenames are not allowed')
+
+        # Check for multiple .class.jet files
+        class_files = [name for name in filenames if name.lower().endswith('.class.jet')]
+        if len(class_files) > 1:
+            raise ValueError('Only one .class.jet file is allowed')
+
+        return {
+            'filename': filenames,
+            'content': contents
+        }
