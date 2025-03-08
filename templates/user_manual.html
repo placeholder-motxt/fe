@@ -39,7 +39,7 @@
         
                         // Expand the corresponding submenu
                         const submenu = link.nextElementSibling;
-                        if (submenu && submenu.classList.contains("submenu")) {
+                        if (submenu?.classList.contains("submenu")) {
                             submenu.classList.remove("hidden");
                             lastActiveParent = submenu; // Save the last active submenu
                         }
