@@ -76,7 +76,7 @@ class ConvertPageViewTests(TestCase):
         mock_post.return_value = mock_response
 
         # Read real file from input examples directory
-        file_path = os.path.join(settings.BASE_DIR, 'input examples', 'file1.class.jet')
+        file_path = os.path.join(settings.BASE_DIR, 'input_examples', 'file1.class.jet')
         with open(file_path, 'rb') as f:
             valid_file = SimpleUploadedFile('file1.class.jet', f.read())
 
