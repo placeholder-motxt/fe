@@ -1,10 +1,17 @@
+import io
+import os
+from unittest.mock import patch, MagicMock
+import zipfile
 from django.test import TestCase, Client
 from django.core.files.uploadedfile import SimpleUploadedFile
 import json
 
+from fe import settings
+
 class ConvertPageViewTests(TestCase):
     def setUp(self):
         self.client = Client()
+        self.csrf_token = self.client.get('/convert_page/').cookies['csrftoken'].value
 
     # Positive Test
     def test_get_request_renders_template(self):
@@ -51,40 +58,45 @@ class ConvertPageViewTests(TestCase):
         self.assertEqual(response.status_code, 500)
 
     # Positive Test
-    def test_post_valid_file(self):
-        """POST request with valid .jet file returns 200 and correct JSON structure."""
-        valid_json_content = json.dumps({
-            "diagram": "ClassDiagram",
-            "nodes": [{"name": "TestNode"}],
-            "version": "3.8"
-        }).encode('utf-8')
-        valid_file = SimpleUploadedFile('test.class.jet', valid_json_content)
+    @patch('requests.post')
+    def test_post_valid_class_file(self, mock_post):
+        """POST request with valid .class.jet file returns ZIP containing generated files."""
+        # Create mock ZIP content with expected files
+        mock_zip_content = io.BytesIO()
+        with zipfile.ZipFile(mock_zip_content, 'w') as mock_zip:
+            mock_zip.writestr('file1.class.jet_models.py', 'mock_models_content')
+            mock_zip.writestr('file1.class.jet_views.py', 'mock_views_content')
+        mock_zip_content.seek(0)
 
-        response = self.client.post('/convert_page/', {'files': [valid_file]})  # Use 'files' key
-        print(response.json())
-        self.assertEqual(response.status_code, 200)  # Expect 200 OK
+        # Mock FastAPI response
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.headers = {'Content-Type': 'application/zip'}
+        mock_response.content = mock_zip_content.read()
+        mock_post.return_value = mock_response
 
-        data = response.json()
-        self.assertEqual(data['filename'], ['test.class.jet'])  # Expect a list of filenames
-        self.assertEqual(len(data['content']), 1)  # Expect one content entry
-        self.assertEqual(data['content'][0]['diagram'], 'ClassDiagram')  # Validate nested content
-        self.assertEqual(data['content'][0]['version'], '3.8')  # Validate version
-        self.assertEqual(data['content'][0]['nodes'][0]['name'], 'TestNode')  # Validate nodes
+        # Read real file from input examples directory
+        file_path = os.path.join(settings.BASE_DIR, 'input examples', 'file1.class.jet')
+        with open(file_path, 'rb') as f:
+            valid_file = SimpleUploadedFile('file1.class.jet', f.read())
 
-    # Positive Test for multiple files
-    def test_post_multiple_valid_files(self):
-        """POST request with multiple valid files returns 200 and correct JSON structure."""
-        class_file = SimpleUploadedFile('file1.class.jet', b'{"key": "value"}')
-        sequence_file_1 = SimpleUploadedFile('file2.sequence.jet', b'{"key": "value"}')
-        sequence_file_2 = SimpleUploadedFile('file3.sequence.jet', b'{"key": "value"}')
+        # Send POST request with CSRF token
+        response = self.client.post(
+            '/convert_page/',
+            {'files': [valid_file]},
+            headers={'X-CSRFToken': self.csrf_token}
+        )
 
-        response = self.client.post('/convert_page/', {
-            'files': [class_file, sequence_file_1, sequence_file_2]
-        })
+        # Validate response headers and status
         self.assertEqual(response.status_code, 200)
-        data = response.json()
-        self.assertEqual(data['filename'], ['file1.class.jet', 'file2.sequence.jet', 'file3.sequence.jet'])
-        self.assertEqual(len(data['content']), 3)  # Ensure all contents are included
+        self.assertEqual(response['Content-Type'], 'application/zip')
+        self.assertIn('attachment; filename="file1.class.jet.zip"', response['Content-Disposition'])
+
+        # Validate ZIP file contents
+        zip_content = io.BytesIO(response.content)
+        with zipfile.ZipFile(zip_content, 'r') as zip_file:
+            self.assertIn('file1.class.jet_models.py', zip_file.namelist())
+            self.assertIn('file1.class.jet_views.py', zip_file.namelist())
 
     # Negative Test for duplicate filenames
     def test_post_duplicate_filenames(self):
@@ -108,4 +120,3 @@ class ConvertPageViewTests(TestCase):
             'files': [class_file_1, class_file_2]
         })
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()['error'], 'Only one .class.jet file is allowed')
