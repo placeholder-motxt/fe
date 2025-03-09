@@ -3,10 +3,60 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('fileInput');
     const fileListSection = document.getElementById('fileListSection');
     const convertBtn = document.getElementById('convertButton');
-    const csrftoken = getCookie('csrftoken');  // Get CSRF token
+    const csrftoken = getCookie('csrftoken');
 
     let uploadedFiles = [];
     let classFileCount = 0;
+
+    // Event delegation for delete buttons
+    fileListSection.addEventListener('click', handleFileListClick);
+
+    // Initialize file input
+    fileInput.addEventListener('change', handleFileInput);
+    dropZone.addEventListener('dragover', handleDragOver);
+    dropZone.addEventListener('dragleave', handleDragLeave);
+    dropZone.addEventListener('drop', handleDrop);
+    convertBtn.addEventListener('click', handleConvert);
+
+    function handleFileListClick(e) {
+        if (e.target.classList.contains('delete-btn')) {
+            const filename = e.target.closest('.file-entry').dataset.filename;
+            uploadedFiles = uploadedFiles.filter(file => file.name !== filename);
+            updateFileList();
+        }
+    }
+
+    function handleFileInput(e) {
+        const files = Array.from(e.target.files);
+        processFiles(files);
+        e.target.value = '';
+    }
+
+    function handleDrop(e) {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        const files = Array.from(e.dataTransfer.files);
+        processFiles(files);
+        fileInput.value = '';
+    }
+
+    function handleDragOver(e) {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+    }
+
+    function handleDragLeave() {
+        dropZone.classList.remove('dragover');
+    }
+
+    function processFiles(files) {
+        files.forEach(file => {
+            if (validateFile(file)) {
+                uploadedFiles.push(file);
+            }
+        });
+        updateFileList();
+    }
 
     function validateFile(file) {
         const isClass = file.name.toLowerCase().endsWith('.class.jet');
@@ -17,10 +67,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return false;
         }
 
-        // Check for multiple .class.jet files
-        if (isClass && classFileCount >= 1) {
-            alert('Only one .class.jet file is allowed!');
-            return false;
+        if (isClass) {
+            classFileCount++;
+            if (classFileCount > 1) {
+                alert('Only one .class.jet file is allowed!');
+                classFileCount--;
+                return false;
+            }
         }
 
         return true;
@@ -28,84 +81,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateFileList() {
         fileListSection.innerHTML = '';
-        classFileCount = 0;
+        classFileCount = 0;  // Reset and recalculate
 
-        uploadedFiles.forEach((file, index) => {
+        uploadedFiles.forEach(file => {
             if (file.name.toLowerCase().endsWith('.class.jet')) {
                 classFileCount++;
             }
 
-            const fileEntry = document.createElement('div');
-            fileEntry.className = 'flex items-center justify-between bg-[var(--hover-tile)] rounded-lg p-4';
-            fileEntry.innerHTML = `
-                <div class="flex items-center space-x-2">
-                    <svg class="file-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-7-7zm0 18H6V4h7v16zm3-8h-2v2h-2v-2H9v-2h2V8h2v2h2v2zm2-10H5v16h14V4z"/>
-                    </svg>
-                    <span class="font-semibold text-[var(--secondary)]">${file.name}</span>
-                </div>
-                <button class="delete-btn">×</button>
-            `;
-
-            const deleteBtn = fileEntry.querySelector('.delete-btn');
-            deleteBtn.addEventListener('click', () => {
-                uploadedFiles = uploadedFiles.filter((_, i) => i !== index);
-                updateFileList();
-            });
-
+            const fileEntry = createFileElement(file);
             fileListSection.appendChild(fileEntry);
         });
 
-        // Toggle Convert button visibility
-        if (uploadedFiles.length > 0) {
-            fileListSection.classList.remove('hidden');
-            convertBtn.classList.remove('hidden');
-        } else {
-            fileListSection.classList.add('hidden');
-            convertBtn.classList.add('hidden');
-        }
+        toggleConvertButton();
     }
 
-    // Drag-and-drop handlers
-    dropZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropZone.classList.add('dragover');
-    });
-
-    dropZone.addEventListener('dragleave', () => {
-        dropZone.classList.remove('dragover');
-    });
-
-    dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.classList.remove('dragover');
-        const files = Array.from(e.dataTransfer.files);
-        handleFiles(files);
-        fileInput.value = '';
-    });
-
-    // File input handler
-    fileInput.addEventListener('change', (e) => {
-        const files = Array.from(e.target.files);
-        handleFiles(files);
-        e.target.value = '';
-    });
-
-    function handleFiles(files) {
-        files.forEach(file => {
-            if (validateFile(file)) {
-                uploadedFiles.push(file);
-            }
-        });
-        updateFileList();
+    function createFileElement(file) {
+        const fileEntry = document.createElement('div');
+        fileEntry.className = 'file-entry flex items-center justify-between bg-[var(--hover-tile)] rounded-lg p-4';
+        fileEntry.innerHTML = `
+            <div class="flex items-center space-x-2">
+                <svg class="file-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-7-7zm0 18H6V4h7v16zm3-8h-2v2h-2v-2H9v-2h2V8h2v2h2v2zm2-10H5v16h14V4z"/>
+                </svg>
+                <span class="font-semibold text-[var(--secondary)]">${file.name}</span>
+            </div>
+            <button class="delete-btn">×</button>
+        `;
+        fileEntry.dataset.filename = file.name;  // Add filename as data attribute
+        return fileEntry;
     }
 
-    // Convert button to trigger ZIP download
-    convertBtn.addEventListener('click', async () => {
-        if (uploadedFiles.length === 0) {
-            alert('Please select files to convert.');
-            return;
-        }
+    function toggleConvertButton() {
+        const hasFiles = uploadedFiles.length > 0;
+        fileListSection.classList.toggle('hidden', !hasFiles);
+        convertBtn.classList.toggle('hidden', !hasFiles);
+    }
+
+    async function handleConvert() {
+        if (uploadedFiles.length === 0) return alert('Please select files to convert.');
 
         const formData = new FormData();
         uploadedFiles.forEach(file => formData.append('files', file));
@@ -113,20 +126,17 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch('/convert_page/', {
                 method: 'POST',
-                headers: {
-                    'X-CSRFToken': csrftoken, 
-                },
+                headers: { 'X-CSRFToken': csrftoken },
                 body: formData,
                 credentials: 'same-origin',
             });
 
             if (response.ok) {
-                // Handle ZIP download
                 const blob = await response.blob();
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `${uploadedFiles[0].name}.zip`;  // Use first filename for ZIP
+                a.download = `${uploadedFiles[0].name}.zip`;
                 document.body.appendChild(a);
                 a.click();
                 window.URL.revokeObjectURL(url);
@@ -140,17 +150,16 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('An error occurred while converting files.');
             console.error('Error:', error);
         }
-    });
+    }
 
-    // CSRF token helper
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
             const cookies = document.cookie.split(';');
             for (const cookie of cookies) {
-                const trimmedCookie = cookie.trim();
-                if (trimmedCookie.startsWith(name + '=')) {
-                    cookieValue = decodeURIComponent(trimmedCookie.substring(name.length + 1));
+                const trimmed = cookie.trim();
+                if (trimmed.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(trimmed.substring(name.length + 1));
                     break;
                 }
             }
