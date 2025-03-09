@@ -4,7 +4,7 @@ from django.views.decorators.http import require_http_methods
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, JsonResponse
 
-@require_http_methods(["POST"])
+@require_http_methods(["GET", "POST"])
 def convert_page(request):
     if request.method == 'POST':
         files = request.FILES.getlist('files')
@@ -46,6 +46,5 @@ def convert_page(request):
         else:
             error_data = fastapi_response.json()
             return JsonResponse(error_data, status=fastapi_response.status_code)
-
 
     return render(request, 'convert_page.html')
