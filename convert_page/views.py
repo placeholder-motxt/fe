@@ -1,4 +1,5 @@
 import json
+import os
 import requests
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import render
@@ -31,7 +32,7 @@ def convert_page(request):
                 return JsonResponse({'error': f'Invalid UTF-8 encoding in file: {file.name}'}, status=500)
 
         fastapi_response = requests.post(
-            'http://localhost:8000/convert/',
+            os.getenv("key_yang_lu_mau", "http://localhost:8000") + '/convert/',
             json=processed_data,
             headers={'Content-Type': 'application/json'}
         )
