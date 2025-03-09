@@ -9,3 +9,5 @@ django-cors-headers
 pytest
 pytest-django
 pytest-cov
+dj-database-url
+uvicorn
