@@ -1,8 +1,10 @@
 import json
 import requests
+from django.views.decorators.http import require_http_methods
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, JsonResponse
 
+@require_http_methods(["POST"])
 def convert_page(request):
     if request.method == 'POST':
         files = request.FILES.getlist('files')
