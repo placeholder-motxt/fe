@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'landing_page',
     'repository',
     'login_signup',
+    'convert_page',
+    'user_manual',
 ]
 
 MIDDLEWARE = [
