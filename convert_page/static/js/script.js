@@ -3,9 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('fileInput');
     const fileListSection = document.getElementById('fileListSection');
     const convertBtn = document.getElementById('convertButton');
+    const csrftoken = getCookie('csrftoken');  // Get CSRF token
 
-    let uploadedFiles = []; // Menyimpan semua file yang valid
-    let classFileCount = 0; // Counter untuk .class.jet
+    let uploadedFiles = [];
+    let classFileCount = 0;
 
     function validateFile(file) {
         const isClass = file.name.toLowerCase().endsWith('.class.jet');
@@ -16,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return false;
         }
 
-        // Validasi hanya 1 file .class.jet
+        // Check for multiple .class.jet files
         if (isClass && classFileCount >= 1) {
             alert('Only one .class.jet file is allowed!');
             return false;
@@ -27,15 +28,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateFileList() {
         fileListSection.innerHTML = '';
-        classFileCount = 0; // Reset counter
+        classFileCount = 0;
 
         uploadedFiles.forEach((file, index) => {
-            // Hitung jumlah .class.jet
             if (file.name.toLowerCase().endsWith('.class.jet')) {
                 classFileCount++;
             }
 
-            // Buat entry file
             const fileEntry = document.createElement('div');
             fileEntry.className = 'flex items-center justify-between bg-[var(--hover-tile)] rounded-lg p-4';
             fileEntry.innerHTML = `
@@ -48,17 +47,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button class="delete-btn">×</button>
             `;
 
-            // Event listener untuk hapus file
             const deleteBtn = fileEntry.querySelector('.delete-btn');
             deleteBtn.addEventListener('click', () => {
                 uploadedFiles = uploadedFiles.filter((_, i) => i !== index);
-                updateFileList(); // Perbarui daftar setelah hapus
+                updateFileList();
             });
 
             fileListSection.appendChild(fileEntry);
         });
 
-        // Tampilkan/hide Convert button dan fileListSection
+        // Toggle Convert button visibility
         if (uploadedFiles.length > 0) {
             fileListSection.classList.remove('hidden');
             convertBtn.classList.remove('hidden');
@@ -68,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Event listener untuk drag-and-drop
+    // Drag-and-drop handlers
     dropZone.addEventListener('dragover', (e) => {
         e.preventDefault();
         dropZone.classList.add('dragover');
@@ -83,14 +81,14 @@ document.addEventListener('DOMContentLoaded', () => {
         dropZone.classList.remove('dragover');
         const files = Array.from(e.dataTransfer.files);
         handleFiles(files);
-        fileInput.value = ''; // Reset input untuk mengizinkan upload file yang sama
+        fileInput.value = '';
     });
 
-    // Event listener untuk file input
+    // File input handler
     fileInput.addEventListener('change', (e) => {
         const files = Array.from(e.target.files);
         handleFiles(files);
-        e.target.value = ''; // Reset input setelah upload
+        e.target.value = '';
     });
 
     function handleFiles(files) {
@@ -99,55 +97,52 @@ document.addEventListener('DOMContentLoaded', () => {
                 uploadedFiles.push(file);
             }
         });
-        updateFileList(); // Perbarui daftar file setelah upload
+        updateFileList();
     }
 
-    // Convert button untuk mengirim semua file
-    convertBtn.addEventListener('click', async () => {  
-        if (uploadedFiles.length === 0) {  
-            alert('Please select files to convert.');  
-            return;  
-        }  
-    
-        // Check for duplicate filenames  
-        const filenames = uploadedFiles.map(file => file.name);  
-        if (new Set(filenames).size !== filenames.length) {  
-            alert('Duplicate filenames are not allowed!');  
-            return;  
-        }  
-    
-        // Process files and collect data  
-        const processedData = {  
-            filename: filenames,  
-            content: []  
-        };  
-    
-        for (const file of uploadedFiles) {  
-            try {  
-                const text = await file.text();  
-                const parsedContent = JSON.parse(text);  
-                processedData.content.push([parsedContent]); // Wrap content in a list  
-            } catch (error) {  
-                alert(`Error parsing ${file.name}: ${error.message}`);  
-                return;  
-            }  
-        }  
-    
-        // Display JSON in new window  
-        const jsonBodyString = JSON.stringify(processedData, null, 2);  
-        const popup = window.open('', '_blank');  
-        popup.document.write(`  
-            <html>  
-                <head><title>JSON Preview</title></head>  
-                <body>  
-                    <pre>${jsonBodyString}</pre>  
-                </body>  
-            </html>  
-        `);  
-        popup.document.close();  
-    });  
+    // Convert button to trigger ZIP download
+    convertBtn.addEventListener('click', async () => {
+        if (uploadedFiles.length === 0) {
+            alert('Please select files to convert.');
+            return;
+        }
 
-    // Fungsi untuk mengambil CSRF token
+        const formData = new FormData();
+        uploadedFiles.forEach(file => formData.append('files', file));
+
+        try {
+            const response = await fetch('/convert_page/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken, 
+                },
+                body: formData,
+                credentials: 'same-origin',
+            });
+
+            if (response.ok) {
+                // Handle ZIP download
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${uploadedFiles[0].name}.zip`;  // Use first filename for ZIP
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                alert('Files converted and downloaded successfully!');
+            } else {
+                const errorData = await response.json();
+                alert(`Error: ${errorData.detail}`);
+            }
+        } catch (error) {
+            alert('An error occurred while converting files.');
+            console.error('Error:', error);
+        }
+    });
+
+    // CSRF token helper
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
