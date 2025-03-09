@@ -1,89 +1,91 @@
 from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
-from convert_page.services import JetFileProcessor
+from convert_page.services import (
+    FileValidator,
+    JSONParser,
+    ResponseBuilder,
+    JetFileProcessor,
+    BaseFileProcessor
+)
+
+class TestFileValidator(TestCase):
+    def test_valid_extension(self):
+        """Valid .jet extensions pass validation."""
+        validator = FileValidator()
+        valid_file = SimpleUploadedFile('test.jet', b'{}')
+        validator.validate_extension(valid_file)
+
+
+    def test_invalid_extension(self):
+        """Non-.jet extensions raise ValueError."""
+        validator = FileValidator()
+        invalid_file = SimpleUploadedFile('test.txt', b'{}')
+        with self.assertRaises(ValueError) as ctx:
+            validator.validate_extension(invalid_file)
+        self.assertEqual(str(ctx.exception), 'Invalid file type. Only .jet files are allowed')
+
+class TestJSONParser(TestCase):
+    def test_valid_json(self):
+        """Valid JSON content is parsed correctly."""
+        parser = JSONParser()
+        valid_content = b'{"key": "value"}'
+        result = parser.parse(valid_content.decode('utf-8'))
+        self.assertEqual(result, {"key": "value"})
+
+    def test_invalid_json_includes_filename(self):
+        """Invalid JSON error includes the filename in the message."""
+        invalid_json_file = SimpleUploadedFile('test.class.jet', b'{ invalid }')
+        
+        processor = JetFileProcessor()
+        with self.assertRaises(ValueError) as ctx:
+            processor.process([invalid_json_file])
+            
+        self.assertEqual(
+            str(ctx.exception),
+            'Invalid JSON content in file: test.class.jet'
+        )
+
+class TestResponseBuilder(TestCase):
+    def test_success_response(self):
+        """Success response has correct structure and status code."""
+        builder = ResponseBuilder()
+        response = builder.success('test.jet', {'key': 'value'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['json_body']['filename'], 'test.jet')
+
+    def test_error_response(self):
+        """Error response has correct message and status code."""
+        builder = ResponseBuilder()
+        response = builder.error('Test error', status=400)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()['error'], 'Test error')
 
 class TestJetFileProcessor(TestCase):
-    # Positive Test
-    def test_process_valid_jet_file(self):
-        """Valid .jet file is processed successfully."""
-        valid_json = SimpleUploadedFile('test.class.jet', b'{"key": "value"}')  # Use .class.jet
-        processor = JetFileProcessor()
-
-        result = processor.process_multiple([valid_json])
-
-        self.assertEqual(result['filename'], ['test.class.jet'])
-        self.assertEqual(result['content'][0][0], {"key": "value"})
-
-    # Negative Test
-    def test_validate_invalid_extension(self):
-        """Validation fails for non-.jet files with consistent error message."""
-        invalid_file = SimpleUploadedFile('test.txt', b'{}')
-        processor = JetFileProcessor()
+    def test_duplicate_filenames_raise_error(self):
+        """Duplicate filenames in input trigger ValueError."""
+        # Create two files with the same name
+        file1 = SimpleUploadedFile('file.sequence.jet', b'{"diagram": "Class"}')
+        file2 = SimpleUploadedFile('file.sequence.jet', b'{"diagram": "Sequence"}')
         
+        processor = JetFileProcessor()
         with self.assertRaises(ValueError) as ctx:
-            processor.process_multiple([invalid_file])
-        
+            processor.process([file1, file2])  # Pass list of files
+            
         self.assertEqual(
             str(ctx.exception),
-            'Invalid file type. Only .class.jet and .sequence.jet files are allowed'
+            'Duplicate filenames are not allowed'
         )
 
-    # Negative Test
-    def test_parse_invalid_json(self):
-        """Parsing fails for invalid JSON content with consistent error message."""
-        invalid_json = SimpleUploadedFile('test.jet', b'{ invalid }')
-        processor = JetFileProcessor()
+class TestBaseFileProcessor(TestCase):
+    def test_abstract_class_cannot_instantiate(self):
+        """BaseFileProcessor cannot be instantiated directly."""
+        with self.assertRaises(TypeError):
+            BaseFileProcessor()  # Abstract class instantiation fails
+
+    def test_subclass_must_implement_process(self):
+        """Subclasses must implement the abstract `process` method."""
+        class InvalidProcessor(BaseFileProcessor):
+            pass  # Missing `process` implementation
         
-        with self.assertRaises(ValueError) as ctx:
-            processor.process_multiple([invalid_json])
-        
-        self.assertEqual(
-            str(ctx.exception),
-            'Invalid JSON content in file: test.jet'
-        )
-
-    # Corner Test
-    def test_process_unicode_decode_error(self):
-        """Processing fails for invalid UTF-8 encoding."""
-        invalid_utf8 = SimpleUploadedFile('test.jet', b'\x80abc')
-        processor = JetFileProcessor()
-        
-        with self.assertRaises(ValueError) as ctx:
-            processor.process_multiple([invalid_utf8])
-        
-        self.assertIn('UnicodeDecodeError', str(ctx.exception))
-
-    # Positive Test for multiple files
-    def test_process_multiple_valid_files(self):
-        """Multiple valid files are processed successfully."""
-        class_file = SimpleUploadedFile('file1.class.jet', b'{"key": "value"}')
-        sequence_file_1 = SimpleUploadedFile('file2.sequence.jet', b'{"key": "value"}')
-        sequence_file_2 = SimpleUploadedFile('file3.sequence.jet', b'{"key": "value"}')
-
-        processor = JetFileProcessor()
-        result = processor.process_multiple([class_file, sequence_file_1, sequence_file_2])
-
-        self.assertEqual(result['filename'], ['file1.class.jet', 'file2.sequence.jet', 'file3.sequence.jet'])
-        self.assertEqual(len(result['content']), 3)  # Ensure all contents are included
-
-    # Negative Test for duplicate filenames
-    def test_process_duplicate_filenames(self):
-        """Processing fails for duplicate filenames."""
-        file1 = SimpleUploadedFile('file1.class.jet', b'{"key": "value"}')
-        file2 = SimpleUploadedFile('file1.class.jet', b'{"key": "value"}')
-
-        processor = JetFileProcessor()
-        with self.assertRaises(ValueError) as ctx:
-            processor.process_multiple([file1, file2])
-        self.assertEqual(str(ctx.exception), 'Duplicate filenames are not allowed')
-
-    # Negative Test for multiple .class.jet files
-    def test_process_multiple_class_files(self):
-        """Processing fails for multiple .class.jet files."""
-        class_file_1 = SimpleUploadedFile('file1.class.jet', b'{"key": "value"}')
-        class_file_2 = SimpleUploadedFile('file2.class.jet', b'{"key": "value"}')
-
-        processor = JetFileProcessor()
-        with self.assertRaises(ValueError) as ctx:
-            processor.process_multiple([class_file_1, class_file_2])
-        self.assertEqual(str(ctx.exception), 'Only one .class.jet file is allowed')
+        with self.assertRaises(TypeError):
+            InvalidProcessor()  # Subclass without `process` fails

@@ -40,22 +40,24 @@ class ConvertPageViewTests(TestCase):
 
     # Negative Test
     def test_post_invalid_json_content(self):
-        """POST request with invalid JSON content returns 400 and consistent error message."""
-        invalid_json = SimpleUploadedFile('test.jet', b'{ invalid json }')
-        response = self.client.post('/convert_page/', {'files': [invalid_json]})  # Use 'files' key
+        invalid_json = SimpleUploadedFile('test.class.jet', b'{ invalid }')
+        response = self.client.post('/convert_page/', {'files': [invalid_json]})
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             response.json()['error'],
-            'Invalid JSON content in file: test.jet'
+            'Invalid JSON content in file: test.class.jet'
         )
 
     # Corner Test
     def test_post_unicode_decode_error(self):
-        """POST request with invalid UTF-8 content returns 500."""
-        invalid_utf8_content = b'\x80abc'  # Invalid UTF-8 byte sequence
-        invalid_file = SimpleUploadedFile('test.jet', invalid_utf8_content)
-        response = self.client.post('/convert_page/', {'files': [invalid_file]})  # Use 'files' key
+        invalid_utf8 = SimpleUploadedFile('test.class.jet', b'\x80abc')
+        response = self.client.post('/convert_page/', {'files': [invalid_utf8]})
         self.assertEqual(response.status_code, 500)
+        self.assertEqual(
+            response.json()['error'],
+            'Invalid UTF-8 encoding in file: test.class.jet'
+        )
+
 
     # Positive Test
     @patch('requests.post')
@@ -119,4 +121,7 @@ class ConvertPageViewTests(TestCase):
         response = self.client.post('/convert_page/', {
             'files': [class_file_1, class_file_2]
         })
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 422)
+
+
+
