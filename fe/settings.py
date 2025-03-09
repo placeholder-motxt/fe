@@ -83,25 +83,14 @@ WSGI_APPLICATION = 'fe.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 
-if os.getenv('USE_POSTGRES', 'FALSE') != 'True':
-    DATABASES = {
-        # Should be in the environment as well
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+DATABASES = {
+    # Should be in the environment as well
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': os.getenv('DB_NAME','ddueruem'),
-            'USER': os.getenv('DB_USER','ddueruem'),
-            'PASSWORD': os.getenv('DB_PASSWORD','***'),
-            'HOST': os.getenv('DB_HOST','ddueruem'),
-            'PORT': os.getenv('DB_PORT','5432'),
-        }
-    }
+}
+
 
 
 # Password validation
