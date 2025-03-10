@@ -143,20 +143,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.body.removeChild(a);
                 alert('Files converted and downloaded successfully!');
             } else {
-                // Get the HTTP status code from the response
-                const statusCode = response.status;
-                
-                // Parse the error response body
-                const errorData = await response.json();
-                
-                // Extract the error message (use a fallback if 'error' key is missing)
-                const errorMessage = errorData.error || errorData.detail || 'Unknown error';
-                
-                // Show the error code and message
-                alert(`Error Code: ${statusCode}\nMessage: ${errorMessage}`);
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type') || '';
+                if (contentType.includes('application/json')) {
+                    const errorData = await response.json();
+                    const errorMessage = errorData.error || errorData.detail || 'Unknown error';
+                    alert(`Error Code: ${response.status}\nMessage: ${errorMessage}`);
+                } else {
+                    // Fallback for non-JSON errors (e.g., HTML error pages)
+                    const errorText = await response.text();
+                    alert(`Error Code: ${response.status}\nMessage: ${errorText}`);
+                }
             }
         } catch (error) {
-            // Handle network-level errors (e.g., CORS, no internet)
+            // Handle network-level errors
             alert('A critical error occurred. Check your connection and try again.');
             console.error('Error:', error);
         }
