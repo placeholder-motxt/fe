@@ -24,9 +24,9 @@ class ResponseBuilder:
         """Build success response for valid files."""
         return JsonResponse({
             'message': 'Files processed successfully',
-            'json_body': {
-                'filename': filename,
-                'content': parsed_content
+            "json_body": {
+                "filename": filename,
+                "content": parsed_content
             }
         })
 
@@ -56,8 +56,8 @@ class JetFileProcessor(BaseFileProcessor):
             raise ValueError('Only one .class.jet file is allowed')
 
         processed_data = {
-            'filename': filenames,
-            'content': []
+            "filename": filenames,
+            "content": []
         }
 
         for file in files:
