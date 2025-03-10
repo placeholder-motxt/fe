@@ -92,3 +92,16 @@ button:hover {
     clip: rect(0, 0, 0, 0);
     border: 0;
 }
+
+/* Add custom styles for the footer */
+footer {
+    position: relative; /* Ensure footer respects document flow */
+    z-index: 1; /* Ensure footer stays below main content */
+}
+
+footer img {
+    width: 100%; /* Ensure image spans full width */
+    height: auto; /* Maintain aspect ratio */
+    object-fit: cover; /* Ensure image covers the area without distortion */
+    margin-top: 2rem; /* Add spacing between content and footer */
+}
