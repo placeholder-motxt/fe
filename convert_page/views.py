@@ -46,6 +46,10 @@ def convert_page(request):
             return django_response
         else:
             error_data = fastapi_response.json()
+            print(error_data)
+            print(error_data)
+            print(error_data)
+            print(error_data)
             return JsonResponse(error_data, status=fastapi_response.status_code)
 
     return render(request, 'convert_page.html')

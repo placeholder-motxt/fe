@@ -143,11 +143,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.body.removeChild(a);
                 alert('Files converted and downloaded successfully!');
             } else {
+                // Get the HTTP status code from the response
+                const statusCode = response.status;
+                
+                // Parse the error response body
                 const errorData = await response.json();
-                alert(`Error: ${errorData.detail}`);
+                
+                // Extract the error message (use a fallback if 'error' key is missing)
+                const errorMessage = errorData.error || errorData.detail || 'Unknown error';
+                
+                // Show the error code and message
+                alert(`Error Code: ${statusCode}\nMessage: ${errorMessage}`);
             }
         } catch (error) {
-            alert('An error occurred while converting files.');
+            // Handle network-level errors (e.g., CORS, no internet)
+            alert('A critical error occurred. Check your connection and try again.');
             console.error('Error:', error);
         }
     }
