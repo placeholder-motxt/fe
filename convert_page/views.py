@@ -24,7 +24,7 @@ def convert_page(request):
                 return JsonResponse({'error': f'Invalid file type: {file.name}'}, status=400)
 
             try:
-                content = json.loads(file.read().decode('utf-8'))
+                content = file.read().decode('utf-8')
                 processed_data['content'].append([content])
             except json.JSONDecodeError:
                 return JsonResponse({'error': f'Invalid JSON content in file: {file.name}'}, status=400)
