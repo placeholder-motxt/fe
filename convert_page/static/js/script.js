@@ -122,10 +122,10 @@ document.addEventListener('DOMContentLoaded', () => {
             showNotification('Please select files to convert.', 'error');
             return;
         }
-
+    
         const formData = new FormData();
         uploadedFiles.forEach(file => formData.append('files', file));
-
+    
         try {
             const response = await fetch('/convert_page/', {
                 method: 'POST',
@@ -133,9 +133,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: formData,
                 credentials: 'same-origin',
             });
-
+    
             if (response.ok) {
-                handleSuccessfulConversion(response);
+                const contentType = response.headers.get('content-type') || '';
+                
+                // Check if response is ZIP file
+                if (contentType.includes('application/zip')) {
+                    handleSuccessfulConversion(response);
+                } else {
+                    // Handle unexpected content type
+                    const errorText = await response.text();
+                    showNotification(`Error: Invalid response format - ${errorText}`, 'error');
+                }
             } else {
                 handleErrorResponse(response);
             }
@@ -146,16 +155,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function handleSuccessfulConversion(response) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${uploadedFiles[0].name}.zip`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-        showNotification('Files converted and downloaded successfully!', 'success');
+        try {
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${uploadedFiles[0].name}.zip`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            showNotification('Files converted and downloaded successfully!', 'success');
+        } catch (error) {
+            showNotification('Error processing downloaded file', 'error');
+            console.error('Download error:', error);
+        }
     }
 
     async function handleErrorResponse(response) {

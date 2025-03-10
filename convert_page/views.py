@@ -44,29 +44,25 @@ def convert_page(request):
                     fastapi_url,
                     json=processed_data,
                     headers={'Content-Type': 'application/json'},
-                    timeout=10
+                    timeout=30
                 )
             except requests.exceptions.RequestException as e:
                 logger.error(f"FastAPI service error: {str(e)}")
                 return JsonResponse({'error': 'Conversion service unavailable'}, status=503)
 
-            # Handle FastAPI response
-            try:
-                response_data = response.json()
-            except json.JSONDecodeError:
-                logger.error("Invalid JSON response from FastAPI")
-                return JsonResponse({'error': 'Invalid conversion service response'}, status=500)
-
-            # In views.py's convert_page function
+            # Validate FastAPI response
             if response.status_code == 200:
-                django_response = HttpResponse(
+                content_type = response.headers.get('Content-Type', '')
+                if 'application/zip' not in content_type.lower():
+                    logger.error(f"Invalid content type from FastAPI: {content_type}")
+                    return JsonResponse({
+                        'error': 'Invalid response format from conversion service'
+                    }, status=500)
+
+                return HttpResponse(
                     response.content,
                     content_type='application/zip'
                 )
-                django_response['Content-Disposition'] = (
-                    f'attachment; filename="{filenames[0]}.zip"'
-                )
-                return django_response
             else:
                 # Properly parse FastAPI's error response
                 try:
