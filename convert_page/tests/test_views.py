@@ -1,5 +1,6 @@
 import io
 import os
+import requests
 from unittest.mock import patch, MagicMock
 import zipfile
 from django.test import TestCase, Client
@@ -100,7 +101,7 @@ class ConvertPageViewTests(TestCase):
             self.assertIn('file1.class.jet_models.py', zip_file.namelist())
             self.assertIn('file1.class.jet_views.py', zip_file.namelist())
 
-    # Negative Test for duplicate filenames
+    # Negative Test
     def test_post_duplicate_filenames(self):
         """POST request with duplicate filenames returns 400."""
         file1 = SimpleUploadedFile('file1.class.jet', b'{"key": "value"}')
@@ -112,7 +113,7 @@ class ConvertPageViewTests(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()['error'], 'Duplicate filenames are not allowed')
 
-    # Negative Test for multiple .class.jet files
+    # Negative Test
     def test_post_multiple_class_files(self):
         """POST request with multiple .class.jet files returns 400."""
         class_file_1 = SimpleUploadedFile('file1.class.jet', b'{"key": "value"}')
@@ -123,5 +124,67 @@ class ConvertPageViewTests(TestCase):
         })
         self.assertEqual(response.status_code, 422)
 
+    # Negative Test
+    @patch('requests.post')
+    def test_fastapi_connection_error(self, mock_post):
+        """Test FastAPI connection errors (RequestException)"""
+        mock_post.side_effect = requests.exceptions.ConnectionError  # Now works
+        
+        valid_file = SimpleUploadedFile('valid.class.jet', b'{"valid": "json"}')
+        response = self.client.post('/convert_page/', {'files': [valid_file]})
+        
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(
+            response.json()['error'],
+            'Conversion service unavailable'
+        )
 
+    # Negative Test
+    @patch('requests.post')
+    def test_fastapi_invalid_json_response(self, mock_post):
+        """Test invalid JSON response from FastAPI"""
+        mock_response = MagicMock()
+        mock_response.status_code = 400  # Changed from 200 to non-2xx status
+        mock_response.content = b'invalid json'
+        mock_response.headers = {'Content-Type': 'application/json'}
+        mock_post.return_value = mock_response
+        
+        valid_file = SimpleUploadedFile('valid.class.jet', b'{"valid": "json"}')
+        response = self.client.post('/convert_page/', {'files': [valid_file]})
+        
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(
+            response.json()['error'],
+            'Invalid conversion service response'
+        )
+
+    # Negative Test 
+    def test_file_json_decode_error(self):
+        """Test invalid JSON content in uploaded file"""
+        invalid_json = SimpleUploadedFile('test.class.jet', b'{ invalid }')
+        response = self.client.post('/convert_page/', {'files': [invalid_json]})
+        
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json()['error'],
+            'Invalid JSON content in file: test.class.jet'
+        )
+
+    # Negative Test
+    @patch('requests.post')
+    def test_general_exception(self, mock_post):
+        """Test unexpected exceptions in view"""
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.side_effect = KeyError('Unexpected error')
+        mock_post.return_value = mock_response
+        
+        valid_file = SimpleUploadedFile('valid.class.jet', b'{"valid": "json"}')
+        response = self.client.post('/convert_page/', {'files': [valid_file]})
+        
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(
+            response.json()['error'],
+            'Internal server error'
+        )
 
