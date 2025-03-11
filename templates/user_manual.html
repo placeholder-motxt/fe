@@ -10,69 +10,6 @@
     rel="stylesheet"
     />
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const sections = document.querySelectorAll("section");
-            const navLinks = document.querySelectorAll("nav a");
-            const mainContent = document.querySelector(".flex-1");
-            let current = "";
-            let lastActiveParent = null; // Store the last active parent menu
-        
-            mainContent.addEventListener("scroll", () => {
-                const mainContentTop = mainContent.scrollTop;
-        
-                sections.forEach((section) => {
-                    const sectionTop = section.offsetTop - mainContentTop;
-        
-                    if (sectionTop <= 50) { // Adjust threshold as needed
-                        if (section.getAttribute("id")?.includes("sub")){
-                            return
-                        }
-                        current = section.getAttribute("id");
-                    }
-                });
-        
-                navLinks.forEach((link) => {
-                    link.classList.remove("bg-[#4BDEC3]", "text-black");
-                    link.classList.add("bg-white");
-        
-                    if (current !== "" && link.getAttribute("href")?.includes(current)) {
-                        link.classList.remove("bg-white");
-                        link.classList.add("bg-[#4BDEC3]", "text-black");
-                        
-                        /*
-                        // Expand the corresponding submenu
-                        const submenu = link.nextElementSibling;
-                        if (submenu?.classList.contains("submenu")) {
-                            //submenu.classList.remove("hidden");
-                            lastActiveParent = submenu; // Save the last active submenu
-                        }
-                            */
-                    }
-                });
-                
-                /*
-                // Collapse submenus if their parent is not active, but keep it open if:
-                // 1. `current` is a sub-section, OR
-                // 2. `lastActiveParent` was previously open (allows reopening when scrolling back)
-                document.querySelectorAll(".submenu").forEach((submenu) => {
-                    const parentLink = submenu.previousElementSibling;
-        
-                    if (
-                        parentLink &&
-                        !parentLink.getAttribute("href")?.includes(current) &&
-                        !current.includes("sub")
-                    ) {
-                        submenu.classList.add("hidden");
-                    } else if (submenu === lastActiveParent) {
-                        submenu.classList.remove("hidden"); // Reopen the last active submenu when scrolling back
-                    }
-                });
-                */
-            });
-        });
-        
-    </script>
 </head>
 <body class="bg-gray-200 flex min-h-screen text-black">
     <div class="bg-[#A7BBD2] w-64 h-screen text-black px-3 py-4 flex flex-col ml-20 font-[Consolas] justify-between">
@@ -84,21 +21,21 @@
                 </div>
                 <div class="flex flex-col">
                     <a href="#section2" class="px-4 py-2 bg-white text-black rounded hover:bg-[#35BAA2] block">Valid input for class</a>
-                    <div class="submenu hidden flex flex-col space-y-1 pl-4 mt-1">
-                        <a href="#sub1" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Class name</a>
-                        <a href="#sub2" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Class attributes</a>
-                        <a href="#sub3" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Class methods</a>
-                        <a href="#sub4" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Relationships</a>
+                    <div id="sub2menu" class="submenu hidden flex flex-col space-y-1 pl-4 mt-1">
+                        <a href="#sub2-1" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Class name</a>
+                        <a href="#sub2-2" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Class attributes</a>
+                        <a href="#sub2-3" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Class methods</a>
+                        <a href="#sub2-4" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Relationships</a>
                     </div>
 
                 </div>
                 <div class="flex flex-col">
                     <a href="#section3" class="px-4 py-2 bg-white text-black rounded hover:bg-[#35BAA2] block">Valid input for sequence</a>
-                    <div class="submenu hidden flex flex-col space-y-1 pl-4 mt-1">
-                        <a href="#sub1-3" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Implicit Parameter</a>
-                        <a href="#sub2-3" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Name</a>
+                    <div id="sub3menu" class="submenu hidden flex flex-col space-y-1 pl-4 mt-1">
+                        <a href="#sub3-1" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Implicit Parameter</a>
+                        <a href="#sub3-2" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Name</a>
                         <a href="#sub3-3" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">UI to Views Calls</a>
-                        <a href="#sub4-3" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Other Method Calls</a>
+                        <a href="#sub3-4" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Other Method Calls</a>
                     </div>
                 </div>
                 <div class="flex flex-col">
@@ -143,7 +80,7 @@
             </section>
             <section id="section2" class="h-fit p-3 mb-10 flex flex-col gap-4">
                 <h2 class="text-3xl font-bold">Valid Inputs for Class</h2>
-                <section id="sub1">
+                <section id="sub2-1">
                     <div class="flex flex-col gap-2 pt-2">
                         <h2 class="text-2xl font-bold ">Valid user string inputs</h2>
                         <p class="font-bold">Class Name:</p>
@@ -155,7 +92,7 @@
                     </div>
                 </section>
 
-                <section id="sub2">
+                <section id="sub2-2">
                     <div class="flex flex-col gap-2 pt-2">
                         <p class="font-bold">Class Attributes:</p>
                         <ul>
@@ -177,7 +114,7 @@
                     </div>
                 </section>
 
-                <section id="sub3">
+                <section id="sub2-3">
                     <div class="flex flex-col gap-2 pt-2">
                         <p class="font-bold">Class Methods:</p>
                         <ul>
@@ -209,7 +146,7 @@
                     </div>
                 </section>
 
-                <section id="sub4">
+                <section id="sub2-4">
                     <div class="flex flex-col gap-2 pt-2">
                         <p class="font-bold">Relationships:</p>
                         <ul>
@@ -237,9 +174,10 @@
                 
             <section id="section3"  class="h-fit p-3 mb-10 flex flex-col gap-4">
 
-                <section id="sub1-3">
+                <section id="sub3-1">
                     <div class="flex flex-col gap-2 pt-2">
                         <h2 class="text-3xl font-bold">Valid Inputs for Sequence</h2>
+                        <h2 class="text-2xl font-bold my-4">Valid user string inputs</h2>
                         <p class="font-bold">Implicit Parameter (lifeline):</p>
                         <ul>
                             <li class="list-inside list-disc">There must at least be two lifelines in a sequence diagram. These two lifelines have names:</li>
@@ -252,7 +190,7 @@
                     </div>
                 </section>
 
-                <section id="sub2-3">
+                <section id="sub3-2">
                     <div class="flex flex-col gap-2 pt-2">
                         <p class="font-bold">Name (other than :UI and :views):</p>
                         <ul>
@@ -285,7 +223,7 @@
                     </div>
                 </section>
 
-                <section id ="sub4-3">
+                <section id ="sub3-4">
                     <div class="flex flex-col gap-2 pt-2">
                         <p class="font-bold">Other Method Calls:</p>
                         <ul>
@@ -361,6 +299,6 @@
             </section>
         </div>
     </div>
-    <script src="{% static 'js/script.js' %}"></script>
+    <script src="{% static 'js/usermanual.js' %}"></script>
 </body>
 </html>

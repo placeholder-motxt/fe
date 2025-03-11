@@ -12,7 +12,11 @@ document.addEventListener("DOMContentLoaded", function () {
             const sectionTop = section.offsetTop - mainContentTop;
 
             if (sectionTop <= 50) { // Adjust threshold as needed
+                // if (section.getAttribute("id")?.includes("sub")){
+                //     return
+                // }
                 current = section.getAttribute("id");
+                console.log(current)
             }
         });
 
@@ -20,34 +24,34 @@ document.addEventListener("DOMContentLoaded", function () {
             link.classList.remove("bg-[#4BDEC3]", "text-black");
             link.classList.add("bg-white");
 
-            if (current !== "" && link.getAttribute("href")?.includes(current)) {
+            if (current !== "" && link.getAttribute("href").slice(1)===current) {
                 link.classList.remove("bg-white");
                 link.classList.add("bg-[#4BDEC3]", "text-black");
-
+                
+                
                 // Expand the corresponding submenu
-                const submenu = link.nextElementSibling;
-                if (submenu?.classList.contains("submenu")) {
-                    submenu.classList.remove("hidden");
-                    lastActiveParent = submenu; // Save the last active submenu
+                const parent = link.parentElement;
+                if (link.getAttribute("href").slice(1)===current&&
+                    parent.classList.contains("submenu")) {
+                    parent.classList.remove("hidden");
+                    lastActiveParent = parent; // Save the last active submenu
                 }
+                
             }
         });
-
+        
+        
         // Collapse submenus if their parent is not active, but keep it open if:
         // 1. `current` is a sub-section, OR
         // 2. `lastActiveParent` was previously open (allows reopening when scrolling back)
         document.querySelectorAll(".submenu").forEach((submenu) => {
-            const parentLink = submenu.previousElementSibling;
 
-            if (
-                parentLink &&
-                !parentLink.getAttribute("href")?.includes(current) &&
-                !current.includes("sub")
-            ) {
-                submenu.classList.add("hidden");
-            } else if (submenu === lastActiveParent) {
-                submenu.classList.remove("hidden"); // Reopen the last active submenu when scrolling back
+            submenu.classList.add("hidden");
+            if (current.includes(submenu.getAttribute("id")?.slice(0,4))) {
+                console.log(submenu)
+                submenu.classList.remove("hidden");
             }
         });
+        
     });
 });
