@@ -85,7 +85,11 @@
                         <h2 class="text-2xl font-bold ">Valid user string inputs</h2>
                         <p class="font-bold">Class Name:</p>
                         <ul>
-                            <li class="list-inside list-disc">Alphanumeric (minimal 1 letter). Allowed symbols: _</li>
+                            <li class="list-inside list-disc">Example:</li>
+                            <ul>
+                                <li class="list-inside list-disc indent-10">ClassName</li>
+                            </ul>
+                            <li class="list-inside list-disc">Alphabet Only</li>
                             <li class="list-inside list-disc">Case sensitive</li>
                             <li class="list-inside list-disc">Doesn’t contain leading, in-between, nor trailing whitespace(s)</li>
                         </ul>
@@ -96,7 +100,14 @@
                     <div class="flex flex-col gap-2 pt-2">
                         <p class="font-bold">Class Attributes:</p>
                         <ul>
-                            <li class="list-inside list-disc">Alphanumeric (minimal 1 letter). Allowed symbols: _</li>
+                            <li class="list-inside list-disc">Examples:</li>
+                            <ul>
+                                <li class="list-inside list-disc indent-10">- attributeNameOne: boolean</li>
+                                <li class="list-inside list-disc indent-10">+ attributeNameTwo: string</li>
+                                <li class="list-inside list-disc indent-10">+ attributeNameThree: integer</li>
+                                <li class="list-inside list-disc indent-10">+ attributeNameFour: list[string]</li>
+                            </ul>
+                            <li class="list-inside list-disc">Alphabet Only</li>
                             <li class="list-inside list-disc">Case sensitive</li>
                             <li class="list-inside list-disc">Doesn't contain leading, in-between, nor trailing whitespace(s) unless otherwise specified in this list</li>
                             <li class="list-inside list-disc">'-' for private, '+' for public. Gap</li>
@@ -118,7 +129,14 @@
                     <div class="flex flex-col gap-2 pt-2">
                         <p class="font-bold">Class Methods:</p>
                         <ul>
-                            <li class="list-inside list-disc">Alphanumeric (minimal 1 letter). Allowed symbols: _</li>
+                            <li class="list-inside list-disc">Examples:</li>
+                            <ul>
+                                <li class="list-inside list-disc indent-10">- methodNameOne (paramOne: string, paramTwo: boolean): void</li>
+                                <li class="list-inside list-disc indent-10">+ methodNameTwo (): integer</li>
+                                <li class="list-inside list-disc indent-10">- methodNameThree (paramOne: list[string]): string</li>
+                                <li class="list-inside list-disc indent-10">+ methodNameFour (): list[boolean]</li>
+                            </ul>
+                            <li class="list-inside list-disc">Alphabet Only</li>
                             <li class="list-inside list-disc">Case sensitive</li>
                             <li class="list-inside list-disc">Doesn't contain leading, in-between, nor trailing whitespace(s) unless otherwise specified in this list</li>
                             <li class="list-inside list-disc">'-' for private, '+' for public. Gap</li>
@@ -158,15 +176,6 @@
                                 <li class="list-inside list-disc indent-10">End label: 1 or *</li>
                                 <li class="list-inside list-disc indent-10">Directionality: must be ‘Unspecified’</li>
                             </ul>
-                            <li class="list-inside list-disc">Accepted return value data types:</li>
-                            <ul>
-                                <li class="list-inside list-disc indent-10">None,  in this case the final character of the line is close parentheses: ' ) ' (see method_name_1 in above example)</li>
-                                <li class="list-inside list-disc indent-10">boolean</li>
-                                <li class="list-inside list-disc indent-10">string</li>
-                                <li class="list-inside list-disc indent-10">integer</li>
-                                <li class="list-inside list-disc indent-10">list[other_datatype]</li>
-                            </ul>
-                            <li class="list-inside list-disc">Each attribute is separated by new line: \n</li>
                         </ul>
                     </div>
                 </section>
@@ -193,8 +202,17 @@
                 <section id="sub3-2">
                     <div class="flex flex-col gap-2 pt-2">
                         <p class="font-bold">Name (other than :UI and :views):</p>
+                        
                         <ul>
-                            <li class="list-inside list-disc">Rules for object_name and ClassName follow the same rules as Class Name.</li>
+                            <li class="list-inside list-disc">Examples (from left to right):</li>
+                            <ul>
+                                <li class="list-inside list-disc indent-10">:UI</li>
+                                <li class="list-inside list-disc indent-10">:views</li>
+                                <li class="list-inside list-disc indent-10">instanceOne:ClassOne</li>
+                                <li class="list-inside list-disc indent-10">instanceTwo:ClassTwo</li>
+                            </ul>
+
+                            <li class="list-inside list-disc">Rules for instance name and class name follow the same rules as Class Name.</li>
                             <li class="list-inside list-disc">Doesn't contain leading, in-between, nor trailing whitespace(s)</li>
                         </ul>
                     </div>
@@ -208,12 +226,12 @@
                             <li class="list-inside list-disc">Signal must be unchecked</li>
                             <li class="list-inside list-disc">Examples:</li>
                             <ul>
-                                <li class="list-inside list-disc indent-10">method_name1 (arg1, arg2)</li>
-                                <li class="list-inside list-disc indent-10">method_name2 (arg1)</li>
-                                <li class="list-inside list-disc indent-10">method_name3 ()</li>
-                                <li class="list-inside list-disc indent-10">[POST] method_name4 (arg1)</li>
+                                <li class="list-inside list-disc indent-10">methodNameOne (argOne, argTwo)</li>
+                                <li class="list-inside list-disc indent-10">methodNameTwo (argOne)</li>
+                                <li class="list-inside list-disc indent-10">methodNameThree ()</li>
+                                <li class="list-inside list-disc indent-10">[POST] methodNameFour (argOne)</li>
                             </ul>
-                            <li class="list-inside list-disc">Alphanumeric (minimal 1 letter). Allowed symbols: _</li>
+                            <li class="list-inside list-disc">Alphabet Only</li>
                             <li class="list-inside list-disc">Case sensitive</li>
                             <li class="list-inside list-disc">Doesn't contain leading, in-between, nor trailing whitespace(s) unless otherwise specified in this list</li>
                             <li class="list-inside list-disc">'-' for private, '+' for public. Gap</li>
@@ -227,27 +245,27 @@
                     <div class="flex flex-col gap-2 pt-2">
                         <p class="font-bold">Other Method Calls:</p>
                         <ul>
-                            <li class="list-inside list-disc">Views call is a method call made from :UI to :views</li>
+                            <li class="list-inside list-disc">Rules for other calls OTHER THAN those made from :UI to :views</li>
                             <li class="list-inside list-disc">Signal must be unchecked</li>
                             <li class="list-inside list-disc">More examples:</li>
                             <ul>
-                                <li class="list-inside list-disc indent-10">method_name1 (arg1, arg2)</li>
-                                <li class="list-inside list-disc indent-10">method_name2 (arg1)</li>
-                                <li class="list-inside list-disc indent-10">method_name3 ()</li>
-                                <li class="list-inside list-disc indent-10">[condition] method_name4 (arg1)</li>
-                                <li class="list-inside list-disc indent-10">method_name5 () -> return_var</li>
+                                <li class="list-inside list-disc indent-10">methodNameOne (argOne, argTwo)</li>
+                                <li class="list-inside list-disc indent-10">method_nameOne (argOne)</li>
+                                <li class="list-inside list-disc indent-10">method_nameOne ()</li>
+                                <li class="list-inside list-disc indent-10">[condition] method_nameFour (argOne)</li>
+                                <li class="list-inside list-disc indent-10">method_nameFive () -> returnVar</li>
                             </ul>
-                            <li class="list-inside list-disc">Alphanumeric (minimal 1 letter per identifier). Allowed symbols: _</li>
+                            <li class="list-inside list-disc">Alphabet Only</li>
                             <li class="list-inside list-disc">Case sensitive</li>
                             <li class="list-inside list-disc">Doesn't contain leading, in-between, nor trailing whitespace(s) unless otherwise specified in this list</li>
                             <li class="list-inside list-disc">There is a space between attribute name and open parentheses.</li>
                             <li class="list-inside list-disc">There is a space between comma and next argument (if any)</li>
                             <li class="list-inside list-disc">If using [condition], there is a space between close square brackets and method name.</li>
                             <li class="list-inside list-disc">If using [condition], the condition inside the square brackets must be readable by the programming language used by the framework the diagram is being converted into.</li>
-                            <li class="list-inside list-disc">-&gt; return_var can only be used for self calls.</li>
-                            <li class="list-inside list-disc">If using -&gt; return_var, return_var follows the same rules as Class Name</li>
-                            <li class="list-inside list-disc">If using -&gt; return_var, there is a space between close parentheses and hyphen ( ‘-’ )</li>
-                            <li class="list-inside list-disc">If using -&gt; return_var, there is a space between more-than ( ‘&gt;’ ) and return_var name.</li>
+                            <li class="list-inside list-disc">-&gt; returnVar can only be used for self calls.</li>
+                            <li class="list-inside list-disc">If using -&gt; returnVar, returnVar follows the same rules as Class Name</li>
+                            <li class="list-inside list-disc">If using -&gt; returnVar, there is a space between close parentheses and hyphen ( ‘-’ )</li>
+                            <li class="list-inside list-disc">If using -&gt; returnVar, there is a space between more-than ( ‘&gt;’ ) and returnVar name.</li>
 
                         </ul>
                     </div>
