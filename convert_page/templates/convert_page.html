@@ -8,96 +8,86 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
-<body class="bg-white flex flex-col min-h-screen text-black relative">
+
+<body class="flex flex-col min-h-screen text-black relative" style="background-color: var(--background);">
+
     <!-- Notification System -->
     <div id="notification" 
          class="fixed top-4 right-4 max-w-md p-4 rounded-lg shadow-lg hidden transition-all">
         <div id="notificationMessage" class="font-semibold"></div>
     </div>
 
-    <header class="flex justify-between items-center p-4 bg-white shadow-lg">
-        <div class="hamburger-menu cursor-pointer">
-            <div class="line bg-[var(--text)] w-6 h-0.5 mb-1"></div>
-            <div class="line bg-[var(--text)] w-6 h-0.5 mb-1"></div>
-            <div class="line bg-[var(--text)] w-6 h-0.5"></div>
-            </div>
-            <div class="toggle-switch">
-            <!-- Checkbox with proper accessibility -->
+    <header class="flex justify-between items-center p-4 bg-white shadow-lg " style="height: 63px; background-color: var(--secondary);" >
+        <div class="flex flex-col justify-center top-0 right-0 mt-4 mr-4 absolute">
             <input
-            type="checkbox"
-            id="toggle"
-            class="visually-hidden"
-            aria-label="Toggle theme"
-            >
-            <!-- Label with matching 'for' attribute -->
-            <label
-            for="toggle"
-            class="block w-6 h-6 rounded-full bg-gray-300 cursor-pointer"
-            aria-hidden="true"
-            ></label>
-    </header>
-
-    <main class="flex-grow flex items-center justify-center py-8">
-        <form id="uploadForm" style="display: none;">
-            {% csrf_token %}
-        </form>
-        
-        <div class="container max-w-md w-full p-4 rounded-2xl container-shadow bg-white">
-            <h1 class="text-center text-[var(--text)] text-3xl font-semibold mb-6">Convert Your Files</h1>
-            
-            <!-- Drop Zone -->
-            <div class="drop-zone rounded-lg p-6 mb-4">
-                <div class="relative group">
-                    <button class="w-full px-6 py-4 bg-[var(--button)] text-white rounded-lg
-                    hover:bg-[var(--button-hover)] transition-all
-                    flex items-center justify-center space-x-2">
-                    <svg class="file-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-7-7zm0 18H6V4h7v16zm3-8h-2v2h-2v-2H9v-2h2V8h2v2h2v2zm2-10H5v16h14V4z"/>
-                    </svg>
-                    <span id="uploadText" class="font-medium">Upload files to Convert</span>
-                    </button>
-                    <input
-                        type="file"
-                        accept=".class.jet, .sequence.jet"
-                        multiple
-                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        id="fileInput"
-                    >
+                type="checkbox"
+                name="light-switch"
+                id="light-switch"
+                class="light-switch sr-only"
+                
+            />
+            <label class="relative cursor-pointer p-2" for="light-switch">
+                <div id="light-switch-icon">
+                    
                 </div>
-            </div>
-
-            <!-- File List Section -->
-            <div id="fileListSection" class="space-y-2 mb-4 hidden">
-                <!-- File entries will be dynamically added here -->
-            </div>
-
-            <!-- Convert Button -->
-            <button id="convertButton" 
-                    class="w-full mt-4 hidden bg-[var(--button)] text-white py-3 px-6 rounded-lg 
-                           hover:bg-[var(--button-hover)] transition-all">
-                Convert
-            </button>
-
-            <!-- Help Links -->
-            <div class="text-center space-y-4 mt-6">
-                <div>
-                    Don't have a diagram? 
-                    <a href="https://www.jetuml.org/docs/download.html" 
-                       class="text-[var(--secondary)] hover:underline">
-                        Click me!
-                    </a>
-                </div>
-                <div>
-                    Don't know what to do? 
-                    <a href="/doc/" class="text-[var(--secondary)] hover:underline">
-                        Check the documentation
-                    </a>
-                </div>
-            </div>
+                <span class="sr-only">Switch to light / dark version</span>
+            </label>
         </div>
-    </main>
+    </header>
+  <!-- Main content container -->
+  <div id="mainContainer" class="flex flex-col flex-grow transition" >
+    <main class="flex-grow flex items-center justify-center py-8">
+      <form id="uploadForm" style="display: none;">
+        {% csrf_token %}
+      </form>
+      
+      <div class="container max-w-lg w-full p-4 rounded-2xl container-shadow" style="background-color: var(--primary);">
+        <h1 class="text-center text-3xl font-semibold mb-6" style="color: var(--text);">Convert Your Files</h1>
+        
+        <!-- Drop Zone -->
+        <div class="drop-zone rounded-lg p-6 mb-4">
+          <div class="relative group">
+            <button class="w-full px-6 py-4 bg-[var(--button)] text-white rounded-lg hover:bg-[var(--button-hover)] transition-all flex items-center justify-center space-x-2">
+              <svg width="100px" height="100px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill="var(--text)" fill-rule="evenodd" clip-rule="evenodd" d="M4.25 5C4.25 3.48122 5.48122 2.25 7 2.25H14.9868C15.5506 2.25 16.0798 2.52157 16.4085 2.97955L19.4217 7.17745C19.6352 7.47488 19.75 7.83178 19.75 8.1979V19C19.75 20.5188 18.5188 21.75 17 21.75H7C5.48122 21.75 4.25 20.5188 4.25 19V5ZM7 3.75C6.30964 3.75 5.75 4.30964 5.75 5V19C5.75 19.6904 6.30964 20.25 7 20.25H17C17.6904 20.25 18.25 19.6904 18.25 19V8.89705H15C14.5858 8.89705 14.25 8.56126 14.25 8.14705V3.75H7Z" fill="#000000"/>
+                <path fill="var(--text)" d="M15.0857 13.2185C14.8269 13.542 14.355 13.5944 14.0315 13.3357L12.7501 12.3105V15.75C12.7501 16.1642 12.4143 16.5 12.0001 16.5C11.5858 16.5 11.2501 16.1642 11.2501 15.75V12.3104L9.96855 13.3357C9.6451 13.5944 9.17313 13.542 8.91438 13.2185C8.65562 12.8951 8.70806 12.4231 9.03151 12.1643L11.5288 10.1665C11.6561 10.0636 11.8177 10.0015 11.9937 10C11.9958 10 11.9979 10 12.0001 10L12.0025 10C12.1816 10.0006 12.3459 10.0639 12.4746 10.1692L14.9685 12.1643C15.292 12.4231 15.3444 12.8951 15.0857 13.2185Z" fill="#000000"/>
+              </svg>
+              <span id="uploadText" class="font-medium text-xl" style="color: var(--text); ">Upload files to Convert</span>
+            </button>
+            <input type="file" accept=".class.jet, .sequence.jet" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="fileInput">
+          </div>
+        </div>
 
-    <footer class="relative">
+        <!-- File List Section -->
+        <div id="fileListSection" class="space-y-2 mb-4 hidden">
+          <!-- File entries will be dynamically added here -->
+        </div>
+
+        <!-- Convert Button -->
+        <button id="convertButton" class="w-full mt-4 bg-[var(--button)] py-3 px-6 rounded-lg hover:bg-[var(--button-hover)] transition-all" style="color: var(--text);">
+          Convert
+        </button>
+
+        <!-- Help Links -->
+        <div class="text-center space-y-4 mt-6" >
+          <div style="color: var(--text)">
+            Don't have a diagram? 
+            <a href="https://www.jetuml.org/docs/download.html" class="text-[var(--secondary)] hover:underline">Click me!</a>
+          </div>
+          <div style="color: var(--text);">
+            Don't know what to do? 
+            
+            <button id="toggleUserManual" class="w-auto px-4 py-2 bg-[var(--button)] rounded hover:bg-[var(--button-hover)]" style="color: var(--text);" onclick="toggleUserManual()">
+              Click Here!
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+
+    <footer class="relative" style="background-color: var(--background);">
         <img src="{% static 'images/bottom3.png' %}" 
              alt="Decorative" 
              class="w-full h-auto object-cover">
@@ -106,3 +96,4 @@
     <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>
+
