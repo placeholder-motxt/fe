@@ -23,5 +23,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include("landing_page.urls")),
     path('', include("login_signup.urls")),
+    path('', include("convert_page.urls")),
+    path('repository/', include("repository.urls")),
+    path('doc/', include('user_manual.urls')),
     re_path(r"^static/(?P<path>.*)$", serve, {"document_root": settings.STATIC_ROOT})
 ]

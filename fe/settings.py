@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 import os
+import dj_database_url
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,7 +27,8 @@ SECRET_KEY = 'django-insecure-mo1qat85$!41ub9c+eq-*^1#1(42)s=@9(k)ntneluf%yt=-8p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = not os.getenv("PRODUCTION", False)
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "juan-maxwell-motxt.pbp.cs.ui.ac.id"]
+ALLOWED_HOSTS = ["*"]
+# ALLOWED_HOSTS = ["localhost", "127.0.0.1", "juan-maxwell-motxt.pbp.cs.ui.ac.id"]
 
 
 # Application definition
@@ -39,11 +41,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'landing_page',
+    'repository',
     'login_signup',
+    'convert_page',
+    'user_manual',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -76,12 +82,15 @@ WSGI_APPLICATION = 'fe.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+
 DATABASES = {
+    # Should be in the environment as well
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 
 
 # Password validation
@@ -118,7 +127,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+
+if not DEBUG:
+    # Tell Django to copy static assets into a path called `staticfiles` (this is specific to Render)
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    # Enable the WhiteNoise storage backend, which compresses static files to reduce disk use
+    # and renames the files with unique names for each version to support long-term caching
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 if DEBUG:
     STATICFILES_DIRS = [
         BASE_DIR / 'static'

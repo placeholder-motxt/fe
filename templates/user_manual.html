@@ -1,0 +1,236 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Manual</title>
+    <link
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const sections = document.querySelectorAll("section");
+            const navLinks = document.querySelectorAll("nav a");
+            const mainContent = document.querySelector(".flex-1");
+            let current = "";
+            let lastActiveParent = null; // Store the last active parent menu
+        
+            mainContent.addEventListener("scroll", () => {
+                const mainContentTop = mainContent.scrollTop;
+        
+                sections.forEach((section) => {
+                    const sectionTop = section.offsetTop - mainContentTop;
+        
+                    if (sectionTop <= 50) { // Adjust threshold as needed
+                        current = section.getAttribute("id");
+                    }
+                });
+        
+                navLinks.forEach((link) => {
+                    link.classList.remove("bg-[#4BDEC3]", "text-black");
+                    link.classList.add("bg-white");
+        
+                    if (current !== "" && link.getAttribute("href")?.includes(current)) {
+                        link.classList.remove("bg-white");
+                        link.classList.add("bg-[#4BDEC3]", "text-black");
+        
+                        // Expand the corresponding submenu
+                        const submenu = link.nextElementSibling;
+                        if (submenu?.classList.contains("submenu")) {
+                            submenu.classList.remove("hidden");
+                            lastActiveParent = submenu; // Save the last active submenu
+                        }
+                    }
+                });
+        
+                // Collapse submenus if their parent is not active, but keep it open if:
+                // 1. `current` is a sub-section, OR
+                // 2. `lastActiveParent` was previously open (allows reopening when scrolling back)
+                document.querySelectorAll(".submenu").forEach((submenu) => {
+                    const parentLink = submenu.previousElementSibling;
+        
+                    if (
+                        parentLink &&
+                        !parentLink.getAttribute("href")?.includes(current) &&
+                        !current.includes("sub")
+                    ) {
+                        submenu.classList.add("hidden");
+                    } else if (submenu === lastActiveParent) {
+                        submenu.classList.remove("hidden"); // Reopen the last active submenu when scrolling back
+                    }
+                });
+            });
+        });
+        
+    </script>
+</head>
+<body class="bg-gray-200 flex min-h-screen text-black">
+    <div class="bg-[#A7BBD2] w-64 h-screen text-black px-3 py-4 flex flex-col ml-20 font-[Consolas] justify-between">
+        <div>
+            <h1 class="text-white text-3xl font-bold mb-6 text-center">MoTxT User Manual</h1>
+            <nav class="flex flex-col space-y-2 overflow-y-auto max-h-full">
+                <div class="flex flex-col">
+                    <a href="#section1" class="px-4 py-2 bg-white rounded hover:bg-[#35BAA2] block">Valid inputs</a>
+                    <div class="submenu hidden flex flex-col space-y-1 pl-4 mt-1">
+                        <a href="#sub1" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">File Upload Rules</a>
+                        <a href="#sub2" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Valid User String Inputs</a>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <a href="#section2" class="px-4 py-2 bg-white text-black rounded hover:bg-[#35BAA2] block">What not to expect</a>
+                </div>
+                <div>
+                    <a href="#section3" class="px-4 py-2 bg-white text-black rounded hover:bg-[#35BAA2] block">Errors that may occur</a>
+                </div>
+            </nav>
+        </div>
+        
+        <a href="/convert_page/" class="text-blue-500 px-4 py-2 bg-gray-800 rounded hover:bg-blue-200">Go Back to Convert</a>
+    </div>
+    <div id="mainContent" class="flex-1 p-10 mr-20 bg-white overflow-y-auto h-screen">
+        <h2 class="text-3xl font-bold">User Manual</h2>
+        <p class="mt-4">Welcome to the MoTxT User Manual. 
+            This guide will help you understand how to use the features
+            within MoTxT and what the system needs for you to get the best outcome.
+            Follow the sections below to understandmore.</p>
+        <div class="flex-1 p-10">
+            <section id="section1" class="h-auto mb-20 break-words">
+                <h2 class="text-3xl font-bold">Valid Inputs</h2>
+                <p class="mt-4">In this section, we'll explain what MoTxT can parse so that you can 
+                    get the most out of MoTxT convert feature.
+                </p>
+                <section id="sub1" class="h-fit p-3 flex flex-col gap-4">
+                    <div class="flex flex-col gap-2 pt-2">
+                        <h2 class="text-2xl font-bold ">File Upload Rules</h2>
+                        <p >Upload Requirements for <span class="font-bold">Class Diagram Files</span>:</p>
+                        <ul>
+                            <li class="list-inside list-disc">For each conversion, the user must upload exactly one class diagram file in the format [file-name].class.jet.</li>
+                            <li class="list-inside list-disc">The uploaded .class.jet file must conform to the format supported by JetUML. The easiest way to ensure this is by not modifying the file after saving it in JetUML.</li> 
+                        </ul>
+                    </div>
+
+                    <div class="flex flex-col gap-2 pt-2">
+                        <p>Upload Requirements for <span class="font-bold">Sequence Diagram Files</span>:</p>
+                        <ul>
+                            <li class="list-inside list-disc">The uploaded sequence diagram file must be in the format [file-name].sequence.jet.</li>
+                            <li class="list-inside list-disc">The uploaded .sequence.jet file must conform to the format supported by JetUML. The easiest way to ensure this is by not modifying the file after saving it in JetUML.</li>
+                        </ul>
+                    </div>
+
+                    </section>
+                <section id="sub2" class="h-fit p-3 flex flex-col gap-4">
+                    <div class="flex flex-col gap-2 pt-2">
+                        <h2 class="text-2xl font-bold ">Valid user string inputs</h2>
+                        <p class="font-bold">Class Name:</p>
+                        <ul>
+                            <li class="list-inside list-disc">Alphanumeric (minimal 1 letter). Allowed symbols: _</li>
+                            <li class="list-inside list-disc">Case sensitive</li>
+                            <li class="list-inside list-disc">Doesn’t contain leading, in-between, nor trailing whitespace(s)</li>
+                        </ul>
+                    </div>
+
+                    <div class="flex flex-col gap-2 pt-2">
+                        <p class="font-bold">Class Attributes:</p>
+                        <ul>
+                            <li class="list-inside list-disc">Alphanumeric (minimal 1 letter). Allowed symbols: _</li>
+                            <li class="list-inside list-disc">Case sensitive</li>
+                            <li class="list-inside list-disc">Doesn't contain leading, in-between, nor trailing whitespace(s) unless otherwise specified in this list</li>
+                            <li class="list-inside list-disc">'-' for private, '+' for public. Gap</li>
+                            <li class="list-inside list-disc">There is a space between visibility-symbol and attribute name</li>
+                            <li class="list-inside list-disc">There is a space between colon and datatype</li>
+                            <li class="list-inside list-disc">Accepted datatypes:</li>
+                            <ul>
+                                <li class="list-inside list-disc indent-10">boolean</li>
+                                <li class="list-inside list-disc indent-10">string</li>
+                                <li class="list-inside list-disc indent-10">integer</li>
+                                <li class="list-inside list-disc indent-10">list[other_datatype]</li>
+                            </ul>
+                            <li class="list-inside list-disc">Each attribute is separated by new line: \n</li>
+                        </ul>
+                    </div>
+
+                    <div class="flex flex-col gap-2 pt-2">
+                        <p class="font-bold">Class Methods:</p>
+                        <ul>
+                            <li class="list-inside list-disc">Alphanumeric (minimal 1 letter). Allowed symbols: _</li>
+                            <li class="list-inside list-disc">Case sensitive</li>
+                            <li class="list-inside list-disc">Doesn't contain leading, in-between, nor trailing whitespace(s) unless otherwise specified in this list</li>
+                            <li class="list-inside list-disc">'-' for private, '+' for public. Gap</li>
+                            <li class="list-inside list-disc">There is a space between visibility-symbol and attribute name</li>
+                            <li class="list-inside list-disc">There is a space between attribute name and open parentheses.</li>
+                            <li class="list-inside list-disc">There is a space between comma and next parameter name (if any)</li>
+                            <li class="list-inside list-disc">There is a space between colon and datatype</li>
+                            <li class="list-inside list-disc">Accepted parameter data types:</li>
+                            <ul>
+                                <li class="list-inside list-disc indent-10">boolean</li>
+                                <li class="list-inside list-disc indent-10">string</li>
+                                <li class="list-inside list-disc indent-10">integer</li>
+                                <li class="list-inside list-disc indent-10">list[other_datatype]</li>
+                            </ul>
+                            <li class="list-inside list-disc">Accepted return value data types:</li>
+                            <ul>
+                                <li class="list-inside list-disc indent-10">None,  in this case the final character of the line is close parentheses: ' ) ' (see method_name_1 in above example)</li>
+                                <li class="list-inside list-disc indent-10">boolean</li>
+                                <li class="list-inside list-disc indent-10">string</li>
+                                <li class="list-inside list-disc indent-10">integer</li>
+                                <li class="list-inside list-disc indent-10">list[other_datatype]</li>
+                            </ul>
+                            <li class="list-inside list-disc">Each attribute is separated by new line: \n</li>
+                        </ul>
+                    </div>
+
+
+                </section>
+            </section>
+
+            <section id="section2" class="h-auto mb-20 break-words">
+                <h2 class="text-3xl font-bold">What not to expect</h2>
+                <p class="mt-4">MoTxT doesn't facilitate the creation of the diagram. 
+                    Diagram must be provided by the user, preferably by using JetUML 
+                    which is you can download 
+                    <a 
+                    href="https://www.jetuml.org/docs/download.html" 
+                    class="text-[#4BDEC3]">here</a></p>
+            </section>
+
+            <section id="section3" class="h-screen mb-20 break-words">
+                <h2 class="text-3xl font-bold">Errors that May Occur</h2>
+                <p class="my-4">This is a compilation of errors that you might encounter in your 
+                    exploration of MoTxT</p>
+                <div class="flex flex-col gap-2 pt-2">
+                    <div>
+                        <p class="font-bold">'Only .JET files are allowed'</p>
+                        <p>This is caused by the file type you uploaded not in the form of .JET. You 
+                            should make sure whether you submit the right file or not</p>
+                    </div>
+                    <div>
+                        <p class="font-bold">'Please select a file to convert.'</p>
+                        <p>This is caused by submiting a request to convert without actually attaching
+                            any files. You should try attaching a file</p>
+                    </div>
+                    <div>
+                        <p class="font-bold">'Only one .class.jet file is allowed!'</p>
+                        <p>This is caused by submiting multiple files of .class.jet or UML class diagrams. 
+                            Please submit only one</p>
+                    </div>
+                    <div>
+                        <p class="font-bold">'Error code 500'</p>
+                        <p>The content of the file you submitted disobeys the rule mentioned above. 
+                            Please make sure the diagram you exported from JetUML is correct based on the 
+                            rules above</p>
+                    </div>
+                    <div>
+                        <p class="font-bold">'Error code 422'</p>
+                        <p>The content of the file you submitted is not in the form of JSON. 
+                            You should make sure the file you submitted contains a JSON format</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

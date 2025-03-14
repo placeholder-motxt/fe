@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convert Your Files</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body class="bg-white flex flex-col min-h-screen text-black relative">
+    <!-- Notification System -->
+    <div id="notification" 
+         class="fixed top-4 right-4 max-w-md p-4 rounded-lg shadow-lg hidden transition-all">
+        <div id="notificationMessage" class="font-semibold"></div>
+    </div>
+
+    <header class="flex justify-between items-center p-4 bg-white shadow-lg">
+        <div class="hamburger-menu cursor-pointer">
+            <div class="line bg-[var(--text)] w-6 h-0.5 mb-1"></div>
+            <div class="line bg-[var(--text)] w-6 h-0.5 mb-1"></div>
+            <div class="line bg-[var(--text)] w-6 h-0.5"></div>
+            </div>
+            <div class="toggle-switch">
+            <!-- Checkbox with proper accessibility -->
+            <input
+            type="checkbox"
+            id="toggle"
+            class="visually-hidden"
+            aria-label="Toggle theme"
+            >
+            <!-- Label with matching 'for' attribute -->
+            <label
+            for="toggle"
+            class="block w-6 h-6 rounded-full bg-gray-300 cursor-pointer"
+            aria-hidden="true"
+            ></label>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center py-8">
+        <form id="uploadForm" style="display: none;">
+            {% csrf_token %}
+        </form>
+        
+        <div class="container max-w-md w-full p-4 rounded-2xl container-shadow bg-white">
+            <h1 class="text-center text-[var(--text)] text-3xl font-semibold mb-6">Convert Your Files</h1>
+            
+            <!-- Drop Zone -->
+            <div class="drop-zone rounded-lg p-6 mb-4">
+                <div class="relative group">
+                    <button class="w-full px-6 py-4 bg-[var(--button)] text-white rounded-lg
+                    hover:bg-[var(--button-hover)] transition-all
+                    flex items-center justify-center space-x-2">
+                    <svg class="file-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-7-7zm0 18H6V4h7v16zm3-8h-2v2h-2v-2H9v-2h2V8h2v2h2v2zm2-10H5v16h14V4z"/>
+                    </svg>
+                    <span id="uploadText" class="font-medium">Upload files to Convert</span>
+                    </button>
+                    <input
+                        type="file"
+                        accept=".class.jet, .sequence.jet"
+                        multiple
+                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        id="fileInput"
+                    >
+                </div>
+            </div>
+
+            <!-- File List Section -->
+            <div id="fileListSection" class="space-y-2 mb-4 hidden">
+                <!-- File entries will be dynamically added here -->
+            </div>
+
+            <!-- Convert Button -->
+            <button id="convertButton" 
+                    class="w-full mt-4 hidden bg-[var(--button)] text-white py-3 px-6 rounded-lg 
+                           hover:bg-[var(--button-hover)] transition-all">
+                Convert
+            </button>
+
+            <!-- Help Links -->
+            <div class="text-center space-y-4 mt-6">
+                <div>
+                    Don't have a diagram? 
+                    <a href="https://www.jetuml.org/docs/download.html" 
+                       class="text-[var(--secondary)] hover:underline">
+                        Click me!
+                    </a>
+                </div>
+                <div>
+                    Don't know what to do? 
+                    <a href="/doc/" class="text-[var(--secondary)] hover:underline">
+                        Check the documentation
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="relative">
+        <img src="{% static 'images/bottom3.png' %}" 
+             alt="Decorative" 
+             class="w-full h-auto object-cover">
+    </footer>
+
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
