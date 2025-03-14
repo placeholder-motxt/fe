@@ -138,10 +138,10 @@ if not DEBUG:
 
 if DEBUG:
     STATICFILES_DIRS = [
-        BASE_DIR / 'static'
+        Path('') / 'static'
     ]
 else:
-    STATIC_ROOT = BASE_DIR / 'static'
+    STATIC_ROOT = Path('') / 'static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
