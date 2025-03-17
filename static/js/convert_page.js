@@ -16,7 +16,7 @@ export function getCookie(name) {
   
   // Shared mutable state
   export const uploadedFiles = [];
-  export const classFileCount = 0;
+  export let classFileCount = 0;
   
   // Validation
   export function validateFile(file) {
