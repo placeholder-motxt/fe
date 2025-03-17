@@ -84,7 +84,7 @@ export function getCookie(name) {
         credentials: 'same-origin',
       });
   
-      if (response.ok && (await response.headers.get('content-type'))?.includes('application/zip')) {
+      if (response.ok && response.headers.get('content-type')?.includes('application/zip')) {
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
