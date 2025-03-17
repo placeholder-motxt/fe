@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 import os
-import dj_database_url
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -138,10 +137,10 @@ if not DEBUG:
 
 if DEBUG:
     STATICFILES_DIRS = [
-        BASE_DIR / 'static'
+        Path('') / 'static'
     ]
 else:
-    STATIC_ROOT = BASE_DIR / 'static'
+    STATIC_ROOT = Path('') / 'static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
