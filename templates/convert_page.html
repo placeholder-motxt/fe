@@ -65,8 +65,12 @@
         </div>
 
         <!-- Convert Button -->
-        <button id="convertButton" class="w-full mt-4 bg-[var(--button)] py-3 px-6 rounded-lg hover:bg-[var(--button-hover)] transition-all" style="color: var(--text);">
-          Convert
+        <button id="convertButton" 
+                class="convert-btn w-full mt-4 bg-[var(--button)] py-3 px-6 rounded-lg 
+                      hover:bg-[var(--button-hover)] transition-all relative overflow-hidden"
+                style="color: var(--text);">
+            <span class="btn-text">Convert</span>
+            <div class="loading-bar absolute inset-0"></div>
         </button>
 
         <!-- Help Links -->

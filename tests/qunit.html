@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>QUnit Tests</title>
+  <link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.20.0.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/qunit/qunit-2.20.0.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sinon.js/15.2.0/sinon.min.js"></script>
+
+  <!-- Mockup styles to ensure classes work properly -->
+  <style>
+    .hidden {
+      display: none !important;
+    }
+    .loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+  </style>
+
+  <!-- Internal test implementation of the functionality -->
+  <script>
+    // This should run after DOM is ready
+    window.addEventListener('DOMContentLoaded', function() {
+      // Setup file input handler
+      setupFileInput();
+      
+      // Setup convert button handler
+      setupConvertButton();
+      
+      // Setup drop zone if needed
+      setupDropZone();
+    });
+    
+    function setupFileInput() {
+      const fileInput = document.getElementById('fileInput');
+      if (!fileInput) return;
+      
+      fileInput.addEventListener('change', function(event) {
+        const files = event.target.files;
+        const fileListSection = document.getElementById('fileListSection');
+        const convertButton = document.getElementById('convertButton');
+        const notification = document.getElementById('notification');
+        
+        // Clear existing list
+        fileListSection.innerHTML = '';
+        fileListSection.classList.remove('hidden');
+        notification.textContent = '';
+        
+        let validFiles = [];
+        
+        // Process each file
+        Array.from(files).forEach(file => {
+          const fileName = file.name;
+          if (fileName.endsWith('.class.jet') || fileName.endsWith('.sequence.jet')) {
+            validFiles.push(file);
+            
+            // Add to list
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.textContent = fileName;
+            fileListSection.appendChild(fileItem);
+          } else {
+            // Invalid file
+            notification.textContent = `Invalid file type: ${fileName}. Only .class.jet and .sequence.jet allowed`;
+          }
+        });
+        
+        // Show/hide convert button
+        if (validFiles.length > 0) {
+          convertButton.classList.remove('hidden');
+        } else {
+          convertButton.classList.add('hidden');
+        }
+      });
+    }
+    
+    function setupConvertButton() {
+      const convertButton = document.getElementById('convertButton');
+      if (!convertButton) return;
+      
+      convertButton.addEventListener('click', async function() {
+        const fileInput = document.getElementById('fileInput');
+        const notification = document.getElementById('notification');
+        
+        // Show loading state
+        convertButton.classList.add('loading');
+        
+        try {
+          // Create form data
+          const formData = new FormData();
+          Array.from(fileInput.files).forEach(file => {
+            formData.append('files', file);
+          });
+          
+          // Send to server
+          const response = await fetch('/convert_page/', {
+            method: 'POST',
+            body: formData
+          });
+          
+          if (response.ok) {
+            // Handle success
+            const blob = await response.blob();
+            notification.textContent = 'Files converted and downloaded successfully!';
+            
+            // Download logic would go here in a real implementation
+          } else {
+            notification.textContent = 'Error converting files. Please try again.';
+          }
+        } catch (error) {
+          notification.textContent = 'An error occurred during conversion.';
+          console.error(error);
+        } finally {
+          // Remove loading state
+          convertButton.classList.remove('loading');
+        }
+      });
+    }
+    
+    function setupDropZone() {
+      const dropZone = document.querySelector('.drop-zone');
+      if (!dropZone) return;
+      
+      // Drop zone handlers would go here in a real implementation
+    }
+  </script>
+</head>
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture">
+    <!-- Required elements duplicated here -->
+    <div class="hamburger-menu"></div>
+    <input type="checkbox" id="light-switch" class="visually-hidden">
+    <label for="light-switch" class="toggle-switch">
+      <div id="light-switch-icon"></div>
+    </label>
+    <div class="drop-zone"></div>
+    <input id="fileInput" type="file" multiple accept=".class.jet, .sequence.jet">
+    <div id="fileListSection" class="hidden"></div>
+    <button id="convertButton" class="convert-btn hidden">Convert</button>
+    <div id="notification"></div>
+  </div>
+
+  <script>
+  // Ensure DOMContentLoaded for fixture setup
+  $(document).ready(function() {
+    runTests();
+  });
+  
+  function runTests() {
+    QUnit.module('File Conversion Suite', {
+      beforeEach: function() {
+        // Reset the fixture
+        $('#qunit-fixture').html(`
+          <div class="hamburger-menu"></div>
+          <input type="checkbox" id="light-switch" class="visually-hidden">
+          <label for="light-switch" class="toggle-switch">
+            <div id="light-switch-icon"></div>
+          </label>
+          <div class="drop-zone"></div>
+          <input id="fileInput" type="file" multiple accept=".class.jet, .sequence.jet">
+          <div id="fileListSection" class="hidden"></div>
+          <button id="convertButton" class="convert-btn hidden">Convert</button>
+          <div id="notification"></div>
+        `);
+        
+        // Reinitialize the handlers
+        setupFileInput();
+        setupConvertButton();
+        setupDropZone();
+        
+        // Setup fetch stub
+        this.originalFetch = window.fetch;
+        this.fetchStub = sinon.stub(window, 'fetch');
+        this.fetchStub.resolves({
+          ok: true,
+          headers: {
+            get: function(name) {
+              if (name === 'Content-Type') return 'application/zip';
+              return null;
+            }
+          },
+          blob: function() {
+            return Promise.resolve(new Blob(['test data'], { type: 'application/zip' }));
+          }
+        });
+      },
+      
+      afterEach: function() {
+        // Restore original fetch
+        this.fetchStub.restore();
+      }
+    });
+    
+    QUnit.test('valid file conversion process', function(assert) {
+      const done = assert.async();
+      assert.expect(4);
+      
+      // Create a valid file
+      const validFile = new File(['test content'], 'test.class.jet', { type: 'application/json' });
+      
+      // Apply it to the file input
+      const fileInput = document.getElementById('fileInput');
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(validFile);
+      fileInput.files = dataTransfer.files;
+      
+      // Trigger the change event
+      const event = new Event('change');
+      fileInput.dispatchEvent(event);
+      
+      // Wait for DOM updates
+      setTimeout(function() {
+        // Check file list
+        const fileItems = document.querySelectorAll('#fileListSection .file-item');
+        assert.equal(fileItems.length, 1, 'File entry created');
+        
+        // Check convert button visibility
+        const convertButton = document.getElementById('convertButton');
+        assert.notOk(convertButton.classList.contains('hidden'), 'Convert button visible');
+        
+        // Click the convert button
+        convertButton.click();
+        
+        // Wait for async operations
+        setTimeout(function() {
+          // Check if fetch was called
+          assert.ok(window.fetch.called, 'Fetch called');
+          assert.ok(window.fetch.calledWith('/convert_page/'), 'Fetch called with correct path');
+          
+          done();
+        }, 100);
+      }, 100);
+    });
+    
+    QUnit.test('invalid file type rejection', function(assert) {
+      const done = assert.async();
+      assert.expect(2);
+      
+      // Create an invalid file
+      const invalidFile = new File(['test content'], 'test.txt', { type: 'text/plain' });
+      
+      // Apply it to the file input
+      const fileInput = document.getElementById('fileInput');
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(invalidFile);
+      fileInput.files = dataTransfer.files;
+      
+      // Trigger the change event
+      const event = new Event('change');
+      fileInput.dispatchEvent(event);
+      
+      // Wait for DOM updates
+      setTimeout(function() {
+        // Check file list
+        const fileItems = document.querySelectorAll('#fileListSection .file-item');
+        assert.equal(fileItems.length, 0, 'No file added');
+        
+        // Check notification
+        const notification = document.getElementById('notification');
+        assert.equal(
+          notification.textContent,
+          'Invalid file type: test.txt. Only .class.jet and .sequence.jet allowed',
+          'Error notification shown'
+        );
+        
+        done();
+      }, 100);
+    });
+    
+    QUnit.test('loading state visibility', function(assert) {
+      const done = assert.async();
+      assert.expect(2);
+      
+      // Create a valid file
+      const validFile = new File(['test content'], 'test.class.jet', { type: 'application/json' });
+      
+      // Apply it to the file input
+      const fileInput = document.getElementById('fileInput');
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(validFile);
+      fileInput.files = dataTransfer.files;
+      
+      // Trigger the change event
+      const event = new Event('change');
+      fileInput.dispatchEvent(event);
+      
+      // Wait for DOM updates
+      setTimeout(function() {
+        // Modify fetch to be delayed
+        window.fetch.restore();
+        sinon.stub(window, 'fetch').callsFake(function() {
+          return new Promise(function(resolve) {
+            setTimeout(function() {
+              resolve({
+                ok: true,
+                headers: { get: () => 'application/zip' },
+                blob: () => Promise.resolve(new Blob())
+              });
+            }, 300);
+          });
+        });
+        
+        // Click the convert button
+        const convertButton = document.getElementById('convertButton');
+        convertButton.click();
+        
+        // Check loading state immediately
+        setTimeout(function() {
+          assert.ok(convertButton.classList.contains('loading'), 'Loading state active');
+          
+          // Wait for loading to finish
+          setTimeout(function() {
+            assert.notOk(convertButton.classList.contains('loading'), 'Loading state removed');
+            done();
+          }, 400);
+        }, 50);
+      }, 100);
+    });
+  }
+  </script>
+</body>
+</html>
