@@ -8,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/convert_page.css' %}">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/hamburger_menu.css' %}">
 </head>
 
 <body class="flex flex-col min-h-screen text-black relative" style="background-color: var(--background);">
@@ -18,23 +19,38 @@
         <div id="notificationMessage" class="font-semibold"></div>
     </div>
 
-    <header class="flex justify-between items-center p-4 bg-white shadow-lg " style="height: 63px; background-color: var(--secondary);" >
-        <div class="flex flex-col justify-center top-0 right-0 mt-4 mr-4 absolute">
-            <input
-                type="checkbox"
-                name="light-switch"
-                id="light-switch"
-                class="light-switch sr-only"
-                
-            />
-            <label class="relative cursor-pointer p-2" for="light-switch">
-                <div id="light-switch-icon">
-                    
-                </div>
-                <span class="sr-only">Switch to light / dark version</span>
-            </label>
-        </div>
-    </header>
+    <header class="flex justify-between items-center p-4 bg-white shadow-lg" style="height: 63px; background-color: var(--secondary);">
+      <!-- Hamburger Menu -->
+      <div class="hamburger-menu">
+          <button id="hamburgerButton" class="hamburger-button" aria-label="Navigation menu">
+              <div class="hamburger-icon">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+              </div>
+          </button>
+          <div id="dropdownMenu" class="dropdown-menu">
+              <a href="/" class="menu-item">Home</a>
+              <a href="/diagram-explorer" class="menu-item">Diagram Explorer</a>
+              <a href="/discover" class="menu-item">Discover</a>
+          </div>
+      </div>
+      
+      <!-- Light Switch -->
+      <div class="flex flex-col justify-center top-0 right-0 mt-4 mr-4 absolute">
+          <input
+              type="checkbox"
+              name="light-switch"
+              id="light-switch"
+              class="light-switch sr-only"
+          />
+          <label class="relative cursor-pointer p-2" for="light-switch">
+              <div id="light-switch-icon"></div>
+              <span class="sr-only">Switch to light / dark version</span>
+          </label>
+      </div>
+  </header>
+  
   <!-- Main content container -->
   <div id="mainContainer" class="flex flex-col flex-grow transition" >
     <main class="flex-grow flex items-center justify-center py-8">
@@ -99,6 +115,7 @@
     </footer>
 
     <script src="{% static 'js/convert_page.js' %}"></script>
+    <script src="{% static 'js/hamburger_menu.js' %}"></script>
 </body>
 </html>
 
