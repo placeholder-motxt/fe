@@ -306,7 +306,13 @@
         lines.forEach((line, index) => {
           const lineNumber = index + 1;
           const isCovered = this.coverageData.lines[lineNumber] > 0;
-          const coverageClass = isCovered ? 'covered' : (this.coverageData.lines[lineNumber] === undefined ? '' : 'uncovered');
+            let coverageClass = '';
+            if (isCovered) {
+            coverageClass = 'covered';
+            } else if (this.coverageData.lines[lineNumber] !== undefined) {
+            coverageClass = 'uncovered';
+            }
+
           
           reportHTML += `
             <div class="coverage-line">
