@@ -408,40 +408,12 @@
       const done = assert.async();
       assert.expect(4);
       
-      // Create a valid file
-      const validFile = new File(['test content'], 'test.class.jet', { type: 'application/json' });
-      
-      // Apply it to the file input
-      const fileInput = document.getElementById('fileInput');
-      const dataTransfer = new DataTransfer();
-      dataTransfer.items.add(validFile);
-      fileInput.files = dataTransfer.files;
-      
-      // Trigger the change event
-      const event = new Event('change');
-      fileInput.dispatchEvent(event);
+      prepareValidFileInput();
       
       // Wait for DOM updates
       setTimeout(function() {
-        // Check file list
-        const fileItems = document.querySelectorAll('#fileListSection .file-item');
-        assert.equal(fileItems.length, 1, 'File entry created');
-        
-        // Check convert button visibility
-        const convertButton = document.getElementById('convertButton');
-        assert.notOk(convertButton.classList.contains('hidden'), 'Convert button visible');
-        
-        // Click the convert button
-        convertButton.click();
-        
-        // Wait for async operations
-        setTimeout(function() {
-          // Check if fetch was called
-          assert.ok(window.fetch.called, 'Fetch called');
-          assert.ok(window.fetch.calledWith('/convert_page/'), 'Fetch called with correct path');
-          
-          done();
-        }, 150);
+        checkFileListAndConvertButton(assert);
+        clickConvertButtonAndVerifyFetch(assert, done);
       }, 150);
     });
     
@@ -449,34 +421,11 @@
       const done = assert.async();
       assert.expect(2);
       
-      // Create an invalid file
-      const invalidFile = new File(['test content'], 'test.txt', { type: 'text/plain' });
-      
-      // Apply it to the file input
-      const fileInput = document.getElementById('fileInput');
-      const dataTransfer = new DataTransfer();
-      dataTransfer.items.add(invalidFile);
-      fileInput.files = dataTransfer.files;
-      
-      // Trigger the change event
-      const event = new Event('change');
-      fileInput.dispatchEvent(event);
+      prepareInvalidFileInput();
       
       // Wait for DOM updates
       setTimeout(function() {
-        // Check file list
-        const fileItems = document.querySelectorAll('#fileListSection .file-item');
-        assert.equal(fileItems.length, 0, 'No file added');
-        
-        // Check notification
-        const notification = document.getElementById('notification');
-        assert.equal(
-          notification.textContent,
-          'Invalid file type: test.txt. Only .class.jet and .sequence.jet allowed',
-          'Error notification shown'
-        );
-        
-        done();
+        verifyInvalidFileRejection(assert, done);
       }, 150);
     });
     
@@ -484,53 +433,119 @@
       const done = assert.async();
       assert.expect(2);
       
-      // Create a valid file
-      const validFile = new File(['test content'], 'test.class.jet', { type: 'application/json' });
-      
-      // Apply it to the file input
-      const fileInput = document.getElementById('fileInput');
-      const dataTransfer = new DataTransfer();
-      dataTransfer.items.add(validFile);
-      fileInput.files = dataTransfer.files;
-      
-      // Trigger the change event
-      const event = new Event('change');
-      fileInput.dispatchEvent(event);
+      prepareValidFileInput();
       
       // Wait for DOM updates
       setTimeout(function() {
-        // Modify fetch to be delayed
-        window.fetch.restore();
-        sinon.stub(window, 'fetch').callsFake(function() {
-          return new Promise(function(resolve) {
-            setTimeout(function() {
-              resolve({
-                ok: true,
-                headers: { get: () => 'application/zip' },
-                blob: () => Promise.resolve(new Blob())
-              });
-            }, 300);
-          });
-        });
-        
-        // Click the convert button
-        const convertButton = document.getElementById('convertButton');
-        convertButton.click();
-        
-        // Check loading state immediately
-        setTimeout(function() {
-          assert.ok(convertButton.classList.contains('loading'), 'Loading state active');
-          
-          // Wait for loading to finish
-          setTimeout(function() {
-            assert.notOk(convertButton.classList.contains('loading'), 'Loading state removed');
-            done();
-          }, 500);
-        }, 100);
+        setupDelayedFetchAndTestLoading(assert, done);
       }, 150);
     });
   }
-  
+
+  // Helper functions to reduce nesting
+  function prepareValidFileInput() {
+    // Create a valid file
+    const validFile = new File(['test content'], 'test.class.jet', { type: 'application/json' });
+    
+    // Apply it to the file input
+    const fileInput = document.getElementById('fileInput');
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(validFile);
+    fileInput.files = dataTransfer.files;
+    
+    // Trigger the change event
+    const event = new Event('change');
+    fileInput.dispatchEvent(event);
+  }
+
+  function prepareInvalidFileInput() {
+    // Create an invalid file
+    const invalidFile = new File(['test content'], 'test.txt', { type: 'text/plain' });
+    
+    // Apply it to the file input
+    const fileInput = document.getElementById('fileInput');
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(invalidFile);
+    fileInput.files = dataTransfer.files;
+    
+    // Trigger the change event
+    const event = new Event('change');
+    fileInput.dispatchEvent(event);
+  }
+
+  function checkFileListAndConvertButton(assert) {
+    // Check file list
+    const fileItems = document.querySelectorAll('#fileListSection .file-item');
+    assert.equal(fileItems.length, 1, 'File entry created');
+    
+    // Check convert button visibility
+    const convertButton = document.getElementById('convertButton');
+    assert.notOk(convertButton.classList.contains('hidden'), 'Convert button visible');
+  }
+
+  function clickConvertButtonAndVerifyFetch(assert, done) {
+    // Click the convert button
+    const convertButton = document.getElementById('convertButton');
+    convertButton.click();
+    
+    // Wait for async operations
+    setTimeout(function() {
+      // Check if fetch was called
+      assert.ok(window.fetch.called, 'Fetch called');
+      assert.ok(window.fetch.calledWith('/convert_page/'), 'Fetch called with correct path');
+      done();
+    }, 150);
+  }
+
+  function verifyInvalidFileRejection(assert, done) {
+    // Check file list
+    const fileItems = document.querySelectorAll('#fileListSection .file-item');
+    assert.equal(fileItems.length, 0, 'No file added');
+    
+    // Check notification
+    const notification = document.getElementById('notification');
+    assert.equal(
+      notification.textContent,
+      'Invalid file type: test.txt. Only .class.jet and .sequence.jet allowed',
+      'Error notification shown'
+    );
+    done();
+  }
+
+  function setupDelayedFetchAndTestLoading(assert, done) {
+    // Modify fetch to be delayed
+    window.fetch.restore();
+    sinon.stub(window, 'fetch').callsFake(function() {
+      return new Promise(function(resolve) {
+        setTimeout(function() {
+          resolve({
+            ok: true,
+            headers: { get: () => 'application/zip' },
+            blob: () => Promise.resolve(new Blob())
+          });
+        }, 300);
+      });
+    });
+    
+    // Click the convert button
+    const convertButton = document.getElementById('convertButton');
+    convertButton.click();
+    
+    // Check loading state immediately
+    setTimeout(checkLoadingState, 100);
+    
+    function checkLoadingState() {
+      assert.ok(convertButton.classList.contains('loading'), 'Loading state active');
+      
+      // Wait for loading to finish
+      setTimeout(checkLoadingStateRemoved, 500);
+    }
+    
+    function checkLoadingStateRemoved() {
+      assert.notOk(convertButton.classList.contains('loading'), 'Loading state removed');
+      done();
+    }
+  }
   // Generate and display coverage report after tests complete
   QUnit.done(function() {
     window.codeCoverage.generateReport();
