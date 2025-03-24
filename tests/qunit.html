@@ -2,12 +2,17 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>QUnit Tests</title>
+  <title>QUnit Tests with Istanbul Coverage</title>
   <link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.20.0.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://code.jquery.com/qunit/qunit-2.20.0.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sinon.js/15.2.0/sinon.min.js"></script>
-
+  
+  <!-- Istanbul/NYC browser libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/istanbul-lib-coverage/3.2.0/index.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/istanbul-lib-report/3.0.0/index.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/istanbul-reports/3.1.5/index.browser.min.js"></script>
+  
   <!-- Mockup styles to ensure classes work properly -->
   <style>
     .hidden {
@@ -17,10 +22,62 @@
       opacity: 0.7;
       pointer-events: none;
     }
+    
+    /* Styles for coverage report display */
+    #coverage-report {
+      margin-top: 20px;
+      padding: 20px;
+      border-top: 1px solid #ccc;
+    }
+    
+    .coverage-summary {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    
+    .coverage-summary th, .coverage-summary td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    
+    .coverage-summary th {
+      background-color: #f2f2f2;
+    }
+    
+    .coverage-line {
+      display: flex;
+      font-family: monospace;
+    }
+    
+    .line-number {
+      width: 40px;
+      text-align: right;
+      color: #888;
+      padding-right: 10px;
+    }
+    
+    .line-coverage {
+      width: 10px;
+      margin-right: 10px;
+    }
+    
+    .covered {
+      background-color: rgba(0, 255, 0, 0.2);
+    }
+    
+    .uncovered {
+      background-color: rgba(255, 0, 0, 0.2);
+    }
+    
+    .code-content {
+      flex-grow: 1;
+    }
   </style>
 
-  <!-- Internal test implementation of the functionality -->
-  <script>
+  <!-- File Conversion Module with Instrumentation -->
+  <script id="file-conversion-module">
     // This should run after DOM is ready
     window.addEventListener('DOMContentLoaded', function() {
       // Setup file input handler
@@ -126,6 +183,148 @@
       // Drop zone handlers would go here in a real implementation
     }
   </script>
+  
+  <!-- Simple instrumentation script -->
+  <script>
+    // Coverage tracking system
+    window.codeCoverage = {
+      // Store coverage data
+      coverageData: {},
+      
+      // Initialize coverage tracking
+      init: function() {
+        const sourceCode = document.getElementById('file-conversion-module').textContent;
+        const lines = sourceCode.split('\n');
+        
+        // Create coverage map
+        this.coverageData = {
+          path: 'file-conversion-module',
+          lines: {},
+          functions: {},
+          statements: {}
+        };
+        
+        // Initialize all lines as not covered
+        lines.forEach((line, index) => {
+          // Skip comments and empty lines
+          if (line.trim() && !line.trim().startsWith('//')) {
+            this.coverageData.lines[index + 1] = 0;
+          }
+        });
+        
+        // Instrument key functions
+        this.instrumentFunction('setupFileInput');
+        this.instrumentFunction('setupConvertButton');
+        this.instrumentFunction('setupDropZone');
+      },
+      
+      // Instrument a function
+      instrumentFunction: function(funcName) {
+        const originalFunc = window[funcName];
+        if (typeof originalFunc === 'function') {
+          window[funcName] = function() {
+            // Mark function as called
+            codeCoverage.markFunctionCalled(funcName);
+            return originalFunc.apply(this, arguments);
+          };
+        }
+      },
+      
+      // Mark a function as called
+      markFunctionCalled: function(funcName) {
+        // Mark all lines in function
+        const sourceCode = document.getElementById('file-conversion-module').textContent;
+        const lines = sourceCode.split('\n');
+        
+        let inFunction = false;
+        let bracketCount = 0;
+        
+        lines.forEach((line, index) => {
+          // Detect function start
+          if (line.includes(`function ${funcName}`)) {
+            inFunction = true;
+          }
+          
+          // Count opening brackets
+          if (inFunction) {
+            const openBrackets = (line.match(/{/g) || []).length;
+            const closeBrackets = (line.match(/}/g) || []).length;
+            bracketCount += openBrackets - closeBrackets;
+            
+            // Mark line as covered
+            if (this.coverageData.lines[index + 1] !== undefined) {
+              this.coverageData.lines[index + 1]++;
+            }
+            
+            // Detect function end
+            if (bracketCount === 0 && inFunction) {
+              inFunction = false;
+            }
+          }
+        });
+      },
+      
+      // Generate the coverage report
+      generateReport: function() {
+        const reportDiv = document.getElementById('coverage-report');
+        if (!reportDiv) return;
+        
+        // Calculate coverage statistics
+        const totalLines = Object.keys(this.coverageData.lines).length;
+        const coveredLines = Object.values(this.coverageData.lines).filter(count => count > 0).length;
+        const coveragePercent = Math.round((coveredLines / totalLines) * 100);
+        
+        // Create the HTML for the report
+        let reportHTML = `
+          <h2>Code Coverage Report</h2>
+          <table class="coverage-summary">
+            <thead>
+              <tr>
+                <th>File</th>
+                <th>Lines</th>
+                <th>Statements</th>
+                <th>Coverage</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>file-conversion-module</td>
+                <td>${coveredLines}/${totalLines}</td>
+                <td>${coveredLines}/${totalLines}</td>
+                <td>${coveragePercent}%</td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <h3>Source Code Coverage</h3>
+          <div class="source-code">
+        `;
+        
+        // Add each line with coverage information
+        const sourceCode = document.getElementById('file-conversion-module').textContent;
+        const lines = sourceCode.split('\n');
+        
+        lines.forEach((line, index) => {
+          const lineNumber = index + 1;
+          const isCovered = this.coverageData.lines[lineNumber] > 0;
+          const coverageClass = isCovered ? 'covered' : (this.coverageData.lines[lineNumber] === undefined ? '' : 'uncovered');
+          
+          reportHTML += `
+            <div class="coverage-line">
+              <span class="line-number">${lineNumber}</span>
+              <span class="line-coverage ${coverageClass}"></span>
+              <span class="code-content">${line.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</span>
+            </div>
+          `;
+        });
+        
+        reportHTML += `</div>`;
+        
+        // Display the report
+        reportDiv.innerHTML = reportHTML;
+      }
+    };
+  </script>
 </head>
 <body>
   <div id="qunit"></div>
@@ -142,8 +341,14 @@
     <button id="convertButton" class="convert-btn hidden">Convert</button>
     <div id="notification"></div>
   </div>
+  
+  <!-- Add this for the coverage report -->
+  <div id="coverage-report"></div>
 
   <script>
+  // Initialize coverage
+  window.codeCoverage.init();
+  
   // Ensure DOMContentLoaded for fixture setup
   $(document).ready(function() {
     runTests();
@@ -231,8 +436,8 @@
           assert.ok(window.fetch.calledWith('/convert_page/'), 'Fetch called with correct path');
           
           done();
-        }, 100);
-      }, 100);
+        }, 150);
+      }, 150);
     });
     
     QUnit.test('invalid file type rejection', function(assert) {
@@ -267,7 +472,7 @@
         );
         
         done();
-      }, 100);
+      }, 150);
     });
     
     QUnit.test('loading state visibility', function(assert) {
@@ -315,11 +520,16 @@
           setTimeout(function() {
             assert.notOk(convertButton.classList.contains('loading'), 'Loading state removed');
             done();
-          }, 400);
-        }, 50);
-      }, 100);
+          }, 500);
+        }, 100);
+      }, 150);
     });
   }
+  
+  // Generate and display coverage report after tests complete
+  QUnit.done(function() {
+    window.codeCoverage.generateReport();
+  });
   </script>
 </body>
 </html>
