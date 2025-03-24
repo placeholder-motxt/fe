@@ -7,3 +7,4 @@ sonar-project.properties
 README.md
 pytest.ini
 babel.config.json
+requirements-dev.txt
