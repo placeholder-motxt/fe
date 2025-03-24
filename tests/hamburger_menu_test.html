@@ -158,45 +158,20 @@
 
     <script>
         // The code to test - fixed version that should pass all tests
-        const originalCode = `function initHamburgerMenu() {
-    const hamburgerButton = document.getElementById('hamburgerButton');
-    const dropdownMenu = document.getElementById('dropdownMenu');
-    
-    if (!hamburgerButton || !dropdownMenu) {
-        console.error('Hamburger menu elements not found');
-        return;
-    }
-    
-    // Toggle dropdown menu
-    hamburgerButton.addEventListener('click', function(event) {
-        event.stopPropagation();
-        dropdownMenu.classList.toggle('active');
-        hamburgerButton.classList.toggle('active');
-    });
-    
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function(event) {
-        if (!dropdownMenu.contains(event.target) && !hamburgerButton.contains(event.target)) {
-            dropdownMenu.classList.remove('active');
-            hamburgerButton.classList.remove('active');
+        let originalCode = ''; // Declaration moved here
+
+        // Fetch and prepare code coverage setup
+        async function initializeCodeCoverage() {
+            try {
+                const response = await fetch('../static/js/hamburger_menu.js');
+                originalCode = await response.text();
+            } catch (error) {
+                console.error('Failed to load source code:', error);
+                return false;
+            }
+            prepareCodeCoverage();
+            return true;
         }
-    });
-    
-    // Let clicks inside dropdown propagate normally
-    dropdownMenu.addEventListener('click', function(event) {
-        // No action needed - we want event propagation to continue
-    });
-}
-
-// Initialize on DOM content loaded
-document.addEventListener('DOMContentLoaded', function() {
-    initHamburgerMenu();
-});
-
-// Make sure this line is executed during testing
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { initHamburgerMenu };
-}`;
 
         // Force all lines to be covered
         function forceFullCoverage() {
@@ -507,8 +482,8 @@ if (typeof module !== 'undefined' && module.exports) {
         }
         
         // Initialize the page
-        window.addEventListener('load', function() {
-            prepareCodeCoverage();
+        window.addEventListener('load', async function() {
+            await initializeCodeCoverage();
             
             // Add event listeners to buttons
             document.getElementById('runTests').addEventListener('click', runAllTests);
