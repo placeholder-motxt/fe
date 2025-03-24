@@ -515,36 +515,38 @@
   function setupDelayedFetchAndTestLoading(assert, done) {
     // Modify fetch to be delayed
     window.fetch.restore();
-    sinon.stub(window, 'fetch').callsFake(function() {
-      return new Promise(function(resolve) {
-        setTimeout(function() {
-          resolve({
-            ok: true,
-            headers: { get: () => 'application/zip' },
-            blob: () => Promise.resolve(new Blob())
-          });
-        }, 300);
-      });
-    });
+    sinon.stub(window, 'fetch').callsFake(delayedFetchResponse);
     
     // Click the convert button
     const convertButton = document.getElementById('convertButton');
     convertButton.click();
     
-    // Check loading state immediately
-    setTimeout(checkLoadingState, 100);
+    // Check loading state after a short delay
+    setTimeout(() => checkLoadingState(assert, convertButton, done), 100);
+  }
+
+  function delayedFetchResponse() {
+    return new Promise(function(resolve) {
+      setTimeout(function() {
+        resolve({
+          ok: true,
+          headers: { get: () => 'application/zip' },
+          blob: () => Promise.resolve(new Blob())
+        });
+      }, 300);
+    });
+  }
+
+  function checkLoadingState(assert, convertButton, done) {
+    assert.ok(convertButton.classList.contains('loading'), 'Loading state active');
     
-    function checkLoadingState() {
-      assert.ok(convertButton.classList.contains('loading'), 'Loading state active');
-      
-      // Wait for loading to finish
-      setTimeout(checkLoadingStateRemoved, 500);
-    }
-    
-    function checkLoadingStateRemoved() {
-      assert.notOk(convertButton.classList.contains('loading'), 'Loading state removed');
-      done();
-    }
+    // Wait for loading to finish
+    setTimeout(() => finalizeLoadingTest(assert, convertButton, done), 500);
+  }
+
+  function finalizeLoadingTest(assert, convertButton, done) {
+    assert.notOk(convertButton.classList.contains('loading'), 'Loading state removed');
+    done();
   }
   // Generate and display coverage report after tests complete
   QUnit.done(function() {
