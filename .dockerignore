@@ -1,0 +1,9 @@
+env
+tests
+**/__pycache__
+**/tests.py
+db.sqlite3
+sonar-project.properties
+README.md
+pytest.ini
+babel.config.json
