@@ -160,3 +160,29 @@ footer img {
         rgba(var(--accent-rgb), 0.3)
     );
 }
+
+/* Confirmation Modal Styles */
+#confirmationModal {
+    transition: opacity 0.3s ease-in-out;
+}
+
+#confirmationModal .modal-content {
+    transform: scale(0.9);
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+}
+
+#confirmationModal:not(.hidden) .modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* Dark theme modal compatibility */
+[data-theme="dark"] #confirmationModal {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+[data-theme="dark"] #confirmationModal .modal-content {
+    background-color: var(--primary);
+    color: var(--text);
+}

@@ -13,11 +13,14 @@
         const fileInput = document.getElementById('fileInput');
         const fileListSection = document.getElementById('fileListSection');
         const convertBtn = document.getElementById('convertButton');
+        const confirmationModal = document.getElementById('confirmationModal');
+        const cancelConversionBtn = document.getElementById('cancelConversion');
+        const confirmConversionBtn = document.getElementById('confirmConversion');
 
-        if (!dropZone || !fileInput || !fileListSection || !convertBtn) {
+        if (!dropZone || !fileInput || !fileListSection || !convertBtn || !confirmationModal) {
             console.error('DOM elements not found - skipping initialization');
             return;
-          }
+        }
 
         const csrftoken = getCookie('csrftoken');
         let uploadedFiles = [];
@@ -31,7 +34,22 @@
             dropZone.addEventListener('dragover', handleDragOver);
             dropZone.addEventListener('dragleave', handleDragLeave);
             dropZone.addEventListener('drop', handleDrop);
-            convertBtn.addEventListener('click', handleConvert);
+            convertBtn.addEventListener('click', showConfirmationModal);
+            cancelConversionBtn.addEventListener('click', hideConfirmationModal);
+            confirmConversionBtn.addEventListener('click', handleConvert);
+        }
+
+        function showConfirmationModal(e) {
+            e.preventDefault();
+            if (uploadedFiles.length === 0) {
+                showNotification('Please select files to convert.', 'error');
+                return;
+            }
+            confirmationModal.classList.remove('hidden');
+        }
+
+        function hideConfirmationModal() {
+            confirmationModal.classList.add('hidden');
         }
 
         function handleFileListClick(e) {
@@ -127,10 +145,7 @@
         }
 
         async function handleConvert() {
-            if (uploadedFiles.length === 0) {
-                showNotification('Please select files to convert.', 'error');
-                return;
-            }
+            hideConfirmationModal();
             
             convertBtn.classList.add('loading');
             const formData = new FormData();
@@ -284,6 +299,8 @@
         fileUploader.showNotification = showNotification;
         fileUploader.handleErrorResponse = handleErrorResponse;
         fileUploader.handleSuccessfulConversion = handleSuccessfulConversion;
+        fileUploader.showConfirmationModal = showConfirmationModal;
+        fileUploader.hideConfirmationModal = hideConfirmationModal;
 
         if (typeof module !== 'undefined' && module.exports) {
             module.exports = fileUploader;
