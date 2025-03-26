@@ -11,3 +11,5 @@ pytest-django
 pytest-cov
 dj-database-url
 uvicorn
+django-prometheus
+prometheus_client
