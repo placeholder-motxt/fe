@@ -109,3 +109,54 @@ footer img {
     margin-right: 1000px;
     transition: margin-right 0.3s ease-in-out;
   }
+
+  .convert-btn {
+    position: relative;
+}
+
+.loading-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg, 
+        rgba(var(--primary-rgb), 0.2),
+        rgba(var(--secondary-rgb), 0.4),
+        rgba(var(--accent-rgb), 0.2)
+    );
+    background-size: 300% 100%;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+
+.convert-btn.loading .loading-bar {
+    animation: loading 1.5s infinite;
+    opacity: 1;
+}
+
+@keyframes loading {
+    0% { background-position: 0% 50% }
+    50% { background-position: 100% 50% }
+    100% { background-position: 0% 50% }
+}
+
+.btn-text {
+    transition: opacity 0.3s;
+}
+
+.convert-btn.loading .btn-text {
+    opacity: 0;
+}
+
+/* Dark theme compatibility */
+[data-theme="dark"] .loading-bar {
+    background: linear-gradient(
+        90deg, 
+        rgba(var(--primary-rgb), 0.3),
+        rgba(var(--secondary-rgb), 0.5),
+        rgba(var(--accent-rgb), 0.3)
+    );
+}
