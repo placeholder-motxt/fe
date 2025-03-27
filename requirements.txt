@@ -8,3 +8,5 @@ dj-static >=0.0.6,<0.5.0
 django-cors-headers >=4.7.0,<5.0.0
 dj-database-url >=2.3.0,<2.10.0
 uvicorn >=0.34.0,<0.40.0
+django-prometheus >=2.3.1
+prometheus_client >=0.21.1
