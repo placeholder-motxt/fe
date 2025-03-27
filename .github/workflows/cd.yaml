@@ -4,7 +4,10 @@ on:
   workflow_run:
     workflows: ["Update Version"]
     types: [completed]
-    branches: [main, staging]
+    branches:
+      - main
+      - staging
+      - dev
 
 jobs:
   build-and-push:
