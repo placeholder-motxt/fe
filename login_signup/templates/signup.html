@@ -1,0 +1,45 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOTXT - Sign Up</title>
+    <link rel="stylesheet" href="{% static 'css/login_signup.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+</head>
+<body>
+    <nav class="navbar">
+        <h1><a href="../">MoTxT</a></h1>
+    </nav>
+
+    <div class="container">
+        <form class="login-form">
+            <h2>Welcome</h2>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" required>
+            </div>
+            <div class="form-group">
+                <label>Retype Password</label>
+                <input type="password" required>
+            </div>
+            <button type="submit">Sign Up</button>
+            <div class="signup-link">
+                <p>Already have an account? <a href="/login">Login</a></p>
+            </div>
+        </form>
+        <img src="{% static 'images/lengkap.png' %}" alt="Decorative" class="bottom-left-img">
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+
+    <script src="{% static 'js/login_signup.js' %}"></script>
+
+</body>
+</html>
