@@ -2,12 +2,9 @@ name: Build and Deploy Docker Image
 
 on:
   workflow_run:
-    workflows: ["Update Version"]
+    workflows: [Update Version]
     types: [completed]
-    branches:
-      - main
-      - staging
-      - dev
+    branches: [main, staging, dev]
 
 jobs:
   build-and-push:
