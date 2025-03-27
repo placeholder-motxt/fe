@@ -59,6 +59,7 @@ jobs:
         run: |
           for BRANCH in $TARGET_BRANCHES; do
             echo "Pushing version update to $BRANCH branch..."
+            git fetch origin $BRANCH
             git push origin HEAD:$BRANCH
           done
 
