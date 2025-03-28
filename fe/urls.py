@@ -18,9 +18,15 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.static import serve
 from django.conf import settings
+from django_prometheus import exports
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include("landing_page.urls")),
-    re_path(r"^static/(?P<path>.*)$", serve, {"document_root": settings.STATIC_ROOT})
+    path('', include("login_signup.urls")),
+    path('', include("convert_page.urls")),
+    path('repository/', include("repository.urls")),
+    path('doc/', include('user_manual.urls')),
+    re_path(r"^static/(?P<path>.*)$", serve, {"document_root": settings.STATIC_ROOT}),
+    path("metrics/", exports.ExportToDjangoView, name="metrics"),
 ]

@@ -1,0 +1,322 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Manual</title>
+    <link
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-200 flex min-h-screen text-black">
+    <div class="bg-[#A7BBD2] w-64 h-screen text-black px-3 py-4 flex flex-col ml-20 font-[Consolas] justify-between">
+        <div>
+            <h1 class="text-white text-3xl font-bold mb-6 text-center">MoTxT User Manual</h1>
+            <nav class="flex flex-col space-y-2 overflow-y-auto max-h-full">
+                <div class="flex flex-col">
+                    <a href="#section1" class="px-4 py-2 bg-white rounded hover:bg-[#35BAA2] block">File Upload Rules</a>
+                </div>
+                <div class="flex flex-col">
+                    <a href="#section2" class="px-4 py-2 bg-white text-black rounded hover:bg-[#35BAA2] block">Valid input for class</a>
+                    <div id="sub2menu" class="submenu hidden flex flex-col space-y-1 pl-4 mt-1">
+                        <a href="#sub2-1" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Class name</a>
+                        <a href="#sub2-2" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Class attributes</a>
+                        <a href="#sub2-3" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Class methods</a>
+                        <a href="#sub2-4" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Relationships</a>
+                    </div>
+
+                </div>
+                <div class="flex flex-col">
+                    <a href="#section3" class="px-4 py-2 bg-white text-black rounded hover:bg-[#35BAA2] block">Valid input for sequence</a>
+                    <div id="sub3menu" class="submenu hidden flex flex-col space-y-1 pl-4 mt-1">
+                        <a href="#sub3-1" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Implicit Parameter</a>
+                        <a href="#sub3-2" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Name</a>
+                        <a href="#sub3-3" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">UI to Views Calls</a>
+                        <a href="#sub3-4" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Other Method Calls</a>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <a href="#section4" class="px-4 py-2 bg-white text-black rounded hover:bg-[#35BAA2] block">What not to expect</a>
+                </div>
+                <div>
+                    <a href="#section5" class="px-4 py-2 bg-white text-black rounded hover:bg-[#35BAA2] block">Errors that may occur</a>
+                </div>
+            </nav>
+        </div>
+        
+        <a href="/convert_page/" class="text-blue-500 px-4 py-2 bg-gray-800 rounded hover:bg-blue-200">Go Back to Convert</a>
+    </div>
+    <div id="mainContent" class="flex-1 p-10 mr-20 bg-white overflow-y-auto h-screen">
+        <h2 class="text-3xl font-bold">User Manual</h2>
+        <p class="mt-4">Welcome to the MoTxT User Manual. 
+            This guide will help you understand how to use the features
+            within MoTxT and what the system needs for you to get the best outcome.
+            Follow the sections below to understandmore.</p>
+        <p class="mt-4">In this section, we'll explain what MoTxT can parse so that you can 
+            get the most out of MoTxT convert feature.
+        </p>
+        <div class="flex-1 p-10">
+
+            <section id="section1" class="h-auto p-3 mb-10 break-words">
+                <h2 class="text-3xl font-bold">File Upload Rules</h2>
+                <div class="flex flex-col gap-2 pt-2">
+                    <p >Upload Requirements for <span class="font-bold">Class Diagram Files</span>:</p>
+                    <ul>
+                        <li class="list-inside list-disc">For each conversion, the user must upload exactly one class diagram file in the format [file-name].class.jet.</li>
+                        <li class="list-inside list-disc">The uploaded .class.jet file must conform to the format supported by JetUML. The easiest way to ensure this is by not modifying the file after saving it in JetUML.</li> 
+                    </ul>
+                </div>
+
+                <div class="flex flex-col gap-2 pt-2">
+                    <p>Upload Requirements for <span class="font-bold">Sequence Diagram Files</span>:</p>
+                    <ul>
+                        <li class="list-inside list-disc">The uploaded sequence diagram file must be in the format [file-name].sequence.jet.</li>
+                        <li class="list-inside list-disc">The uploaded .sequence.jet file must conform to the format supported by JetUML. The easiest way to ensure this is by not modifying the file after saving it in JetUML.</li>
+                    </ul>
+                </div>
+            </section>
+            <section id="section2" class="h-fit p-3 mb-10 flex flex-col gap-4">
+                <h2 class="text-3xl font-bold">Valid Inputs for Class</h2>
+                <section id="sub2-1">
+                    <div class="flex flex-col gap-2 pt-2">
+                        <h2 class="text-2xl font-bold ">Valid user string inputs</h2>
+                        <p class="font-bold">Class Name:</p>
+                        <ul>
+                            <li class="list-inside list-disc">Example:</li>
+                            <ul>
+                                <li class="list-inside list-disc indent-10">ClassName</li>
+                            </ul>
+                            <li class="list-inside list-disc">Alphabet Only</li>
+                            <li class="list-inside list-disc">Case sensitive</li>
+                            <li class="list-inside list-disc">Doesn’t contain leading, in-between, nor trailing whitespace(s)</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="sub2-2">
+                    <div class="flex flex-col gap-2 pt-2">
+                        <p class="font-bold">Class Attributes:</p>
+                        <ul>
+                            <li class="list-inside list-disc">Examples:</li>
+                            <ul>
+                                <li class="list-inside list-disc indent-10">- attributeNameOne: boolean</li>
+                                <li class="list-inside list-disc indent-10">+ attributeNameTwo: string</li>
+                                <li class="list-inside list-disc indent-10">+ attributeNameThree: integer</li>
+                                <li class="list-inside list-disc indent-10">+ attributeNameFour: list[string]</li>
+                            </ul>
+                            <li class="list-inside list-disc">Alphabet Only</li>
+                            <li class="list-inside list-disc">Case sensitive</li>
+                            <li class="list-inside list-disc">Doesn't contain leading, in-between, nor trailing whitespace(s) unless otherwise specified in this list</li>
+                            <li class="list-inside list-disc">'-' for private, '+' for public. Gap</li>
+                            <li class="list-inside list-disc">There is a space between visibility-symbol and attribute name</li>
+                            <li class="list-inside list-disc">There is a space between colon and datatype</li>
+                            <li class="list-inside list-disc">Accepted datatypes:</li>
+                            <ul>
+                                <li class="list-inside list-disc indent-10">boolean</li>
+                                <li class="list-inside list-disc indent-10">string</li>
+                                <li class="list-inside list-disc indent-10">integer</li>
+                                <li class="list-inside list-disc indent-10">list[other_datatype]</li>
+                            </ul>
+                            <li class="list-inside list-disc">Each attribute is separated by new line: \n</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="sub2-3">
+                    <div class="flex flex-col gap-2 pt-2">
+                        <p class="font-bold">Class Methods:</p>
+                        <ul>
+                            <li class="list-inside list-disc">Examples:</li>
+                            <ul>
+                                <li class="list-inside list-disc indent-10">- methodNameOne (paramOne: string, paramTwo: boolean): void</li>
+                                <li class="list-inside list-disc indent-10">+ methodNameTwo (): integer</li>
+                                <li class="list-inside list-disc indent-10">- methodNameThree (paramOne: list[string]): string</li>
+                                <li class="list-inside list-disc indent-10">+ methodNameFour (): list[boolean]</li>
+                            </ul>
+                            <li class="list-inside list-disc">Alphabet Only</li>
+                            <li class="list-inside list-disc">Case sensitive</li>
+                            <li class="list-inside list-disc">Doesn't contain leading, in-between, nor trailing whitespace(s) unless otherwise specified in this list</li>
+                            <li class="list-inside list-disc">'-' for private, '+' for public. Gap</li>
+                            <li class="list-inside list-disc">There is a space between visibility-symbol and attribute name</li>
+                            <li class="list-inside list-disc">There is a space between attribute name and open parentheses.</li>
+                            <li class="list-inside list-disc">There is a space between comma and next parameter name (if any)</li>
+                            <li class="list-inside list-disc">There is a space between colon and datatype</li>
+                            <li class="list-inside list-disc">Accepted parameter data types:</li>
+                            <ul>
+                                <li class="list-inside list-disc indent-10">boolean</li>
+                                <li class="list-inside list-disc indent-10">string</li>
+                                <li class="list-inside list-disc indent-10">integer</li>
+                                <li class="list-inside list-disc indent-10">list[other_datatype]</li>
+                            </ul>
+                            <li class="list-inside list-disc">Accepted return value data types:</li>
+                            <ul>
+                                <li class="list-inside list-disc indent-10">None,  in this case the final character of the line is close parentheses: ' ) ' (see method_name_1 in above example)</li>
+                                <li class="list-inside list-disc indent-10">boolean</li>
+                                <li class="list-inside list-disc indent-10">string</li>
+                                <li class="list-inside list-disc indent-10">integer</li>
+                                <li class="list-inside list-disc indent-10">list[other_datatype]</li>
+                            </ul>
+                            <li class="list-inside list-disc">Each attribute is separated by new line: \n</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="sub2-4">
+                    <div class="flex flex-col gap-2 pt-2">
+                        <p class="font-bold">Relationships:</p>
+                        <ul>
+                            <li class="list-inside list-disc">Use the 'Association' tool</li>
+                            <li class="list-inside list-disc">Accepted multiplicities:</li>
+                            <ul>
+                                <li class="list-inside list-disc indent-10">Start label: 1 or *</li>
+                                <li class="list-inside list-disc indent-10">Middle label: must be empty</li>
+                                <li class="list-inside list-disc indent-10">End label: 1 or *</li>
+                                <li class="list-inside list-disc indent-10">Directionality: must be ‘Unspecified’</li>
+                            </ul>
+                        </ul>
+                    </div>
+                </section>
+            </section>
+                
+            <section id="section3"  class="h-fit p-3 mb-10 flex flex-col gap-4">
+
+                <section id="sub3-1">
+                    <div class="flex flex-col gap-2 pt-2">
+                        <h2 class="text-3xl font-bold">Valid Inputs for Sequence</h2>
+                        <h2 class="text-2xl font-bold my-4">Valid user string inputs</h2>
+                        <p class="font-bold">Implicit Parameter (lifeline):</p>
+                        <ul>
+                            <li class="list-inside list-disc">There must at least be two lifelines in a sequence diagram. These two lifelines have names:</li>
+                            <ul>
+                                <li class="list-inside list-disc indent-10">:UI</li>
+                                <li class="list-inside list-disc indent-10">:views</li>
+                            </ul>
+                            <li class="list-inside list-disc">:UI must be the left most lifeline, while :views must be the second left most lifeline. There cannot be more than one lifeline with the name :UI nor :views</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="sub3-2">
+                    <div class="flex flex-col gap-2 pt-2">
+                        <p class="font-bold">Name (other than :UI and :views):</p>
+                        
+                        <ul>
+                            <li class="list-inside list-disc">Examples (from left to right):</li>
+                            <ul>
+                                <li class="list-inside list-disc indent-10">:UI</li>
+                                <li class="list-inside list-disc indent-10">:views</li>
+                                <li class="list-inside list-disc indent-10">instanceOne:ClassOne</li>
+                                <li class="list-inside list-disc indent-10">instanceTwo:ClassTwo</li>
+                            </ul>
+
+                            <li class="list-inside list-disc">Rules for instance name and class name follow the same rules as Class Name.</li>
+                            <li class="list-inside list-disc">Doesn't contain leading, in-between, nor trailing whitespace(s)</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="sub3-3">
+                    <div class="flex flex-col gap-2 pt-2">
+                        <p class="font-bold">UI to Views Calls:</p>
+                        <ul>
+                            <li class="list-inside list-disc">Views call is a method call made from :UI to :views</li>
+                            <li class="list-inside list-disc">Signal must be unchecked</li>
+                            <li class="list-inside list-disc">Examples:</li>
+                            <ul>
+                                <li class="list-inside list-disc indent-10">methodNameOne (argOne, argTwo)</li>
+                                <li class="list-inside list-disc indent-10">methodNameTwo (argOne)</li>
+                                <li class="list-inside list-disc indent-10">methodNameThree ()</li>
+                                <li class="list-inside list-disc indent-10">[POST] methodNameFour (argOne)</li>
+                            </ul>
+                            <li class="list-inside list-disc">Alphabet Only</li>
+                            <li class="list-inside list-disc">Case sensitive</li>
+                            <li class="list-inside list-disc">Doesn't contain leading, in-between, nor trailing whitespace(s) unless otherwise specified in this list</li>
+                            <li class="list-inside list-disc">'-' for private, '+' for public. Gap</li>
+                            <li class="list-inside list-disc">There is a space between visibility-symbol and attribute name</li>
+                            <li class="list-inside list-disc">There is a space between attribute name and open parentheses.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id ="sub3-4">
+                    <div class="flex flex-col gap-2 pt-2">
+                        <p class="font-bold">Other Method Calls:</p>
+                        <ul>
+                            <li class="list-inside list-disc">Rules for other calls OTHER THAN those made from :UI to :views</li>
+                            <li class="list-inside list-disc">Signal must be unchecked</li>
+                            <li class="list-inside list-disc">More examples:</li>
+                            <ul>
+                                <li class="list-inside list-disc indent-10">methodNameOne (argOne, argTwo)</li>
+                                <li class="list-inside list-disc indent-10">method_nameOne (argOne)</li>
+                                <li class="list-inside list-disc indent-10">method_nameOne ()</li>
+                                <li class="list-inside list-disc indent-10">[condition] method_nameFour (argOne)</li>
+                                <li class="list-inside list-disc indent-10">method_nameFive () -> returnVar</li>
+                            </ul>
+                            <li class="list-inside list-disc">Alphabet Only</li>
+                            <li class="list-inside list-disc">Case sensitive</li>
+                            <li class="list-inside list-disc">Doesn't contain leading, in-between, nor trailing whitespace(s) unless otherwise specified in this list</li>
+                            <li class="list-inside list-disc">There is a space between attribute name and open parentheses.</li>
+                            <li class="list-inside list-disc">There is a space between comma and next argument (if any)</li>
+                            <li class="list-inside list-disc">If using [condition], there is a space between close square brackets and method name.</li>
+                            <li class="list-inside list-disc">If using [condition], the condition inside the square brackets must be readable by the programming language used by the framework the diagram is being converted into.</li>
+                            <li class="list-inside list-disc">-&gt; returnVar can only be used for self calls.</li>
+                            <li class="list-inside list-disc">If using -&gt; returnVar, returnVar follows the same rules as Class Name</li>
+                            <li class="list-inside list-disc">If using -&gt; returnVar, there is a space between close parentheses and hyphen ( ‘-’ )</li>
+                            <li class="list-inside list-disc">If using -&gt; returnVar, there is a space between more-than ( ‘&gt;’ ) and returnVar name.</li>
+
+                        </ul>
+                    </div>
+                </section>
+            </section>
+
+            <section id="section4" class="h-auto mb-10 break-words">
+                <h2 class="text-3xl font-bold">What not to expect</h2>
+                <p class="mt-4">MoTxT doesn't facilitate the creation of the diagram. 
+                    Diagram must be provided by the user, preferably by using JetUML 
+                    which is you can download 
+                    <a 
+                    href="https://www.jetuml.org/docs/download.html" 
+                    class="text-[#4BDEC3]">here</a></p>
+            </section>
+
+            <section id="section5" class="h-screen mb-10 break-words">
+                <h2 class="text-3xl font-bold">Errors that May Occur</h2>
+                <p class="my-4">This is a compilation of errors that you might encounter in your 
+                    exploration of MoTxT</p>
+                <div class="flex flex-col gap-2 pt-2">
+                    <div>
+                        <p class="font-bold">'Only .JET files are allowed'</p>
+                        <p>This is caused by the file type you uploaded not in the form of .JET. You 
+                            should make sure whether you submit the right file or not</p>
+                    </div>
+                    <div>
+                        <p class="font-bold">'Please select a file to convert.'</p>
+                        <p>This is caused by submiting a request to convert without actually attaching
+                            any files. You should try attaching a file</p>
+                    </div>
+                    <div>
+                        <p class="font-bold">'Only one .class.jet file is allowed!'</p>
+                        <p>This is caused by submiting multiple files of .class.jet or UML class diagrams. 
+                            Please submit only one</p>
+                    </div>
+                    <div>
+                        <p class="font-bold">'Error code 500'</p>
+                        <p>The content of the file you submitted disobeys the rule mentioned above. 
+                            Please make sure the diagram you exported from JetUML is correct based on the 
+                            rules above</p>
+                    </div>
+                    <div>
+                        <p class="font-bold">'Error code 422'</p>
+                        <p>The content of the file you submitted is not in the form of JSON. 
+                            You should make sure the file you submitted contains a JSON format</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <script src="{% static 'js/usermanual.js' %}"></script>
+</body>
+</html>

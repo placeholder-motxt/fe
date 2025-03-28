@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MoTxT - Convert Diagrams to Code</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -43,7 +43,7 @@
 <body>
     <div class="relative w-full min-h-screen flex flex-col items-center justify-center">
         <!-- <div class="absolute top-0 left-0 w-full h-1/3 bg-white rounded-b-[50%]" style="position: absolute; top: 0; left: 0; width: 100%; height: 33%; background-color: white; border-bottom-left-radius: 50%; border-bottom-right-radius: 50%;"> -->
-        <img src="{% static 'image/Group 2.png' %}" alt="Top Image" style="position: absolute; top: 0; right: 0;">
+        <img src="{% static 'image/Group 2.png' %}" alt="Top" style="position: absolute; top: 0; right: 0;">
         <!-- </div> -->
         <div class="h-10 md:h-40"></div>
         <div class="container md:mx-16 flex flex-col md:flex-row items-center justify-between relative md:pt-16 md:px-8 pb-0 pt-4">
@@ -57,10 +57,11 @@
                     &nbsp;&nbsp;&nbsp; > Code less, Create more!<br>
                     <strong>}</strong>
                 </p>
-                <button class="mt-6 px-6 py-3 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600" style=" background: rgba(74, 221, 195, 1); border-radius: 10px; overflow: hidden; font-family: 'Poppins', sans-serif; font-weight: bold;">Start Converting!</button>
+
+                <a href="/convert_page/"><button class="mt-6 px-6 py-3 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600" style=" background: rgba(74, 221, 195, 1); border-radius: 10px; overflow: hidden; font-family: 'Poppins', sans-serif; font-weight: bold;">Start Converting!</button></a>
                 
             </div>
-            <div class="w-full md:w-45 mt-8 md:mt-0 flex justify-end">
+            <div class="w-full md:w-180 mt-8 md:mt-0 flex justify-end">
                 <svg width="740" height="505" viewBox="0 0 740 505" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M56.1884 116.579V447.238C56.1884 455.375 62.7848 461.972 70.922 461.972H602.666C610.804 461.972 617.4 455.375 617.4 447.238V116.579C617.4 108.442 610.804 101.845 602.666 101.845H70.9219C62.7848 101.845 56.1884 108.442 56.1884 116.579Z" fill="#495252"/>
                     <path d="M0 479.335V497.506C0 501.575 3.29818 504.873 7.36674 504.873H637.935C642.004 504.873 645.302 501.575 645.302 497.506V479.335C645.302 475.266 642.004 471.968 637.935 471.968H7.36679C3.29822 471.968 0 475.266 0 479.335Z" fill="#8FAAC8"/>
@@ -99,9 +100,7 @@
             <span class="text-gray-400 text-xl md:text-3xl">&#9660;</span>
         </div>
         
-    <div>
-
-        
+    <div>     
             <div style="height: 150px; 
             /* background-color: #B4E2DC; */
             "></div>
@@ -126,49 +125,8 @@
             </div>
             <div style="height: 100px;"></div>
         </div>
-        <!-- <div style="width: 100vw;height: 150px; background-color: #B4E2DC;"></div>
-
-    <div>
-        <div style="height: 100px;"></div>
-        <h2 class="text-5xl font-bold text-[#37BAD7] mb-16 ml-4" style="font-family: 'Courier New', Courier, monospace;">// OUR VALUES</h2>
-        <div class="max-w-5xl mx-auto">
-            <!-- Header 
-            
     
-            <!-- Content 
-            <div class="mt-6 mx-10 grid md:grid-cols-2 gap-8">
-                <!-- Left Column 
-                <div>
-                    <h2 class="text-3xl font-bold italic font-[Consolas]">SKIP IT!</h2>
-                    <p class="mt-2 text-gray-700">
-                        Let MoTxT do the heavy lifting! <br>
-                        <span>Transform your ideas into reality by modeling your application, 
-                        and watch as MoTxT <span class="font-bold">generates clean, ready-to-use code</span> for you. 
-                        Spend less time debugging and more time designing innovative solutions that truly matter.</span>
-                    </p>
     
-                    <h3 class="mt-6 text-3xl font-bold italic font-[Consolas]">SMARTER NOT HARDER</h3>
-                    <p class="mt-2 text-gray-700">
-                        Join a new era of development where efficiency meets creativity. MoTxT empowers you to build faster, 
-                        collaborate globally, and bring your vision to life without the hassle. Say goodbye to tedious coding 
-                        and hello to seamless innovation!
-                    </p>
-                </div>
-    
-                <!-- Right Column 
-                <div>
-                    <h3 class="text-3xl font-bold ">Why code at all?</h3>
-                    <p class="mt-2 text-gray-700">
-                        With MoTxT, turn your UML diagrams into fully functional web applications in minutes. From backend 
-                        logic to front-end interfaces, we’ve got you covered. Focus on what you do best—designing exceptional 
-                        applications—and leave the repetitive coding to us.
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div style="height: 100px;"></div>
-        <div style="width: 100vw;height: 150px; background-color: #B4E2DC; z-index: -1;"></div>
-    </div> -->
 
     <!-- Our Features -->
     <div style="height: 100px;"></div>
@@ -235,6 +193,47 @@
     <img src="{% static 'image/Frame 17.png' %}" 
      alt="Bottom Image" 
     class="absolute bottom-0 left-0 w-1/2 sm:w-1/2 md:w-1/6" style="z-index: 0;"/>
+
+
 </body>
+<script>
+    const modal = document.getElementById('hs-scale-animation-modal');
+    const modalContent = document.getElementById('crudModalContent');
+
+    function toggleModal() {
+        const modal = document.getElementById('hs-scale-animation-modal');
+        const modalContent = document.getElementById('crudModalContent');
+
+        if (modal.classList.contains('hidden')) {
+            modal.classList.remove('hidden'); 
+            setTimeout(() => {
+                modalContent.classList.remove('opacity-0', 'scale-95');
+                modalContent.classList.add('opacity-100', 'scale-100');
+            }, 50); 
+        } else {
+            modalContent.classList.remove('opacity-100', 'scale-100');
+            modalContent.classList.add('opacity-0', 'scale-95');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 150); 
+        }
+    }
+
+    function hideModal() {
+        const modal = document.getElementById('hs-scale-animation-modal');
+        const modalContent = document.getElementById('crudModalContent');
+
+        modalContent.classList.remove('opacity-100', 'scale-100');
+        modalContent.classList.add('opacity-0', 'scale-95');
+
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 150); 
+    }
+
+    document.getElementById("cancelButton").addEventListener("click", hideModal);
+    document.getElementById("closeModalBtn").addEventListener("click", hideModal);
+</script>
 
 </html>
