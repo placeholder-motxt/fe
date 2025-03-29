@@ -45,6 +45,29 @@
           showNotification("Please select files to convert.", "error")
           return
         }
+  
+        // Get project name
+        const projectName = document.getElementById("projectName").value.trim()
+  
+        // Validate project name is not empty
+        if (!projectName) {
+          showNotification("Please enter a project name.", "error")
+          return
+        }
+  
+        // Validate project name format (alphanumeric and underscore only)
+        const projectNameRegex = /^[a-zA-Z0-9_]+$/
+        if (!projectNameRegex.test(projectName)) {
+          showNotification("Project name can only contain letters, numbers, and underscores.", "error")
+          return
+        }
+  
+        // Update confirmation message with project name
+        const confirmationMessage = document.getElementById("confirmationMessage")
+        if (confirmationMessage) {
+          confirmationMessage.textContent = `Are you sure you want to create a project named "${projectName}" in Django?`
+        }
+  
         confirmationModal.classList.remove("hidden")
       }
   
@@ -155,6 +178,10 @@
   
         const formData = new FormData()
         uploadedFiles.forEach((file) => formData.append("files", file))
+  
+        // Add project name to form data
+        const projectName = document.getElementById("projectName").value.trim()
+        formData.append("project_name", projectName)
   
         try {
           const response = await fetch("/convert_page/", {
