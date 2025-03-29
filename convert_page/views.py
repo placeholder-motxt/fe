@@ -1,6 +1,7 @@
 # views.py
 import json
 import os
+import re
 import requests
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import render
@@ -14,6 +15,15 @@ def convert_page(request):
     if request.method == 'POST':
         try:
             files = request.FILES.getlist('files')
+            project_name = request.POST.get('project_name', '').strip()
+
+            # Validate project name
+            if not project_name:
+                return JsonResponse({'error': 'Project name is required'}, status=400)
+            
+            # Validate project name format (alphanumeric and underscore only)
+            if not re.match(r'^[a-zA-Z0-9_]+$', project_name):
+                return JsonResponse({'error': 'Project name can only contain letters, numbers, and underscores'}, status=400)
 
             # File validation
             if not files:
@@ -23,7 +33,11 @@ def convert_page(request):
             if len(filenames) != len(set(filenames)):
                 return JsonResponse({'error': 'Duplicate filenames are not allowed'}, status=400)
 
-            processed_data = {'filename': filenames, 'content': []}
+            processed_data = {
+                'filename': filenames, 
+                'content': [],
+                'project_name': project_name
+            }
 
             for file in files:
                 if not file.name.lower().endswith(('.class.jet', '.sequence.jet')):
@@ -32,8 +46,6 @@ def convert_page(request):
                 try:
                     content = file.read().decode('utf-8')
                     processed_data['content'].append([content])
-                except json.JSONDecodeError:
-                    return JsonResponse({'error': f'Invalid JSON content in file: {file.name}'}, status=400)
                 except UnicodeDecodeError:
                     return JsonResponse({'error': f'Invalid UTF-8 encoding in file: {file.name}'}, status=500)
 
@@ -75,3 +87,4 @@ def convert_page(request):
             return JsonResponse({'error': 'Internal server error'}, status=500)
 
     return render(request, 'convert_page.html')
+
