@@ -19,12 +19,12 @@
           <h2 class="text-xl font-bold mb-4">Confirm File Conversion</h2>
           <p class="mb-4">Are you sure you want to convert these files?</p>
           <div class="flex justify-between">
-              <button id="cancelConversion" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">
+                <button id="cancelConversion" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 w-24">
                   Cancel
-              </button>
-              <button id="confirmConversion" class="bg-[var(--button)] text-white px-4 py-2 rounded hover:bg-[var(--button-hover)]">
+                </button>
+                <button id="confirmConversion" class="bg-[var(--button)] text-white px-4 py-2 rounded hover:bg-[var(--button-hover)] w-24">
                   Confirm
-              </button>
+                </button>
           </div>
       </div>
   </div>
@@ -74,7 +74,7 @@
         {% csrf_token %}
       </form>
       
-      <div class="container max-w-lg w-full p-4 rounded-2xl container-shadow" style="background-color: var(--primary);">
+      <div class="container max-w-lg w-full p-4 rounded-2xl" style="background-color: var(--background);">
         <h1 class="text-center text-3xl font-semibold mb-6" style="color: var(--text);">Convert Your Files</h1>
         
         <!-- Drop Zone -->
