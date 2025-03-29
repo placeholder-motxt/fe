@@ -1,31 +1,6 @@
 {
-    "name": "fe",
-    "version": "1.0.0",
-    "scripts": {
-        "test": "jest",
-        "test:watch": "jest --watch"
-    },
-    "devDependencies": {
-        "@babel/preset-env": "^7.26.9",
-        "@types/jest": "^29.5.14",
-        "babel-jest": "^29.7.0",
-        "jest": "^29.7.0",
-        "jest-environment-jsdom": "^29.7.0",
-        "node-fetch": "^3.3.2"
-    },
-    "jest": {
-        "testEnvironment": "jsdom",
-        "setupFilesAfterEnv": [
-            "<rootDir>/tests/setupTests.js"
-        ],
-        "moduleNameMapper": {
-            "\\.(css|svg)$": "<rootDir>/tests/styleMock.js"
-        },
-        "transform": {
-            "^.+\\.js$": "babel-jest"
-        },
-        "transformIgnorePatterns": [
-            "/node_modules/(?!(node-fetch|data-uri-to-buffer)/)"
-        ]
-    }
+  "devDependencies": {
+    "nyc": "^17.1.0",
+    "qunit": "^2.24.1"
+  }
 }
