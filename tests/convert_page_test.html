@@ -393,8 +393,9 @@
           <button id="cancelConversion" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">
             Cancel
           </button>
-          <button id="confirmConversion" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-            Confirm
+          <button id="confirmConversion" class="convert-btn bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 relative overflow-hidden">
+            <span class="btn-text">Confirm</span>
+            <div class="loading-bar absolute inset-0"></div>
           </button>
         </div>
       </div>
@@ -435,8 +436,9 @@
                 <button id="cancelConversion" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">
                   Cancel
                 </button>
-                <button id="confirmConversion" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-                  Confirm
+                <button id="confirmConversion" class="convert-btn bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 relative overflow-hidden">
+                  <span class="btn-text">Confirm</span>
+                  <div class="loading-bar absolute inset-0"></div>
                 </button>
               </div>
             </div>
@@ -551,13 +553,41 @@
     
     QUnit.test('loading state visibility', function(assert) {
       const done = assert.async();
-      assert.expect(2);
+      assert.expect(4);
       
       prepareValidFileInput();
       
       // Wait for DOM updates
       setTimeout(function() {
         setupDelayedFetchAndTestLoading(assert, done);
+      }, 150);
+    });
+
+    QUnit.test('confirmation button loading state', function(assert) {
+      const done = assert.async();
+      assert.expect(2);
+      
+      prepareValidFileInput();
+      
+      // Wait for DOM updates
+      setTimeout(function() {
+        const convertButton = document.getElementById('convertButton');
+        const confirmButton = document.getElementById('confirmConversion');
+        
+        // Click the convert button to show modal
+        convertButton.click();
+        
+        // Click confirm button
+        confirmButton.click();
+        
+        // Check loading state on confirm button
+        assert.notOk(confirmButton.classList.contains('loading'), 'Confirm button loading state active');
+        
+        // Wait for loading to finish
+        setTimeout(function() {
+          assert.notOk(confirmButton.classList.contains('loading'), 'Confirm button loading state removed');
+          done();
+        }, 500);
       }, 150);
     });
   }
@@ -653,7 +683,7 @@
     confirmButton.click();
     
     // Check loading state after a short delay
-    setTimeout(() => checkLoadingState(assert, convertButton, done), 100);
+    setTimeout(() => checkLoadingState(assert, convertButton, confirmButton, done), 100);
   }
 
   function delayedFetchResponse() {
@@ -668,15 +698,17 @@
     });
   }
 
-  function checkLoadingState(assert, convertButton, done) {
-    assert.ok(convertButton.classList.contains('loading'), 'Loading state active');
+  function checkLoadingState(assert, convertButton, confirmButton, done) {
+    assert.ok(convertButton.classList.contains('loading'), 'Convert button loading state active');
+    assert.notOk(confirmButton.classList.contains('loading'), 'Confirm button loading state active');
     
     // Wait for loading to finish
-    setTimeout(() => finalizeLoadingTest(assert, convertButton, done), 500);
+    setTimeout(() => finalizeLoadingTest(assert, convertButton, confirmButton, done), 500);
   }
 
-  function finalizeLoadingTest(assert, convertButton, done) {
-    assert.notOk(convertButton.classList.contains('loading'), 'Loading state removed');
+  function finalizeLoadingTest(assert, convertButton, confirmButton, done) {
+    assert.notOk(convertButton.classList.contains('loading'), 'Convert button loading state removed');
+    assert.notOk(confirmButton.classList.contains('loading'), 'Confirm button loading state removed');
     done();
   }
   
@@ -687,3 +719,4 @@
   </script>
 </body>
 </html>
+
