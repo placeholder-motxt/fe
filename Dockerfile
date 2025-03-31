@@ -29,4 +29,4 @@ RUN chown -R django:django /app
 USER django
 
 # Run application
-CMD ["gunicorn", "fe.wsgi:application"]
+CMD ["gunicorn","fe.wsgi:application"]

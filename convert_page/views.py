@@ -5,27 +5,12 @@ import random
 import requests
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import render
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse
+from .metrics import REQUEST_LATENCY, http_requests_total
 import logging
 import time
-from prometheus_client import Counter, Histogram, start_http_server
 
 logger = logging.getLogger(__name__)
-
-http_requests_total = Counter(
-    'http_requests_101_total', 
-    'Total number of HTTP requests received', 
-    ['method']  # Labels for request method type
-)
-
-
-REQUEST_LATENCY = Histogram(
-    'http_request_latency_seconds', 
-    'Histogram of HTTP request durations in seconds',
-    ['method']  # You can add labels, such as HTTP method (GET, POST, etc.)
-)
-
-start_http_server(8002) # sanity check
 
 @require_http_methods(["GET", "POST"])
 def convert_page(request):
