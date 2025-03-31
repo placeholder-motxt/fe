@@ -7,11 +7,14 @@ from django.views.decorators.http import require_http_methods
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from .metrics import REQUEST_LATENCY, http_requests_total
+from django_ratelimit.decorators import ratelimit
 import logging
 import time
 
 logger = logging.getLogger(__name__)
 
+
+@ratelimit(key='ip', rate='5/m', method='POST', block=True)
 @require_http_methods(["GET", "POST"])
 def convert_page(request):
     if request.method == 'POST':
