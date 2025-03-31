@@ -22,7 +22,7 @@ RUN pip install -r /requirements.txt
 
 # Copy project code
 COPY . .
-RUN python manage.py collectstatic --noinput --clear
+RUN python manage.py collectstatic --noinput
 
 # Run as non-root user
 RUN chown -R django:django /app
