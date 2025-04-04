@@ -21,6 +21,7 @@
 
     <header class="flex justify-between items-center p-4 bg-white shadow-lg" style="height: 63px; background-color: var(--secondary);">
       <!-- Hamburger Menu -->
+       
       <div class="hamburger-menu">
           <button id="hamburgerButton" class="hamburger-button" aria-label="Navigation menu">
               <div class="hamburger-icon">
@@ -38,16 +39,15 @@
       
       <!-- Light Switch -->
       <div class="flex flex-col justify-center top-0 right-0 mt-4 mr-4 absolute">
+        <label class="switch">
           <input
               type="checkbox"
               name="light-switch"
               id="light-switch"
               class="light-switch sr-only"
           />
-          <label class="relative cursor-pointer p-2" for="light-switch">
-              <div id="light-switch-icon"></div>
-              <span class="sr-only">Switch to light / dark version</span>
-          </label>
+          <span class="slider round" id="slider"></span>
+        </label>
       </div>
   </header>
   
@@ -88,7 +88,6 @@
             <span class="btn-text">Convert</span>
             <div class="loading-bar absolute inset-0"></div>
         </button>
-
         <!-- Help Links -->
         <div class="text-center space-y-4 mt-6" >
           <div style="color: var(--text)">
