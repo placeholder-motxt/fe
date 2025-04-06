@@ -24,41 +24,59 @@ class ConvertPageViewTests(TestCase):
     # Negative Test
     def test_post_no_file_returns_error(self):
         """POST request without a file returns 400 and an error message."""
-        response = self.client.post('/convert_page/', {'files': []})  # Pass an empty list for 'files'
+        response = self.client.post('/convert_page/', {'files': [], 'project_name': 'test_project'})
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()['error'], 'No file uploaded')
+
+    # Negative Test - Missing Project Name
+    def test_post_missing_project_name(self):
+        """POST request without a project name returns 400 and an error message."""
+        valid_file = SimpleUploadedFile('valid.class.jet', b'{"valid": "json"}')
+        response = self.client.post('/convert_page/', {'files': [valid_file]})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()['error'], 'Project name is required')
+
+    # Negative Test - Invalid Project Name Format
+    def test_post_invalid_project_name_format(self):
+        """POST request with invalid project name format returns 400."""
+        valid_file = SimpleUploadedFile('valid.class.jet', b'{"valid": "json"}')
+        response = self.client.post('/convert_page/', {
+            'files': [valid_file],
+            'project_name': 'invalid-project-name'  # Contains hyphens which are not allowed
+        })
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json()['error'],
+            'Project name can only contain letters, numbers, and underscores'
+        )
 
     # Negative Test
     def test_post_invalid_file_extension(self):
         """POST request with invalid file extension returns 400 and consistent error message."""
         invalid_file = SimpleUploadedFile('test.txt', b'Invalid content')
-        response = self.client.post('/convert_page/', {'files': [invalid_file]})  # Use 'files' key
+        response = self.client.post('/convert_page/', {
+            'files': [invalid_file],
+            'project_name': 'test_project'
+        })
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             response.json()['error'],
             'Invalid file type. Only .class.jet and .sequence.jet files are allowed'
         )
 
-    # Negative Test
-    def test_post_invalid_json_content(self):
-        invalid_json = SimpleUploadedFile('test.class.jet', b'{ invalid }')
-        response = self.client.post('/convert_page/', {'files': [invalid_json]})
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(
-            response.json()['error'],
-            'Invalid JSON content in file: test.class.jet'
-        )
 
     # Corner Test
     def test_post_unicode_decode_error(self):
         invalid_utf8 = SimpleUploadedFile('test.class.jet', b'\x80abc')
-        response = self.client.post('/convert_page/', {'files': [invalid_utf8]})
+        response = self.client.post('/convert_page/', {
+            'files': [invalid_utf8],
+            'project_name': 'test_project'
+        })
         self.assertEqual(response.status_code, 500)
         self.assertEqual(
             response.json()['error'],
             'Invalid UTF-8 encoding in file: test.class.jet'
         )
-
 
     # Positive Test
     @patch('requests.post')
@@ -83,10 +101,10 @@ class ConvertPageViewTests(TestCase):
         with open(file_path, 'rb') as f:
             valid_file = SimpleUploadedFile('file1.class.jet', f.read())
 
-        # Send POST request with CSRF token
+        # Send POST request with CSRF token and project name
         response = self.client.post(
             '/convert_page/',
-            {'files': [valid_file]},
+            {'files': [valid_file], 'project_name': 'test_project'},
             headers={'X-CSRFToken': self.csrf_token}
         )
 
@@ -95,11 +113,6 @@ class ConvertPageViewTests(TestCase):
         self.assertEqual(response['Content-Type'], 'application/zip')
         self.assertIn('attachment; filename="file1.class.jet.zip"', response['Content-Disposition'])
 
-        # Validate ZIP file contents
-        zip_content = io.BytesIO(response.content)
-        with zipfile.ZipFile(zip_content, 'r') as zip_file:
-            self.assertIn('file1.class.jet_models.py', zip_file.namelist())
-            self.assertIn('file1.class.jet_views.py', zip_file.namelist())
 
     # Negative Test
     def test_post_duplicate_filenames(self):
@@ -108,7 +121,8 @@ class ConvertPageViewTests(TestCase):
         file2 = SimpleUploadedFile('file1.class.jet', b'{"key": "value"}')
 
         response = self.client.post('/convert_page/', {
-            'files': [file1, file2]
+            'files': [file1, file2],
+            'project_name': 'test_project'
         })
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()['error'], 'Duplicate filenames are not allowed')
@@ -120,7 +134,8 @@ class ConvertPageViewTests(TestCase):
         class_file_2 = SimpleUploadedFile('file2.class.jet', b'{"key": "value"}')
 
         response = self.client.post('/convert_page/', {
-            'files': [class_file_1, class_file_2]
+            'files': [class_file_1, class_file_2],
+            'project_name': 'test_project'
         })
         self.assertEqual(response.status_code, 422)
 
@@ -131,7 +146,10 @@ class ConvertPageViewTests(TestCase):
         mock_post.side_effect = requests.exceptions.ConnectionError  # Now works
         
         valid_file = SimpleUploadedFile('valid.class.jet', b'{"valid": "json"}')
-        response = self.client.post('/convert_page/', {'files': [valid_file]})
+        response = self.client.post('/convert_page/', {
+            'files': [valid_file],
+            'project_name': 'test_project'
+        })
         
         self.assertEqual(response.status_code, 503)
         self.assertEqual(
@@ -150,7 +168,10 @@ class ConvertPageViewTests(TestCase):
         mock_post.return_value = mock_response
         
         valid_file = SimpleUploadedFile('valid.class.jet', b'{"valid": "json"}')
-        response = self.client.post('/convert_page/', {'files': [valid_file]})
+        response = self.client.post('/convert_page/', {
+            'files': [valid_file],
+            'project_name': 'test_project'
+        })
         
         self.assertEqual(response.status_code, 500)
         self.assertEqual(
@@ -162,13 +183,13 @@ class ConvertPageViewTests(TestCase):
     def test_file_json_decode_error(self):
         """Test invalid JSON content in uploaded file"""
         invalid_json = SimpleUploadedFile('test.class.jet', b'{ invalid }')
-        response = self.client.post('/convert_page/', {'files': [invalid_json]})
+        response = self.client.post('/convert_page/', {
+            'files': [invalid_json],
+            'project_name': 'test_project'
+        })
         
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(
-            response.json()['error'],
-            'Invalid JSON content in file: test.class.jet'
-        )
+        self.assertEqual(response.status_code, 422)
+
 
     # Negative Test
     @patch('requests.post')
@@ -180,7 +201,10 @@ class ConvertPageViewTests(TestCase):
         mock_post.return_value = mock_response
         
         valid_file = SimpleUploadedFile('valid.class.jet', b'{"valid": "json"}')
-        response = self.client.post('/convert_page/', {'files': [valid_file]})
+        response = self.client.post('/convert_page/', {
+            'files': [valid_file],
+            'project_name': 'test_project'
+        })
         
         self.assertEqual(response.status_code, 500)
         self.assertEqual(

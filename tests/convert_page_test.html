@@ -140,39 +140,100 @@
       convertButton.addEventListener('click', async function() {
         const fileInput = document.getElementById('fileInput');
         const notification = document.getElementById('notification');
+        const confirmationModal = document.getElementById('confirmationModal');
+        const projectName = document.getElementById('projectName').value.trim();
         
-        // Show loading state
-        convertButton.classList.add('loading');
+        // Check if files are selected
+        if (fileInput.files.length === 0) {
+          notification.textContent = 'Please select files to convert.';
+          return;
+        }
         
-        try {
-          // Create form data
-          const formData = new FormData();
-          Array.from(fileInput.files).forEach(file => {
-            formData.append('files', file);
-          });
-          
-          // Send to server
-          const response = await fetch('/convert_page/', {
-            method: 'POST',
-            body: formData
-          });
-          
-          if (response.ok) {
-            // Handle success
-            notification.textContent = 'Files converted and downloaded successfully!';
-            
-            // Download logic would go here in a real implementation
-          } else {
-            notification.textContent = 'Error converting files. Please try again.';
-          }
-        } catch (error) {
-          notification.textContent = 'An error occurred during conversion.';
-          console.error(error);
-        } finally {
-          // Remove loading state
-          convertButton.classList.remove('loading');
+        // Check if project name is entered
+        if (!projectName) {
+          notification.textContent = 'Please enter a project name.';
+          return;
+        }
+        
+        // Validate project name format (alphanumeric and underscore only)
+        const projectNameRegex = /^[a-zA-Z0-9_]+$/;
+        if (!projectNameRegex.test(projectName)) {
+          notification.textContent = 'Project name can only contain letters, numbers, and underscores.';
+          return;
+        }
+        
+        // Update confirmation message
+        const confirmationMessage = document.getElementById('confirmationMessage');
+        confirmationMessage.textContent = `Are you sure you want to create a project named "${projectName}" in Django?`;
+        
+        // Show confirmation modal
+        if (confirmationModal) {
+          confirmationModal.classList.remove('hidden');
         }
       });
+      
+      // Setup confirmation modal buttons
+      const cancelButton = document.getElementById('cancelConversion');
+      const confirmButton = document.getElementById('confirmConversion');
+      
+      if (cancelButton) {
+        cancelButton.addEventListener('click', function() {
+          const confirmationModal = document.getElementById('confirmationModal');
+          if (confirmationModal) {
+            confirmationModal.classList.add('hidden');
+          }
+        });
+      }
+      
+      if (confirmButton) {
+        confirmButton.addEventListener('click', async function() {
+          const fileInput = document.getElementById('fileInput');
+          const notification = document.getElementById('notification');
+          const confirmationModal = document.getElementById('confirmationModal');
+          const convertButton = document.getElementById('convertButton');
+          const projectName = document.getElementById('projectName').value.trim();
+          
+          // Hide confirmation modal
+          if (confirmationModal) {
+            confirmationModal.classList.add('hidden');
+          }
+          
+          // Show loading state
+          convertButton.classList.add('loading');
+          confirmButton.classList.add('loading');
+          
+          try {
+            // Create form data
+            const formData = new FormData();
+            Array.from(fileInput.files).forEach(file => {
+              formData.append('files', file);
+            });
+            formData.append('project_name', projectName);
+            
+            // Send to server
+            const response = await fetch('/convert_page/', {
+              method: 'POST',
+              body: formData
+            });
+            
+            if (response.ok) {
+              // Handle success
+              notification.textContent = 'Files converted and downloaded successfully!';
+              
+              // Download logic would go here in a real implementation
+            } else {
+              notification.textContent = 'Error converting files. Please try again.';
+            }
+          } catch (error) {
+            notification.textContent = 'An error occurred during conversion.';
+            console.error(error);
+          } finally {
+            // Remove loading state
+            convertButton.classList.remove('loading');
+            confirmButton.classList.remove('loading');
+          }
+        });
+      }
     }
     
     function setupDropZone() {
@@ -335,16 +396,33 @@
   <div id="qunit"></div>
   <div id="qunit-fixture">
     <!-- Required elements duplicated here -->
-    <div class="hamburger-menu"></div>
+    <div class="drop-zone"></div>
     <input type="checkbox" id="light-switch" class="visually-hidden">
     <label for="light-switch" class="toggle-switch">
       <div id="light-switch-icon"></div>
     </label>
-    <div class="drop-zone"></div>
     <input id="fileInput" type="file" multiple accept=".class.jet, .sequence.jet">
     <div id="fileListSection" class="hidden"></div>
+    <input id="projectName" type="text" value="test_project">
     <button id="convertButton" class="convert-btn hidden">Convert</button>
     <div id="notification"></div>
+    
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+      <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
+        <h2 class="text-xl font-bold mb-4">Confirm File Conversion</h2>
+        <p class="mb-4" id="confirmationMessage">Are you sure you want to convert these files?</p>
+        <div class="flex justify-between">
+          <button id="cancelConversion" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">
+            Cancel
+          </button>
+          <button id="confirmConversion" class="convert-btn bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 relative overflow-hidden">
+            <span class="btn-text">Confirm</span>
+            <div class="loading-bar absolute inset-0"></div>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
   
   <!-- Add this for the coverage report -->
@@ -364,16 +442,31 @@
       beforeEach: function() {
         // Reset the fixture
         $('#qunit-fixture').html(`
-          <div class="hamburger-menu"></div>
+          <div class="drop-zone"></div>
           <input type="checkbox" id="light-switch" class="visually-hidden">
           <label for="light-switch" class="toggle-switch">
             <div id="light-switch-icon"></div>
           </label>
-          <div class="drop-zone"></div>
           <input id="fileInput" type="file" multiple accept=".class.jet, .sequence.jet">
           <div id="fileListSection" class="hidden"></div>
+          <input id="projectName" type="text" value="test_project">
           <button id="convertButton" class="convert-btn hidden">Convert</button>
           <div id="notification"></div>
+          <div id="confirmationModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+            <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
+              <h2 class="text-xl font-bold mb-4">Confirm File Conversion</h2>
+              <p class="mb-4" id="confirmationMessage">Are you sure you want to convert these files?</p>
+              <div class="flex justify-between">
+                <button id="cancelConversion" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">
+                  Cancel
+                </button>
+                <button id="confirmConversion" class="convert-btn bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 relative overflow-hidden">
+                  <span class="btn-text">Confirm</span>
+                  <div class="loading-bar absolute inset-0"></div>
+                </button>
+              </div>
+            </div>
+          </div>
         `);
         
         // Reinitialize the handlers
@@ -404,6 +497,133 @@
       }
     });
     
+    // Add a new test for project name validation
+    QUnit.test('project name validation', function(assert) {
+      const done = assert.async();
+      assert.expect(2);
+      
+      // Prepare the test with a valid file
+      prepareValidFileInput();
+      
+      // Clear project name
+      document.getElementById('projectName').value = '';
+      
+      // Wait for DOM updates
+      setTimeout(function() {
+        const convertButton = document.getElementById('convertButton');
+        const notification = document.getElementById('notification');
+        
+        // Trigger convert button click
+        convertButton.click();
+        
+        // Check notification
+        assert.ok(notification.textContent.includes('Please enter a project name'), 'Should show error when project name is empty');
+        
+        // Set project name and try again
+        document.getElementById('projectName').value = 'test_project';
+        convertButton.click();
+        
+        // Check confirmation message
+        const confirmationMessage = document.getElementById('confirmationMessage');
+        assert.ok(confirmationMessage.textContent.includes('test_project'), 'Confirmation message should include project name');
+        
+        done();
+      }, 150);
+    });
+    
+    // Add a new test for project name format validation
+    QUnit.test('project name format validation', function(assert) {
+      const done = assert.async();
+      assert.expect(2);
+      
+      // Prepare the test with a valid file
+      prepareValidFileInput();
+      
+      // Set invalid project name (with hyphen)
+      document.getElementById('projectName').value = 'invalid-project-name';
+      
+      // Wait for DOM updates
+      setTimeout(function() {
+        const convertButton = document.getElementById('convertButton');
+        const notification = document.getElementById('notification');
+        
+        // Trigger convert button click
+        convertButton.click();
+        
+        // Check notification
+        assert.ok(
+          notification.textContent.includes('Project name can only contain letters, numbers, and underscores'), 
+          'Should show error when project name has invalid characters'
+        );
+        
+        // Set valid project name and try again
+        document.getElementById('projectName').value = 'valid_project_name123';
+        convertButton.click();
+        
+        // Check confirmation message
+        const confirmationMessage = document.getElementById('confirmationMessage');
+        assert.ok(
+          confirmationMessage.textContent.includes('valid_project_name123'), 
+          'Confirmation message should include valid project name'
+        );
+        
+        done();
+      }, 150);
+    });
+    
+    QUnit.test('confirmation modal interactions', function(assert) {
+      const done = assert.async(3);
+      assert.expect(4);
+      
+      // Prepare the test with a valid file
+      prepareValidFileInput();
+      
+      // Wait for DOM updates
+      setTimeout(function() {
+      const convertButton = document.getElementById('convertButton');
+      const confirmationModal = document.getElementById('confirmationModal');
+      const cancelButton = document.getElementById('cancelConversion');
+      const confirmButton = document.getElementById('confirmConversion');
+      const notification = document.getElementById('notification');
+      
+      // Trigger convert button click to show modal
+      convertButton.click();
+      assert.ok(!confirmationModal.classList.contains('hidden'), 'Confirmation modal should be visible');
+      
+      // Test cancel button
+      cancelButton.click();
+      assert.ok(confirmationModal.classList.contains('hidden'), 'Confirmation modal should be hidden when cancelled');
+      done();
+      
+      // Prepare for conversion confirmation
+      convertButton.click();
+      
+      // Stub the handleConvert method
+      const originalHandleConvert = window.fileUploader ? window.fileUploader.handleConvert : null;
+      
+      // Modify the test to work with updated setupConvertButton logic
+      const stubConvert = sinon.stub().callsFake(function() {
+        assert.ok(true, 'Conversion should proceed when confirmed');
+        if (originalHandleConvert) {
+        window.fileUploader.handleConvert = originalHandleConvert;
+        }
+        done();
+      });
+      
+      // Modify the confirm button click to use our stub
+      confirmButton.addEventListener('click', stubConvert);
+      
+      // Confirm conversion
+      confirmButton.click();
+      
+      // Test no files scenario
+      const fileInput = document.getElementById('fileInput');
+      fileInput.files = new DataTransfer().files; // Clear files
+      convertButton.click();
+      assert.ok(notification.textContent.includes('Please select files'), 'Should show error when no files selected');
+      done();
+      }, 150);
+    });
     QUnit.test('valid file conversion process', function(assert) {
       const done = assert.async();
       assert.expect(4);
@@ -431,13 +651,41 @@
     
     QUnit.test('loading state visibility', function(assert) {
       const done = assert.async();
-      assert.expect(2);
+      assert.expect(4);
       
       prepareValidFileInput();
       
       // Wait for DOM updates
       setTimeout(function() {
         setupDelayedFetchAndTestLoading(assert, done);
+      }, 150);
+    });
+
+    QUnit.test('confirmation button loading state', function(assert) {
+      const done = assert.async();
+      assert.expect(2);
+      
+      prepareValidFileInput();
+      
+      // Wait for DOM updates
+      setTimeout(function() {
+        const convertButton = document.getElementById('convertButton');
+        const confirmButton = document.getElementById('confirmConversion');
+        
+        // Click the convert button to show modal
+        convertButton.click();
+        
+        // Click confirm button
+        confirmButton.click();
+        
+        // Check loading state on confirm button
+        assert.ok(confirmButton.classList.contains('loading'), 'Confirm button loading state active');
+        
+        // Wait for loading to finish
+        setTimeout(function() {
+          assert.notOk(confirmButton.classList.contains('loading'), 'Confirm button loading state removed');
+          done();
+        }, 500);
       }, 150);
     });
   }
@@ -490,10 +738,17 @@
     
     // Wait for async operations
     setTimeout(function() {
-      // Check if fetch was called
-      assert.ok(window.fetch.called, 'Fetch called');
-      assert.ok(window.fetch.calledWith('/convert_page/'), 'Fetch called with correct path');
-      done();
+      // Simulate confirm button click
+      const confirmButton = document.getElementById('confirmConversion');
+      confirmButton.click();
+      
+      // Wait for fetch
+      setTimeout(function() {
+        // Check if fetch was called
+        assert.ok(window.fetch.called, 'Fetch called');
+        assert.ok(window.fetch.calledWith('/convert_page/'), 'Fetch called with correct path');
+        done();
+      }, 200);
     }, 150);
   }
 
@@ -521,8 +776,12 @@
     const convertButton = document.getElementById('convertButton');
     convertButton.click();
     
+    // Click confirm button
+    const confirmButton = document.getElementById('confirmConversion');
+    confirmButton.click();
+    
     // Check loading state after a short delay
-    setTimeout(() => checkLoadingState(assert, convertButton, done), 100);
+    setTimeout(() => checkLoadingState(assert, convertButton, confirmButton, done), 100);
   }
 
   function delayedFetchResponse() {
@@ -537,17 +796,20 @@
     });
   }
 
-  function checkLoadingState(assert, convertButton, done) {
-    assert.ok(convertButton.classList.contains('loading'), 'Loading state active');
+  function checkLoadingState(assert, convertButton, confirmButton, done) {
+    assert.ok(convertButton.classList.contains('loading'), 'Convert button loading state active');
+    assert.ok(confirmButton.classList.contains('loading'), 'Confirm button loading state active');
     
     // Wait for loading to finish
-    setTimeout(() => finalizeLoadingTest(assert, convertButton, done), 500);
+    setTimeout(() => finalizeLoadingTest(assert, convertButton, confirmButton, done), 500);
   }
 
-  function finalizeLoadingTest(assert, convertButton, done) {
-    assert.notOk(convertButton.classList.contains('loading'), 'Loading state removed');
+  function finalizeLoadingTest(assert, convertButton, confirmButton, done) {
+    assert.notOk(convertButton.classList.contains('loading'), 'Convert button loading state removed');
+    assert.notOk(confirmButton.classList.contains('loading'), 'Confirm button loading state removed');
     done();
   }
+  
   // Generate and display coverage report after tests complete
   QUnit.done(function() {
     window.codeCoverage.generateReport();
@@ -555,3 +817,4 @@
   </script>
 </body>
 </html>
+
