@@ -12,18 +12,26 @@ jobs:
 
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
+      - name: Determine branch to checkout
+        run: |
+          if [[ "${{ github.event.workflow_run.head_branch }}" == "dev" ]]; then
+            echo "BRANCH=staging" >> $GITHUB_ENV
+          elif [[ "${{ github.event.workflow_run.head_branch }}" == "staging" ]]; then
+            echo "BRANCH=main" >> $GITHUB_ENV
+          else
+            echo "Invalid branch to build from"
+            exit 1
+          fi
+
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
-
-      - name: Fetch tags
-        run: git fetch --tags
+          ref: ${{ env.BRANCH }}
+          fetch-tags: true
 
       - name: Get Git tag
-        id: get-tag
         run: |
-          GIT_TAG=$(git describe --tags --exact-match ${{ github.event.workflow_run.head_sha }} || echo "")
+          GIT_TAG=$(git describe --tags --exact-match ${{ env.BRANCH }} || echo "")
           if [ -z "$GIT_TAG" ]; then
             echo "No tag found for this commit."
             exit 1
@@ -40,6 +48,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
+          context: .
           push: true
           tags: |
             ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_REPO }}:${{ env.GIT_TAG }}
