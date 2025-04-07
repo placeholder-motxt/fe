@@ -1,0 +1,71 @@
+name: Update Version
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+      - staging
+      - dev
+
+jobs:
+  update-version:
+    if: github.event.pull_request.merged == true
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine branches to update
+        run: |
+          if [[ "${{ github.base_ref }}" == "main" ]]; then
+            echo "Major version update detected. Updating staging and dev branches."
+            echo "TARGET_BRANCHES=staging dev" >> $GITHUB_ENV
+          elif [[ "${{ github.base_ref }}" == "staging" ]]; then
+            echo "Minor version update detected. Updating dev branch."
+            echo "TARGET_BRANCHES=dev" >> $GITHUB_ENV
+          else
+            echo "No version update required for this branch."
+            echo "TARGET_BRANCHES=" >> $GITHUB_ENV
+          fi
+
+      - name: Run update version script
+        run: |
+          chmod +x .github/scripts/update_version.sh
+          .github/scripts/update_version.sh
+
+      - name: Get new version
+        run: |
+          NEW_VERSION=$(grep -oP 'VERSION = "\K[0-9]+\.[0-9]+\.[0-9]+' "fe/settings.py")
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
+      - name: Set up Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Push changes
+        run: |
+          git add .
+          git commit -m "[CHORES] bump version to $NEW_VERSION"
+          git push
+
+      - name: Sync version bump to other needed branches
+        if: ${{ env.TARGET_BRANCHES != '' }}
+        run: |
+          for BRANCH in $TARGET_BRANCHES; do
+            echo "Pushing version update to $BRANCH branch..."
+            git push origin HEAD:$BRANCH
+          done
+
+      - name: Create Git Tag
+        uses: anothrNick/github-tag-action@1.71.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CUSTOM_TAG: ${{ env.NEW_VERSION }}
