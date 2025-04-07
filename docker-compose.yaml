@@ -1,0 +1,11 @@
+# Cuman buat testing prometheus scrapenya bener gk
+version: '3.6'
+services:
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 9090:9090
