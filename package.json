@@ -27,5 +27,8 @@
         "transformIgnorePatterns": [
             "/node_modules/(?!(node-fetch|data-uri-to-buffer)/)"
         ]
+    },
+    "dependencies": {
+        "fe": "file:"
     }
 }
