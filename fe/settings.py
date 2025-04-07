@@ -187,4 +187,4 @@ else:
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-VERSION = "2.2.0"
+VERSION = "2.3.0"
