@@ -17,6 +17,9 @@
             <h1 class="text-white text-3xl font-bold mb-6 text-center">MoTxT User Manual</h1>
             <nav class="flex flex-col space-y-2 overflow-y-auto max-h-full">
                 <div class="flex flex-col">
+                    <a href="#section6" class="px-4 py-2 bg-white rounded hover:bg-[#35BAA2] block">Project Name Rules</a>
+                </div>
+                <div class="flex flex-col">
                     <a href="#section1" class="px-4 py-2 bg-white rounded hover:bg-[#35BAA2] block">File Upload Rules</a>
                 </div>
                 <div class="flex flex-col">
@@ -60,6 +63,18 @@
         </p>
         <div class="flex-1 p-10">
 
+            <section id="section6" class="h-auto p-3 mb-10 break-words">
+                <h2 class="text-3xl font-bold">Project Name Rules</h2>
+                <div class="flex flex-col gap-2 pt-2">
+                    <p >Project name follows python variable naming conventions</p>
+                    <p></p>
+                    <ul>
+                        <li class="list-inside list-disc">Project name must consist of only alphanumeric characters and _ (underscore)</li>
+                        <li class="list-inside list-disc">No number on the start of the project name</li>
+                        <li class="list-inside list-disc">_ (underscore) is the only special character allowed</li>
+                    </ul>
+                </div>
+            </section>
             <section id="section1" class="h-auto p-3 mb-10 break-words">
                 <h2 class="text-3xl font-bold">File Upload Rules</h2>
                 <div class="flex flex-col gap-2 pt-2">
@@ -92,6 +107,7 @@
                             <li class="list-inside list-disc">Alphabet Only</li>
                             <li class="list-inside list-disc">Case sensitive</li>
                             <li class="list-inside list-disc">Doesn’t contain leading, in-between, nor trailing whitespace(s)</li>
+                            <li class="list-inside list-disc"><strong>Add "+" in front of the class name to make it accessible via the frontend generated.</strong> "-" will make the class inaccessible for CRUD via the frontend generated</li>
                         </ul>
                     </div>
                 </section>
