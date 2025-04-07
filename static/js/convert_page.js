@@ -211,7 +211,8 @@
           const url = window.URL.createObjectURL(blob)
           const a = document.createElement("a")
           a.href = url
-          a.download = `${uploadedFiles[0].name}.zip`
+          const projectName = document.getElementById("projectName").value.trim()
+          a.download = `${projectName}.zip`
           document.body.appendChild(a)
           a.click()
           window.URL.revokeObjectURL(url)
