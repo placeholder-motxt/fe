@@ -126,13 +126,20 @@
         <div class="text-center space-y-4 mt-6" >
           <div style="color: var(--text)">
             Don't have a diagram? 
-            <a href="https://www.jetuml.org/docs/download.html" class="text-[var(--secondary)] hover:underline">Click me!</a>
+            Don't have a diagram? 
+            <button id="toggleUserManual" class="w-auto px-4 py-2 bg-[var(--button)] rounded hover:bg-[var(--button-hover)]" style="color: var(--text);">
+              <a href="https://www.jetuml.org/docs/download.html" class="text-[var(--secondary)] hover:underline" target="_blank" rel="noopener noreferrer">
+              Click me!
+              </a>
+            </button>
           </div>
           <div style="color: var(--text);">
             Don't know what to do? 
             
-            <button id="toggleUserManual" class="w-auto px-4 py-2 bg-[var(--button)] rounded hover:bg-[var(--button-hover)]" style="color: var(--text);" onclick="toggleUserManual()">
-              Click Here!
+            <button id="toggleUserManual" class="w-auto px-4 py-2 bg-[var(--button)] rounded hover:bg-[var(--button-hover)]" style="color: var(--text);">
+              <a href="/doc/">
+                Click Here!
+              </a>
             </button>
           </div>
         </div>
