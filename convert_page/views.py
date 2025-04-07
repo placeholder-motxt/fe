@@ -79,8 +79,8 @@ def convert_page(request):
                 # Properly parse FastAPI's error response
                 try:
                     return JsonResponse(response.json(), status=response.status_code)
-                except json.JSONDecodeError:
-                    return JsonResponse({'error': 'Invalid service response'}, status=500)
+                except json.JSONDecodeError as ex:
+                    return JsonResponse({'error': str(ex)}, status=500)
 
         except Exception as e:
             logger.exception("Unexpected error during conversion")
