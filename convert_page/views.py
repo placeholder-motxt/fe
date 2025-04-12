@@ -1,4 +1,3 @@
-# views.py
 import json
 import os
 import re
@@ -16,6 +15,8 @@ def convert_page(request):
         try:
             files = request.FILES.getlist('files')
             project_name = request.POST.get('project_name', '').strip()
+            # Get the selected style theme
+            style_theme = request.POST.get('style-theme', 'modern')
 
             # Validate project name
             if not project_name:
@@ -36,7 +37,8 @@ def convert_page(request):
             processed_data = {
                 'filename': filenames, 
                 'content': [],
-                'project_name': project_name
+                'project_name': project_name,
+                'style_theme': style_theme  # Add the style theme to the processed data
             }
 
             for file in files:
@@ -87,4 +89,3 @@ def convert_page(request):
             return JsonResponse({'error': 'Internal server error'}, status=500)
 
     return render(request, 'convert_page.html')
-
