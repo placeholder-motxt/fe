@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/convert_page.css' %}">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" href="{% static 'css/hamburger_menu.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style_options.css' %}">
 </head>
 
 <body class="flex flex-col min-h-screen text-black relative" style="background-color: var(--background);">
@@ -29,7 +30,6 @@
         </div>
     </div>
   </div>
-
 
   
     <!-- Notification System -->
@@ -114,6 +114,67 @@
           <p class="mt-1 text-sm" style="color: var(--text);">Only letters, numbers, and underscores are allowed.</p>
         </div>
         
+        <!-- Style Options -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium mb-2" style="color: var(--text);">Select Style Theme</label>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Modern Style -->
+            <div class="style-option">
+              <input type="radio" id="style-modern" name="style-theme" value="modern" class="hidden" checked>
+              <label for="style-modern" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
+                <div class="style-preview-box bg-blue-500 w-full h-16 rounded-md mb-2 flex items-center justify-center">
+                  <span class="text-white font-medium">Modern</span>
+                </div>
+                <span class="text-sm" style="color: var(--text);">Clean, minimal design with blue accents</span>
+              </label>
+            </div>
+            
+            <!-- Classic Style -->
+            <div class="style-option">
+              <input type="radio" id="style-classic" name="style-theme" value="classic" class="hidden">
+              <label for="style-classic" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
+                <div class="style-preview-box bg-gray-700 w-full h-16 rounded-md mb-2 flex items-center justify-center">
+                  <span class="text-white font-medium">Classic</span>
+                </div>
+                <span class="text-sm" style="color: var(--text);">Traditional layout with neutral colors</span>
+              </label>
+            </div>
+            
+            <!-- Vibrant Style -->
+            <div class="style-option">
+              <input type="radio" id="style-vibrant" name="style-theme" value="vibrant" class="hidden">
+              <label for="style-vibrant" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
+                <div class="style-preview-box bg-purple-600 w-full h-16 rounded-md mb-2 flex items-center justify-center">
+                  <span class="text-white font-medium">Vibrant</span>
+                </div>
+                <span class="text-sm" style="color: var(--text);">Bold colors and dynamic elements</span>
+              </label>
+            </div>
+            
+            <!-- Dark Style -->
+            <div class="style-option">
+              <input type="radio" id="style-dark" name="style-theme" value="dark" class="hidden">
+              <label for="style-dark" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
+                <div class="style-preview-box bg-gray-900 w-full h-16 rounded-md mb-2 flex items-center justify-center">
+                  <span class="text-gray-300 font-medium">Dark</span>
+                </div>
+                <span class="text-sm" style="color: var(--text);">Dark theme with high contrast</span>
+              </label>
+            </div>
+            
+            <!-- Minimalist Style -->
+            <div class="style-option">
+              <input type="radio" id="style-minimalist" name="style-theme" value="minimalist" class="hidden">
+              <label for="style-minimalist" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
+                <div class="style-preview-box bg-white w-full h-16 rounded-md mb-2 flex items-center justify-center border">
+                  <span class="text-gray-800 font-medium">Minimalist</span>
+                </div>
+                <span class="text-sm" style="color: var(--text);">Ultra-clean with minimal styling</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        
         <!-- Convert Button -->
         <button id="convertButton" 
                 class="convert-btn w-full mt-4 bg-[var(--button)] py-3 px-6 rounded-lg 
@@ -127,13 +188,19 @@
         <div class="text-center space-y-4 mt-6" >
           <div style="color: var(--text)">
             Don't have a diagram? 
-            <a href="https://www.jetuml.org/docs/download.html" class="text-[var(--secondary)] hover:underline">Click me!</a>
+            <button id="toggleUserManual" class="w-auto px-4 py-2 bg-[var(--button)] rounded hover:bg-[var(--button-hover)]" style="color: var(--text);">
+              <a href="https://www.jetuml.org/docs/download.html" class="text-[var(--secondary)] hover:underline" target="_blank" rel="noopener noreferrer">
+              Click me!
+              </a>
+            </button>
           </div>
           <div style="color: var(--text);">
             Don't know what to do? 
             
-            <button id="toggleUserManual" class="w-auto px-4 py-2 bg-[var(--button)] rounded hover:bg-[var(--button-hover)]" style="color: var(--text);" onclick="toggleUserManual()">
-              Click Here!
+            <button id="toggleUserManual" class="w-auto px-4 py-2 bg-[var(--button)] rounded hover:bg-[var(--button-hover)]" style="color: var(--text);">
+              <a href="/doc/">
+                Click Here!
+              </a>
             </button>
           </div>
         </div>
@@ -152,4 +219,3 @@
     <script src="{% static 'js/hamburger_menu.js' %}"></script>
 </body>
 </html>
-
