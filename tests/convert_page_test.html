@@ -210,6 +210,14 @@
             });
             formData.append('project_name', projectName);
             
+            // Add style theme to form data
+            const selectedStyle = document.querySelector('input[name="style-theme"]:checked');
+            if (selectedStyle) {
+              formData.append('style-theme', selectedStyle.value);
+            } else {
+              formData.append('style-theme', 'modern'); // Default
+            }
+            
             // Send to server
             const response = await fetch('/convert_page/', {
               method: 'POST',
@@ -407,6 +415,15 @@
     <button id="convertButton" class="convert-btn hidden">Convert</button>
     <div id="notification"></div>
     
+    <!-- Style Theme Options -->
+    <div class="style-options">
+      <input type="radio" id="style-modern" name="style-theme" value="modern" checked>
+      <input type="radio" id="style-classic" name="style-theme" value="classic">
+      <input type="radio" id="style-vibrant" name="style-theme" value="vibrant">
+      <input type="radio" id="style-dark" name="style-theme" value="dark">
+      <input type="radio" id="style-minimalist" name="style-theme" value="minimalist">
+    </div>
+    
     <!-- Confirmation Modal -->
     <div id="confirmationModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
       <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
@@ -452,6 +469,16 @@
           <input id="projectName" type="text" value="test_project">
           <button id="convertButton" class="convert-btn hidden">Convert</button>
           <div id="notification"></div>
+          
+          <!-- Style Theme Options -->
+          <div class="style-options">
+            <input type="radio" id="style-modern" name="style-theme" value="modern" checked>
+            <input type="radio" id="style-classic" name="style-theme" value="classic">
+            <input type="radio" id="style-vibrant" name="style-theme" value="vibrant">
+            <input type="radio" id="style-dark" name="style-theme" value="dark">
+            <input type="radio" id="style-minimalist" name="style-theme" value="minimalist">
+          </div>
+          
           <div id="confirmationModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
             <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
               <h2 class="text-xl font-bold mb-4">Confirm File Conversion</h2>
@@ -624,6 +651,7 @@
       done();
       }, 150);
     });
+    
     QUnit.test('valid file conversion process', function(assert) {
       const done = assert.async();
       assert.expect(4);
@@ -686,6 +714,85 @@
           assert.notOk(confirmButton.classList.contains('loading'), 'Confirm button loading state removed');
           done();
         }, 500);
+      }, 150);
+    });
+    
+    // New test for style theme selection
+    QUnit.test('style theme selection is included in form data', function(assert) {
+      const done = assert.async();
+      assert.expect(3);
+      
+      prepareValidFileInput();
+      
+      // Wait for DOM updates
+      setTimeout(function() {
+        const convertButton = document.getElementById('convertButton');
+        const confirmButton = document.getElementById('confirmConversion');
+        
+        // Select a different style theme
+        document.getElementById('style-vibrant').checked = true;
+        
+        // Click the convert button to show modal
+        convertButton.click();
+        
+        // Click confirm button
+        confirmButton.click();
+        
+        // Wait for fetch to be called
+        setTimeout(function() {
+          // Check if fetch was called
+          assert.ok(window.fetch.called, 'Fetch called');
+          
+          // Get the FormData that was passed to fetch
+          const fetchCall = window.fetch.getCall(0);
+          const formData = fetchCall.args[1].body;
+          
+          // Check if style-theme is included in the FormData
+          assert.ok(formData.has('style-theme'), 'Style theme is included in form data');
+          assert.equal(formData.get('style-theme'), 'vibrant', 'Correct style theme value is sent');
+          
+          done();
+        }, 200);
+      }, 150);
+    });
+    
+    // Test for default style theme
+    QUnit.test('default style theme is used when none selected', function(assert) {
+      const done = assert.async();
+      assert.expect(2);
+      
+      prepareValidFileInput();
+      
+      // Wait for DOM updates
+      setTimeout(function() {
+        const convertButton = document.getElementById('convertButton');
+        const confirmButton = document.getElementById('confirmConversion');
+        
+        // Remove all radio buttons to simulate no selection
+        document.querySelectorAll('input[name="style-theme"]').forEach(radio => {
+          radio.checked = false;
+        });
+        
+        // Click the convert button to show modal
+        convertButton.click();
+        
+        // Click confirm button
+        confirmButton.click();
+        
+        // Wait for fetch to be called
+        setTimeout(function() {
+          // Check if fetch was called
+          assert.ok(window.fetch.called, 'Fetch called');
+          
+          // Get the FormData that was passed to fetch
+          const fetchCall = window.fetch.getCall(0);
+          const formData = fetchCall.args[1].body;
+          
+          // Check if style-theme is included in the FormData with default value
+          assert.equal(formData.get('style-theme'), 'modern', 'Default style theme is used when none selected');
+          
+          done();
+        }, 200);
       }, 150);
     });
   }
@@ -817,4 +924,3 @@
   </script>
 </body>
 </html>
-
