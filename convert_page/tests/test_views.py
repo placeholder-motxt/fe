@@ -26,7 +26,7 @@ class ConvertPageViewTests(TestCase):
         """POST request without a file returns 400 and an error message."""
         response = self.client.post('/convert_page/', {'files': [], 'project_name': 'test_project'})
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()['error'], 'No file uploaded')
+        self.assertEqual(response.json()['error'], 'No files uploaded')
 
     # Negative Test - Missing Project Name
     def test_post_missing_project_name(self):
@@ -61,9 +61,8 @@ class ConvertPageViewTests(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             response.json()['error'],
-            'Invalid file type. Only .class.jet and .sequence.jet files are allowed'
+            'Invalid file type: test.txt'
         )
-
 
     # Corner Test
     def test_post_unicode_decode_error(self):
@@ -112,7 +111,6 @@ class ConvertPageViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/zip')
         self.assertIn('attachment; filename="file1.class.jet.zip"', response['Content-Disposition'])
-
 
     # Negative Test
     def test_post_duplicate_filenames(self):
@@ -176,7 +174,7 @@ class ConvertPageViewTests(TestCase):
         self.assertEqual(response.status_code, 500)
         self.assertEqual(
             response.json()['error'],
-            'Invalid conversion service response'
+            'Invalid service response'
         )
 
     # Negative Test 
@@ -211,4 +209,65 @@ class ConvertPageViewTests(TestCase):
             response.json()['error'],
             'Internal server error'
         )
-
+        
+    # New Test for Style Theme
+    @patch('requests.post')
+    def test_style_theme_is_passed_to_api(self, mock_post):
+        """Test that style theme is correctly passed to the API"""
+        # Create mock response
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.headers = {'Content-Type': 'application/zip'}
+        mock_response.content = b'mock zip content'
+        mock_post.return_value = mock_response
+        
+        # Create test file
+        valid_file = SimpleUploadedFile('valid.class.jet', b'{"valid": "json"}')
+        
+        # Send request with style theme
+        response = self.client.post('/convert_page/', {
+            'files': [valid_file],
+            'project_name': 'test_project',
+            'style-theme': 'vibrant'
+        })
+        
+        # Check that the request was successful
+        self.assertEqual(response.status_code, 200)
+        
+        # Check that the style theme was passed to the API
+        # Extract the JSON data that was sent to the API
+        call_args = mock_post.call_args
+        json_data = call_args[1]['json']
+        
+        # Verify the style theme was included
+        self.assertEqual(json_data['style_theme'], 'vibrant')
+    
+    # Test default style theme
+    @patch('requests.post')
+    def test_default_style_theme(self, mock_post):
+        """Test that default style theme is used when none is provided"""
+        # Create mock response
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.headers = {'Content-Type': 'application/zip'}
+        mock_response.content = b'mock zip content'
+        mock_post.return_value = mock_response
+        
+        # Create test file
+        valid_file = SimpleUploadedFile('valid.class.jet', b'{"valid": "json"}')
+        
+        # Send request without style theme
+        response = self.client.post('/convert_page/', {
+            'files': [valid_file],
+            'project_name': 'test_project'
+        })
+        
+        # Check that the request was successful
+        self.assertEqual(response.status_code, 200)
+        
+        # Check that the default style theme was passed to the API
+        call_args = mock_post.call_args
+        json_data = call_args[1]['json']
+        
+        # Verify the default style theme was included
+        self.assertEqual(json_data['style_theme'], 'modern')
