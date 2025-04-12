@@ -196,7 +196,7 @@ async function handleConvert() {
       await handleErrorResponse(response);
     }
   } catch (error) {
-    showNotification("Network error - Check your connection", "error");
+    showNotification(`Network error: ${error.message || 'Unknown error'}`, "error");
   } finally {
     // Remove loading class from both buttons
     convertBtn.classList.remove("loading");
