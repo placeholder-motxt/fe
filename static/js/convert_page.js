@@ -219,10 +219,12 @@ async function handleSuccessfulConversion(response) {
     document.body.removeChild(a);
     showNotification("Files converted and downloaded successfully!", "success");
     resetAfterConversion();
-  } catch (error) {
-    showNotification("Error processing downloaded file", "error");
+    } catch (error) {
+    console.error("Download error:", error);
+    showNotification(`Error downloading file: ${error.message || "Unknown error"}`, "error");
+    }
   }
-}
+
 
 // Handle error response
 async function handleErrorResponse(response) {
