@@ -211,12 +211,7 @@
             formData.append('project_name', projectName);
             
             // Add style theme to form data
-            const selectedStyle = document.querySelector('input[name="style-theme"]:checked');
-            if (selectedStyle) {
-              formData.append('style-theme', selectedStyle.value);
-            } else {
-              formData.append('style-theme', 'modern'); // Default
-            }
+            addStyleThemeToFormData(formData);
             
             // Send to server
             const response = await fetch('/convert_page/', {
@@ -249,6 +244,17 @@
       if (!dropZone) return;
       
       // Drop zone handlers would go here in a real implementation
+    }
+    
+    // Helper function to add style theme to form data
+    function addStyleThemeToFormData(formData) {
+      const selectedStyle = document.querySelector('input[name="style-theme"]:checked');
+      if (selectedStyle) {
+        formData.append('style-theme', selectedStyle.value);
+      } else {
+        formData.append('style-theme', 'modern'); // Default
+      }
+      return formData;
     }
   </script>
   
@@ -284,6 +290,7 @@
         this.instrumentFunction('setupFileInput');
         this.instrumentFunction('setupConvertButton');
         this.instrumentFunction('setupDropZone');
+        this.instrumentFunction('addStyleThemeToFormData');
       },
       
       // Instrument a function
@@ -416,13 +423,7 @@
     <div id="notification"></div>
     
     <!-- Style Theme Options -->
-    <div class="style-options">
-      <input type="radio" id="style-modern" name="style-theme" value="modern" checked>
-      <input type="radio" id="style-classic" name="style-theme" value="classic">
-      <input type="radio" id="style-vibrant" name="style-theme" value="vibrant">
-      <input type="radio" id="style-dark" name="style-theme" value="dark">
-      <input type="radio" id="style-minimalist" name="style-theme" value="minimalist">
-    </div>
+    <div id="style-options-container"></div>
     
     <!-- Confirmation Modal -->
     <div id="confirmationModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
@@ -446,6 +447,35 @@
   <div id="coverage-report"></div>
 
   <script>
+  // Helper function to create style options
+  function createStyleOptions(container) {
+    if (!container) return;
+    
+    const styleThemes = [
+      { id: 'style-modern', value: 'modern', checked: true },
+      { id: 'style-classic', value: 'classic', checked: false },
+      { id: 'style-vibrant', value: 'vibrant', checked: false },
+      { id: 'style-dark', value: 'dark', checked: false },
+      { id: 'style-minimalist', value: 'minimalist', checked: false }
+    ];
+    
+    const styleOptionsDiv = document.createElement('div');
+    styleOptionsDiv.className = 'style-options';
+    
+    styleThemes.forEach(theme => {
+      const input = document.createElement('input');
+      input.type = 'radio';
+      input.id = theme.id;
+      input.name = 'style-theme';
+      input.value = theme.value;
+      if (theme.checked) input.checked = true;
+      
+      styleOptionsDiv.appendChild(input);
+    });
+    
+    container.appendChild(styleOptionsDiv);
+  }
+  
   // Initialize coverage
   window.codeCoverage.init();
   
@@ -471,13 +501,7 @@
           <div id="notification"></div>
           
           <!-- Style Theme Options -->
-          <div class="style-options">
-            <input type="radio" id="style-modern" name="style-theme" value="modern" checked>
-            <input type="radio" id="style-classic" name="style-theme" value="classic">
-            <input type="radio" id="style-vibrant" name="style-theme" value="vibrant">
-            <input type="radio" id="style-dark" name="style-theme" value="dark">
-            <input type="radio" id="style-minimalist" name="style-theme" value="minimalist">
-          </div>
+          <div id="style-options-container"></div>
           
           <div id="confirmationModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
             <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
@@ -495,6 +519,9 @@
             </div>
           </div>
         `);
+        
+        // Create style options
+        createStyleOptions(document.getElementById('style-options-container'));
         
         // Reinitialize the handlers
         setupFileInput();
@@ -794,6 +821,38 @@
           done();
         }, 200);
       }, 150);
+    });
+    
+    // Test for addStyleThemeToFormData function
+    QUnit.test('addStyleThemeToFormData function', function(assert) {
+      // Create a FormData object
+      const formData = new FormData();
+      
+      // Create style options
+      createStyleOptions(document.getElementById('style-options-container'));
+      
+      // Set a specific style theme
+      document.getElementById('style-dark').checked = true;
+      
+      // Call the function
+      addStyleThemeToFormData(formData);
+      
+      // Check if the style theme was added correctly
+      assert.equal(formData.get('style-theme'), 'dark', 'Style theme is correctly added to form data');
+      
+      // Test with no selection
+      document.querySelectorAll('input[name="style-theme"]').forEach(radio => {
+        radio.checked = false;
+      });
+      
+      // Create a new FormData object
+      const formData2 = new FormData();
+      
+      // Call the function again
+      addStyleThemeToFormData(formData2);
+      
+      // Check if the default style theme was added
+      assert.equal(formData2.get('style-theme'), 'modern', 'Default style theme is added when none is selected');
     });
   }
 
