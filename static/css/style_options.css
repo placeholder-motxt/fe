@@ -1,0 +1,23 @@
+/* Style Options UI */
+.style-option input[type="radio"]:checked + .style-preview {
+    border-color: var(--button);
+    box-shadow: 0 0 0 2px var(--button);
+  }
+  
+  .style-preview {
+    transition: all 0.2s ease;
+    border-color: var(--secondary);
+  }
+  
+  .style-preview:hover {
+    transform: translateY(-2px);
+  }
+  
+  .style-preview-box {
+    transition: all 0.3s ease;
+  }
+  
+  /* Dark mode compatibility */
+  [data-theme="dark"] .style-preview-box.bg-white {
+    background-color: #f8f9fa;
+  }
