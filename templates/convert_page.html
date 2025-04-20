@@ -19,6 +19,8 @@
     <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
         <h2 class="text-xl font-bold mb-4">Confirm File Conversion</h2>
         <p class="mb-4" id="confirmationMessage">Are you sure you want to convert these files?</p>
+        <div id="frameworkConfirmation" class="mb-2">Framework: <span class="font-semibold">Django</span></div>
+        <div id="themeConfirmation" class="mb-4">Theme: <span class="font-semibold">Modern</span></div>
         <div class="flex justify-between">
             <button id="cancelConversion" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 w-24">
               Cancel
@@ -114,6 +116,34 @@
           <p class="mt-1 text-sm" style="color: var(--text);">Only letters, numbers, and underscores are allowed.</p>
         </div>
         
+        <!-- Framework Selection -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium mb-2" style="color: var(--text);">Select Framework</label>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Django Framework -->
+            <div class="framework-option">
+              <input type="radio" id="framework-django" name="framework" value="django" class="hidden" checked>
+              <label for="framework-django" class="framework-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
+                <div class="framework-preview-box bg-green-600 w-full h-16 rounded-md mb-2 flex items-center justify-center">
+                  <span class="text-white font-medium">Django</span>
+                </div>
+                <span class="text-sm" style="color: var(--text);">Python-based web framework</span>
+              </label>
+            </div>
+            
+            <!-- SpringBoot Framework -->
+            <div class="framework-option">
+              <input type="radio" id="framework-springboot" name="framework" value="springboot" class="hidden">
+              <label for="framework-springboot" class="framework-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
+                <div class="framework-preview-box bg-green-800 w-full h-16 rounded-md mb-2 flex items-center justify-center">
+                  <span class="text-white font-medium">SpringBoot</span>
+                </div>
+                <span class="text-sm" style="color: var(--text);">Java-based web framework</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        
         <!-- Style Options -->
         <div class="mb-6">
             <label for="style-modern" class="block text-sm font-medium mb-2" style="color: var(--text);">Select Style Theme</label>
@@ -196,10 +226,6 @@
           <div style="color: var(--text);">
             Don't know what to do? 
             
-            <button id="toggleUserManual" class="w-auto px-4 py-2 bg-[var(--button)] rounded hover:bg-[var(--button-hover)]" style="color: var(--text);">
-              <a href="/doc/">
-                Click Here!
-              </a>
             <button id="toggleUserManual" class="w-auto px-4 py-2 bg-[var(--button)] rounded hover:bg-[var(--button-hover)]" style="color: var(--text);">
               <a href="/doc/">
                 Click Here!

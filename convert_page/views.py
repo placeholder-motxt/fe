@@ -17,6 +17,8 @@ def convert_page(request):
             project_name = request.POST.get('project_name', '').strip()
             # Get the selected style theme
             style_theme = request.POST.get('style-theme', 'modern')
+            # Get the selected framework
+            framework = request.POST.get('framework', 'django')
 
             # Validate project name
             if not project_name:
@@ -38,7 +40,8 @@ def convert_page(request):
                 'filename': filenames, 
                 'content': [],
                 'project_name': project_name,
-                'style_theme': style_theme  # Add the style theme to the processed data
+                'style_theme': style_theme,  # Add the style theme to the processed data
+                'framework': framework  # Add the framework to the processed data
             }
 
             for file in files:

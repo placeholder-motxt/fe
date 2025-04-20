@@ -271,3 +271,65 @@ class ConvertPageViewTests(TestCase):
         
         # Verify the default style theme was included
         self.assertEqual(json_data['style_theme'], 'modern')
+
+        
+    # Test framework is passed to API
+    @patch('requests.post')
+    def test_framework_is_passed_to_api(self, mock_post):
+        """Test that framework is correctly passed to the API"""
+        # Create mock response
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.headers = {'Content-Type': 'application/zip'}
+        mock_response.content = b'mock zip content'
+        mock_post.return_value = mock_response
+        
+        # Create test file
+        valid_file = SimpleUploadedFile('valid.class.jet', b'{"valid": "json"}')
+        
+        # Send request with framework
+        response = self.client.post('/convert_page/', {
+            'files': [valid_file],
+            'project_name': 'test_project',
+            'framework': 'springboot'
+        })
+        
+        # Check that the request was successful
+        self.assertEqual(response.status_code, 200)
+        
+        # Check that the framework was passed to the API
+        call_args = mock_post.call_args
+        json_data = call_args[1]['json']
+        
+        # Verify the framework was included
+        self.assertEqual(json_data['framework'], 'springboot')
+
+    # Test default framework
+    @patch('requests.post')
+    def test_default_framework(self, mock_post):
+        """Test that default framework is used when none is provided"""
+        # Create mock response
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.headers = {'Content-Type': 'application/zip'}
+        mock_response.content = b'mock zip content'
+        mock_post.return_value = mock_response
+        
+        # Create test file
+        valid_file = SimpleUploadedFile('valid.class.jet', b'{"valid": "json"}')
+        
+        # Send request without framework
+        response = self.client.post('/convert_page/', {
+            'files': [valid_file],
+            'project_name': 'test_project'
+        })
+        
+        # Check that the request was successful
+        self.assertEqual(response.status_code, 200)
+        
+        # Check that the default framework was passed to the API
+        call_args = mock_post.call_args
+        json_data = call_args[1]['json']
+        
+        # Verify the default framework was included
+        self.assertEqual(json_data['framework'], 'django')
