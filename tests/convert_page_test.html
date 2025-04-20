@@ -917,7 +917,7 @@
         // Test no files scenario
         const fileInput = document.getElementById('fileInput');
         fileInput.files = new DataTransfer().files; // Clear files
-        uploadedFiles = []; // Clear uploaded files
+        window.uploadedFiles = []; // Clear uploaded files
         convertButton.click();
         assert.ok(notification.textContent.includes('Please select files'), 'Should show error when no files selected');
         done();
