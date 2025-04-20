@@ -322,8 +322,13 @@
       formData.append("project_name", projectName)
 
       // Add style theme to form data
-      addStyleThemeToFormData(formData)
-      
+      const selectedStyle = document.querySelector('input[name="style-theme"]:checked')
+      if (selectedStyle) {
+        formData.append("style-theme", selectedStyle.value)
+      } else {
+        formData.append("style-theme", "modern") // Default to modern if somehow nothing is selected
+      }
+
       // Add framework to form data
       const selectedFramework = document.querySelector('input[name="framework"]:checked')
       if (selectedFramework) {
@@ -346,7 +351,13 @@
           await handleErrorResponse(response)
         }
       } catch (error) {
-        showNotification("Network error - Check your connection", "error")
+        // Log the error for debugging
+        console.error("Network error during conversion:", error)
+
+        // Show a more specific error message if possible
+        const errorMessage = error.message ? `Network error: ${error.message}` : "Network error - Check your connection"
+
+        showNotification(errorMessage, "error")
       } finally {
         // Remove loading class from both buttons
         convertBtn.classList.remove("loading")
@@ -381,7 +392,15 @@
         showNotification("Files converted and downloaded successfully!", "success")
         resetAfterConversion()
       } catch (error) {
-        showNotification("Error processing downloaded file", "error")
+        // Log the error for debugging purposes
+        console.error("Error processing download:", error)
+
+        // Show a more specific error message if possible
+        const errorMessage = error.message
+          ? `Error processing downloaded file: ${error.message}`
+          : "Error processing downloaded file"
+
+        showNotification(errorMessage, "error")
       }
     }
 
