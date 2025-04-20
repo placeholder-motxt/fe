@@ -86,7 +86,7 @@
     }
 
     // Validate project name format (alphanumeric and underscore only)
-    const projectNameRegex = /^[a-zA-Z0-9_]+$/
+    const projectNameRegex = /^\w+$/
     if (!projectNameRegex.test(projectName)) {
       showNotification("Project name can only contain letters, numbers, and underscores.", "error")
       return
