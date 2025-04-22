@@ -12,7 +12,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/istanbul-lib-coverage/3.2.0/index.min.js" integrity="sha384-bjBMHSKRmPXg1+JZRBrO0oCaL3Xev//7RZFzIJnqkiXWs+uQNvP7SSt9aDDKJMF" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/istanbul-lib-report/3.0.0/index.browser.min.js" integrity="sha384-LpDPQlMFrfGiVuZgYKTRbLf9rV7/cz0NpEJgSKjHHPF8rKXvvyZPP5NKpKzlZDJF" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/istanbul-reports/3.1.5/index.browser.min.js" integrity="sha384-cCcXvQTg8WdGRnSPK9CXrwJVLPXAGX+UUDDVbzOEGrfpN9RBhl6TvUErc0GgYlQg" crossorigin="anonymous"></script>
-  
+    
   <!-- Mockup styles to ensure classes work properly -->
   <style>
     .hidden {
@@ -166,7 +166,7 @@
       }
 
       // Validate project name format (alphanumeric and underscore only)
-      const projectNameRegex = /^[a-zA-Z0-9_]+$/
+      const projectNameRegex = /^\w+$/
       if (!projectNameRegex.test(projectName)) {
         showNotification("Project name can only contain letters, numbers, and underscores.", "error")
         return
@@ -322,8 +322,13 @@
       formData.append("project_name", projectName)
 
       // Add style theme to form data
-      addStyleThemeToFormData(formData)
-      
+      const selectedStyle = document.querySelector('input[name="style-theme"]:checked')
+      if (selectedStyle) {
+        formData.append("style-theme", selectedStyle.value)
+      } else {
+        formData.append("style-theme", "modern") // Default to modern if somehow nothing is selected
+      }
+
       // Add framework to form data
       const selectedFramework = document.querySelector('input[name="framework"]:checked')
       if (selectedFramework) {
@@ -346,7 +351,13 @@
           await handleErrorResponse(response)
         }
       } catch (error) {
-        showNotification("Network error - Check your connection", "error")
+        // Log the error for debugging
+        console.error("Network error during conversion:", error)
+
+        // Show a more specific error message if possible
+        const errorMessage = error.message ? `Network error: ${error.message}` : "Network error - Check your connection"
+
+        showNotification(errorMessage, "error")
       } finally {
         // Remove loading class from both buttons
         convertBtn.classList.remove("loading")
@@ -381,7 +392,15 @@
         showNotification("Files converted and downloaded successfully!", "success")
         resetAfterConversion()
       } catch (error) {
-        showNotification("Error processing downloaded file", "error")
+        // Log the error for debugging purposes
+        console.error("Error processing download:", error)
+
+        // Show a more specific error message if possible
+        const errorMessage = error.message
+          ? `Error processing downloaded file: ${error.message}`
+          : "Error processing downloaded file"
+
+        showNotification(errorMessage, "error")
       }
     }
 
@@ -917,7 +936,7 @@
         // Test no files scenario
         const fileInput = document.getElementById('fileInput');
         fileInput.files = new DataTransfer().files; // Clear files
-        uploadedFiles = []; // Clear uploaded files
+        window.uploadedFiles = []; // Clear uploaded files
         convertButton.click();
         assert.ok(notification.textContent.includes('Please select files'), 'Should show error when no files selected');
         done();
