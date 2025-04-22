@@ -70,20 +70,24 @@ def convert_page(request):
             # Validate FastAPI response
             if response.status_code == 200:
                 content_type = response.headers.get('Content-Type', '')
-                if 'application/zip' not in content_type.lower():
+                if 'application/zip' in content_type.lower():
+                    # For ZIP files, return the binary content with appropriate headers
+                    http_response = HttpResponse(
+                        response.content,
+                        content_type='application/zip'
+                    )
+                    # Add Content-Disposition header for download
+                    http_response['Content-Disposition'] = f'attachment; filename="{files[0].name}.zip"'
+                    return http_response
+                else:
                     logger.error(f"Invalid content type from FastAPI: {content_type}")
                     return JsonResponse({
                         'error': 'Invalid response format from conversion service'
                     }, status=500)
-
-                return HttpResponse(
-                    response.content,
-                    content_type='application/zip'
-                )
             else:
                 # Properly parse FastAPI's error response
                 try:
-                    return JsonResponse(response.json(), status=response.status_code)
+                    return JsonResponse(response.json(), status=response.status_code, safe=False)
                 except json.JSONDecodeError as ex:
                     return JsonResponse({'error': 'Invalid service response'}, status=500)
 
