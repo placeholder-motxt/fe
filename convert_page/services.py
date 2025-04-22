@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 import json
 from django.core.files.uploadedfile import UploadedFile
 from django.http import JsonResponse
@@ -10,10 +9,13 @@ class FileValidator:
             raise ValueError(f'Invalid file type: {file.name}. Only .class.jet and .sequence.jet allowed')
 
 class JSONParser:
-    def parse(self, file_content: bytes) -> dict:
-        """Parse JSON content from file bytes."""
+    def parse(self, file_content) -> dict:
+        """Parse JSON content from file bytes or string."""
         try:
-            return json.loads(file_content.decode('utf-8'))
+            # Handle both bytes and string input
+            if isinstance(file_content, bytes):
+                return json.loads(file_content.decode('utf-8'))
+            return json.loads(file_content)
         except json.JSONDecodeError as e:
             raise ValueError('Invalid JSON content in file') from e
         except UnicodeDecodeError as e:
@@ -34,12 +36,7 @@ class ResponseBuilder:
         """Build error response."""
         return JsonResponse({'error': error_message}, status=status)
 
-class BaseFileProcessor(ABC):
-    @abstractmethod
-    def process(self, files: list[UploadedFile]) -> dict:
-        pass
-
-class JetFileProcessor(BaseFileProcessor):
+class JetFileProcessor:
     def process(self, files: list[UploadedFile]) -> dict:
         """Process multiple .jet files with validation."""
         validator = FileValidator()
