@@ -178,6 +178,12 @@
       return `Invalid file type: ${file.name}. Only .class.jet and .sequence.jet allowed`
     }
 
+    // Add file size validation (10MB limit)
+    const maxSizeInBytes = 10 * 1024 * 1024 // 10MB
+    if (file.size > maxSizeInBytes) {
+      return `File ${file.name} exceeds the maximum size limit of 10MB`
+    }
+
     if (isClass) {
       classFileCount++
       if (classFileCount > 1) {
@@ -187,6 +193,7 @@
     }
     return null
   }
+
 
   // Update file list
   function updateFileList() {
