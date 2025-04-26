@@ -121,7 +121,7 @@
     if (!validateProjectName(projectName)) return;
 
     // Get framework/theme selections
-    const { frameworkValue, selectedFramework } = getFrameworkSelection();
+    const { frameworkValue } = getFrameworkSelection();
     const { themeValue } = getThemeSelection();
 
     // Handle framework-specific validation
@@ -171,9 +171,15 @@ function updateGroupIdDisplay(groupId) {
     
     groupIdConfirmation.classList.remove("hidden");
     const spanElement = groupIdConfirmation.querySelector("span");
-    spanElement 
-        ? spanElement.textContent = groupId
-        : groupIdConfirmation.innerHTML = `Group ID: <span class="font-semibold">${groupId}</span>`;
+    if (spanElement) {
+      // Assignment is now its own statement in the 'if' block
+      spanElement.textContent = groupId;
+  } else {
+      // Fallback assignment remains in the 'else' block
+      groupIdConfirmation.innerHTML = `Group ID: <span class="font-semibold">${groupId}</span>`;
+      // Optional: Keep the warning if the span *should* always exist
+      console.warn("Could not find specific span in groupIdConfirmation, overwriting innerHTML.");
+  }
 }
 
 function getFrameworkSelection() {
