@@ -40,9 +40,23 @@ def convert_page(request):
                 'filename': filenames, 
                 'content': [],
                 'project_name': project_name,
-                'style_theme': style_theme,  # Add the style theme to the processed data
-                'framework': framework  # Add the framework to the processed data
+                'style_theme': style_theme,
+                'project_type': framework  # For backward compatibility
             }
+
+            # Add group_id if framework is springboot
+            if framework == 'springboot':
+                group_id = request.POST.get('group_id', '').strip()
+                
+                # Validate group_id is not empty for springboot
+                if not group_id:
+                    return JsonResponse({'error': 'Group ID is required for SpringBoot projects'}, status=400)
+                
+                # Validate group_id contains at least one dot
+                if '.' not in group_id:
+                    return JsonResponse({'error': 'Group ID must contain at least one dot (e.g., com.example)'}, status=400)
+                
+                processed_data['group_id'] = group_id
 
             for file in files:
                 if not file.name.lower().endswith(('.class.jet', '.sequence.jet')):
