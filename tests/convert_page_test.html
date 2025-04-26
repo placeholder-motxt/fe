@@ -165,83 +165,105 @@
 
     // Show confirmation modal
     function showConfirmationModal(e) {
-      if (e) e.preventDefault()
-      
+      if (e) e.preventDefault();
+
+      if (!hasUploadedFiles()) return;
+
+      const projectName = getValidProjectName();
+      if (!projectName) return;
+
+      const frameworkValue = getSelectedFramework();
+      if (!handleSpringbootGroupId(frameworkValue)) return;
+
+      const themeValue = getSelectedTheme();
+
+      updateConfirmationContent(projectName, frameworkValue, themeValue);
+      confirmationModal.classList.remove("hidden");
+    }
+
+    function hasUploadedFiles() {
       if (uploadedFiles.length === 0) {
-        showNotification("Please select files to convert.", "error")
-        return
+        showNotification("Please select files to convert.", "error");
+        return false;
       }
+      return true;
+    }
 
-      // Get project name
-      const projectName = projectNameInput.value.trim()
-
-      // Validate project name is not empty
-      if (!projectName) {
-        showNotification("Please enter a project name.", "error")
-        return
+    function getValidProjectName() {
+      const name = projectNameInput.value.trim();
+      if (!name) {
+        showNotification("Please enter a project name.", "error");
+        return null;
       }
-
-      // Validate project name format (alphanumeric and underscore only)
-      const projectNameRegex = /^\w+$/
-      if (!projectNameRegex.test(projectName)) {
-        showNotification("Project name can only contain letters, numbers, and underscores.", "error")
-        return
+      const nameRegex = /^\w+$/;
+      if (!nameRegex.test(name)) {
+        showNotification("Project name can only contain letters, numbers, and underscores.", "error");
+        return null;
       }
+      return name;
+    }
 
-      // Get selected framework
-      const selectedFramework = document.querySelector('input[name="framework"]:checked')
-      const frameworkValue = selectedFramework ? selectedFramework.value : "django"
+    function getSelectedFramework() {
+      const selected = document.querySelector('input[name="framework"]:checked');
+      return selected ? selected.value : "django";
+    }
 
-      // Validate group_id if SpringBoot is selected
-      if (frameworkValue === "springboot") {
-        const groupId = groupIdInput.value.trim()
+    function getSelectedTheme() {
+      const selected = document.querySelector('input[name="style-theme"]:checked');
+      return selected ? selected.value : "modern";
+    }
 
-        // Validate group_id is not empty
-        if (!groupId) {
-          showNotification("Please enter a Group ID for SpringBoot projects.", "error")
-          return
-        }
-
-        // Validate group_id contains at least one dot
-        if (!groupId.includes(".")) {
-          showNotification("Group ID must contain at least one dot (e.g., com.example)", "error")
-          return
-        }
-
-        // Show group ID in confirmation modal
+    function handleSpringbootGroupId(frameworkValue) {
+      if (frameworkValue !== "springboot") {
         if (groupIdConfirmation) {
-          groupIdConfirmation.classList.remove("hidden")
-          groupIdConfirmation.querySelector("span").textContent = groupId
+          groupIdConfirmation.classList.add("hidden");
         }
-      } else {
-        // Hide group ID in confirmation modal
-        if (groupIdConfirmation) {
-          groupIdConfirmation.classList.add("hidden")
+        return true;
+      }
+      
+      const groupId = groupIdInput.value.trim();
+      if (!groupId) {
+        showNotification("Please enter a Group ID for SpringBoot projects.", "error");
+        return false;
+      }
+      if (!groupId.includes(".")) {
+        showNotification("Group ID must contain at least one dot (e.g., com.example)", "error");
+        return false;
+      }
+      updateGroupIdDisplay(groupId);
+      return true;
+    }
+
+    function updateGroupIdDisplay(groupId) {
+      if (groupIdConfirmation) {
+        groupIdConfirmation.classList.remove("hidden");
+        const spanElement = groupIdConfirmation.querySelector("span");
+        if (spanElement) {
+          spanElement.textContent = groupId;
+        } else {
+          groupIdConfirmation.innerHTML = `Group ID: <span class="font-semibold">${groupId}</span>`;
         }
       }
+    }
 
-      // Get selected theme
-      const selectedTheme = document.querySelector('input[name="style-theme"]:checked')
-      const themeValue = selectedTheme ? selectedTheme.value : "modern"
+    function updateConfirmationContent(projectName, frameworkValue, themeValue) {
+      const capFramework = frameworkValue.charAt(0).toUpperCase() + frameworkValue.slice(1);
+      const capTheme = themeValue.charAt(0).toUpperCase() + themeValue.slice(1);
 
-      // Update confirmation message with project name and framework
-      const confirmationMessage = document.getElementById("confirmationMessage")
+      const confirmationMessage = document.getElementById("confirmationMessage");
       if (confirmationMessage) {
-        confirmationMessage.textContent = `Are you sure you want to create a project named "${projectName}" in ${frameworkValue.charAt(0).toUpperCase() + frameworkValue.slice(1)}?`
+        confirmationMessage.textContent = 
+          `Are you sure you want to create a project named "${projectName}" in ${capFramework}?`;
       }
 
-      // Update framework and theme confirmation
       if (frameworkConfirmation) {
-        frameworkConfirmation.innerHTML = `Framework: <span class="font-semibold">${frameworkValue.charAt(0).toUpperCase() + frameworkValue.slice(1)}</span>`
+        frameworkConfirmation.innerHTML = `Framework: <span class="font-semibold">${capFramework}</span>`;
       }
 
       if (themeConfirmation) {
-        themeConfirmation.innerHTML = `Theme: <span class="font-semibold">${themeValue.charAt(0).toUpperCase() + themeValue.slice(1)}</span>`
+        themeConfirmation.innerHTML = `Theme: <span class="font-semibold">${capTheme}</span>`;
       }
-
-      confirmationModal.classList.remove("hidden")
     }
-
     // Hide confirmation modal
     function hideConfirmationModal() {
       confirmationModal.classList.add("hidden")
