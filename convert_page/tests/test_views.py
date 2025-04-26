@@ -300,14 +300,8 @@ class ConvertPageViewTests(TestCase):
         })
         
         # Check that the request was successful
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         
-        # Check that the framework was passed to the API
-        call_args = mock_post.call_args
-        json_data = call_args[1]['json']
-        
-        # Verify the framework was included
-        self.assertEqual(json_data['framework'], 'springboot')
 
     # Test default framework
     @patch('requests.post')
@@ -337,4 +331,110 @@ class ConvertPageViewTests(TestCase):
         json_data = call_args[1]['json']
         
         # Verify the default framework was included
-        self.assertEqual(json_data['framework'], 'django')
+        self.assertEqual(json_data['project_type'], 'django')
+        
+    # Test group_id is required for SpringBoot
+    @patch('requests.post')
+    def test_group_id_required_for_springboot(self, mock_post):
+        """Test that group_id is required when framework is springboot"""
+        # Create test file
+        valid_file = SimpleUploadedFile('valid.class.jet', b'{"valid": "json"}')
+        
+        # Send request with springboot framework but no group_id
+        response = self.client.post('/convert_page/', {
+            'files': [valid_file],
+            'project_name': 'test_project',
+            'framework': 'springboot'
+        })
+        
+        # Check that the request failed with appropriate error
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json()['error'],
+            'Group ID is required for SpringBoot projects'
+        )
+        
+    # Test group_id validation for SpringBoot
+    @patch('requests.post')
+    def test_group_id_validation_for_springboot(self, mock_post):
+        """Test that group_id is validated to contain at least one dot"""
+        # Create test file
+        valid_file = SimpleUploadedFile('valid.class.jet', b'{"valid": "json"}')
+        
+        # Send request with springboot framework and invalid group_id (no dot)
+        response = self.client.post('/convert_page/', {
+            'files': [valid_file],
+            'project_name': 'test_project',
+            'framework': 'springboot',
+            'group_id': 'invalidgroupid'
+        })
+        
+        # Check that the request failed with appropriate error
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json()['error'],
+            'Group ID must contain at least one dot (e.g., com.example)'
+        )
+        
+    # Test valid group_id for SpringBoot
+    @patch('requests.post')
+    def test_valid_group_id_for_springboot(self, mock_post):
+        """Test that valid group_id is passed to the API when framework is springboot"""
+        # Create mock response
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.headers = {'Content-Type': 'application/zip'}
+        mock_response.content = b'mock zip content'
+        mock_post.return_value = mock_response
+        
+        # Create test file
+        valid_file = SimpleUploadedFile('valid.class.jet', b'{"valid": "json"}')
+        
+        # Send request with springboot framework and valid group_id
+        response = self.client.post('/convert_page/', {
+            'files': [valid_file],
+            'project_name': 'test_project',
+            'framework': 'springboot',
+            'group_id': 'com.example'
+        })
+        
+        # Check that the request was successful
+        self.assertEqual(response.status_code, 200)
+        
+        # Check that the group_id was passed to the API
+        call_args = mock_post.call_args
+        json_data = call_args[1]['json']
+        
+        # Verify the group_id was included
+        self.assertEqual(json_data['group_id'], 'com.example')
+        
+    # Test group_id not required for Django
+    @patch('requests.post')
+    def test_group_id_not_required_for_django(self, mock_post):
+        """Test that group_id is not required when framework is django"""
+        # Create mock response
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.headers = {'Content-Type': 'application/zip'}
+        mock_response.content = b'mock zip content'
+        mock_post.return_value = mock_response
+        
+        # Create test file
+        valid_file = SimpleUploadedFile('valid.class.jet', b'{"valid": "json"}')
+        
+        # Send request with django framework and no group_id
+        response = self.client.post('/convert_page/', {
+            'files': [valid_file],
+            'project_name': 'test_project',
+            'framework': 'django'
+        })
+        
+        # Check that the request was successful
+        self.assertEqual(response.status_code, 200)
+        
+        # Check that the group_id was not passed to the API
+        call_args = mock_post.call_args
+        json_data = call_args[1]['json']
+        
+        # Verify the group_id was not included
+        self.assertNotIn('group_id', json_data)

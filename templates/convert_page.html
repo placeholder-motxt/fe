@@ -21,6 +21,7 @@
         <p class="mb-4" id="confirmationMessage">Are you sure you want to convert these files?</p>
         <div id="frameworkConfirmation" class="mb-2">Framework: <span class="font-semibold">Django</span></div>
         <div id="themeConfirmation" class="mb-4">Theme: <span class="font-semibold">Modern</span></div>
+        <div id="groupIdConfirmation" class="mb-4 hidden">Group ID: <span class="font-semibold"></span></div>
         <div class="flex justify-between">
             <button id="cancelConversion" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 w-24">
               Cancel
@@ -142,6 +143,21 @@
               </label>
             </div>
           </div>
+        </div>
+        
+        <!-- Group ID Field (for SpringBoot) -->
+        <div id="group-id-container" class="mb-4 hidden">
+          <label for="groupId" class="block text-sm font-medium mb-2" style="color: var(--text);">Group ID</label>
+          <input 
+            type="text" 
+            id="groupId" 
+            name="group_id" 
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--button)] focus:border-[var(--button)]" 
+            placeholder="com.example" 
+            pattern=".*\..*"
+            title="Group ID must contain at least one dot (e.g., com.example)"
+          >
+          <p class="mt-1 text-sm" style="color: var(--text);">Must contain at least one dot (e.g., com.example)</p>
         </div>
         
         <!-- Style Options -->
