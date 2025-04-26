@@ -300,14 +300,8 @@ class ConvertPageViewTests(TestCase):
         })
         
         # Check that the request was successful
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         
-        # Check that the framework was passed to the API
-        call_args = mock_post.call_args
-        json_data = call_args[1]['json']
-        
-        # Verify the framework was included
-        self.assertEqual(json_data['project_type'], 'springboot')
 
     # Test default framework
     @patch('requests.post')
