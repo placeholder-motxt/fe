@@ -9,6 +9,8 @@
     handleSuccessfulConversion: null,
     showConfirmationModal: null,
     hideConfirmationModal: null,
+    toggleGroupIdField: null, // Added from second script
+    init: null,
   }
 
   // Global variables
@@ -26,7 +28,10 @@
   let confirmConversionBtn = null
   let frameworkConfirmation = null
   let themeConfirmation = null
+  let groupIdConfirmation = null // Added from second script
   let projectNameInput = null
+  let groupIdInput = null // Added for SpringBoot Group ID
+  let groupIdContainer = null // Added container for Group ID field
 
   // Initialize the application
   function init() {
@@ -40,10 +45,13 @@
     confirmConversionBtn = document.getElementById("confirmConversion")
     frameworkConfirmation = document.getElementById("frameworkConfirmation")
     themeConfirmation = document.getElementById("themeConfirmation")
+    groupIdConfirmation = document.getElementById("groupIdConfirmation") // Get new element
     projectNameInput = document.getElementById("projectName")
+    groupIdInput = document.getElementById("groupId") // Get new element (ensure ID exists in HTML)
+    groupIdContainer = document.getElementById("group-id-container") // Get new element (ensure ID exists in HTML)
 
-    if (!dropZone || !fileInput || !fileListSection || !convertBtn || !confirmationModal) {
-      console.error("DOM elements not found - skipping initialization")
+    if (!dropZone || !fileInput || !fileListSection || !convertBtn || !confirmationModal || !groupIdInput || !groupIdContainer || !groupIdConfirmation) {
+      console.error("DOM elements not found - skipping initialization. Ensure elements with IDs 'groupId', 'group-id-container', and 'groupIdConfirmation' exist.")
       return
     }
 
@@ -52,6 +60,7 @@
     classFileCount = 0
 
     initializeEventListeners()
+    toggleGroupIdField() // Initial check for group ID field visibility
     handleDarkMode()
   }
 
@@ -65,7 +74,37 @@
     convertBtn.addEventListener("click", showConfirmationModal)
     cancelConversionBtn.addEventListener("click", hideConfirmationModal)
     confirmConversionBtn.addEventListener("click", handleConvert)
+
+    // Add event listeners for framework selection to toggle Group ID field
+    const frameworkOptions = document.querySelectorAll('input[name="framework"]')
+    frameworkOptions.forEach((option) => {
+      option.addEventListener("change", toggleGroupIdField)
+    })
+
+    // Optional: Close modal on outside click (use with caution if it interferes)
+    // window.addEventListener("click", (event) => {
+    //   if (confirmationModal && event.target == confirmationModal) {
+    //     hideConfirmationModal();
+    //   }
+    // });
   }
+
+  // Toggle group ID field based on selected framework
+  function toggleGroupIdField() {
+    const springbootSelected = document.getElementById("framework-springboot")?.checked // Use optional chaining for safety
+
+    if (groupIdContainer) { // Check if container exists
+        if (springbootSelected) {
+            groupIdContainer.classList.remove("hidden")
+        } else {
+            groupIdContainer.classList.add("hidden")
+            if (groupIdInput) groupIdInput.value = "" // Clear input when hidden
+        }
+    } else {
+        console.warn("Group ID container not found. Cannot toggle visibility.");
+    }
+  }
+
 
   // Show confirmation modal
   function showConfirmationModal(e) {
@@ -96,6 +135,44 @@
     const selectedFramework = document.querySelector('input[name="framework"]:checked')
     const frameworkValue = selectedFramework ? selectedFramework.value : "django"
 
+    // --- Group ID Validation (Merged Logic) ---
+    if (frameworkValue === "springboot") {
+      const groupId = groupIdInput.value.trim()
+
+      // Validate group_id is not empty
+      if (!groupId) {
+        showNotification("Please enter a Group ID for SpringBoot projects.", "error")
+        return
+      }
+
+      // Validate group_id contains at least one dot
+      if (!groupId.includes(".")) {
+        showNotification("Group ID must contain at least one dot (e.g., com.example)", "error")
+        return
+      }
+
+      // Show group ID in confirmation modal
+      if (groupIdConfirmation) {
+        groupIdConfirmation.classList.remove("hidden")
+        // Assuming the span is the direct child or grandchild you want to update
+        const spanElement = groupIdConfirmation.querySelector("span")
+        if (spanElement) {
+             spanElement.textContent = groupId;
+        } else {
+            // Fallback or error if span isn't found as expected
+            groupIdConfirmation.innerHTML = `Group ID: <span class="font-semibold">${groupId}</span>`
+            console.warn("Could not find specific span in groupIdConfirmation, overwriting innerHTML.");
+        }
+
+      }
+    } else {
+      // Hide group ID in confirmation modal if not SpringBoot
+      if (groupIdConfirmation) {
+        groupIdConfirmation.classList.add("hidden")
+      }
+    }
+    // --- End Group ID Validation ---
+
     // Get selected theme
     const selectedTheme = document.querySelector('input[name="style-theme"]:checked')
     const themeValue = selectedTheme ? selectedTheme.value : "modern"
@@ -115,27 +192,33 @@
       themeConfirmation.innerHTML = `Theme: <span class="font-semibold">${themeValue.charAt(0).toUpperCase() + themeValue.slice(1)}</span>`
     }
 
+    // Use classList for modal visibility (original, preferred method)
     confirmationModal.classList.remove("hidden")
   }
 
-  // Hide confirmation modal
+  // Hide confirmation modal (original, preferred method)
   function hideConfirmationModal() {
-    confirmationModal.classList.add("hidden")
+    if (confirmationModal) { // Check if modal exists
+        confirmationModal.classList.add("hidden")
+    }
   }
 
   // Handle file list click (for delete buttons)
   function handleFileListClick(e) {
-    if (e.target.classList.contains("delete-btn")) {
-      const filename = e.target.closest(".file-entry").dataset.filename
-      uploadedFiles = uploadedFiles.filter((file) => file.name !== filename)
-      updateFileList()
+    if (e.target.classList.contains("delete-btn") || e.target.closest(".delete-btn")) { // Handle clicks on span inside button too
+      const fileEntry = e.target.closest(".file-entry")
+      if(fileEntry) {
+          const filename = fileEntry.dataset.filename
+          uploadedFiles = uploadedFiles.filter((file) => file.name !== filename)
+          updateFileList()
+      }
     }
   }
 
   // Handle file input change
   function handleFileInput(e) {
     processFiles(Array.from(e.target.files))
-    e.target.value = ""
+    e.target.value = "" // Clear the input after selection
   }
 
   // Handle file drop
@@ -152,24 +235,38 @@
   }
 
   // Handle drag leave
-  function handleDragLeave() {
-    dropZone.classList.remove("dragover")
+  function handleDragLeave(e) {
+    // Prevent flickering when dragging over child elements
+    if (!dropZone.contains(e.relatedTarget)) {
+        dropZone.classList.remove("dragover");
+    }
   }
 
   // Process files
   function processFiles(files) {
+    let addedFiles = 0; // Track how many files were actually added in this batch
     files.forEach((file) => {
-      const validationMessage = validateFile(file)
+      // Check if file with the same name already exists
+      if (uploadedFiles.some(existingFile => existingFile.name === file.name)) {
+          showNotification(`File "${file.name}" has already been added.`, "error");
+          return; // Skip this file
+      }
+
+      const validationMessage = validateFile(file) // Use current classFileCount
       if (validationMessage) {
         showNotification(validationMessage, "error")
-        return
+        return // Skip this file
       }
       uploadedFiles.push(file)
+      addedFiles++;
     })
-    updateFileList()
+
+    if (addedFiles > 0) {
+        updateFileList() // Only update if files were actually added
+    }
   }
 
-  // Validate file
+  // Validate file (adjusted to use current uploadedFiles for class count check)
   function validateFile(file) {
     const isClass = file.name.toLowerCase().endsWith(".class.jet")
     const isSequence = file.name.toLowerCase().endsWith(".sequence.jet")
@@ -184,21 +281,24 @@
       return `File ${file.name} exceeds the maximum size limit of 10MB`
     }
 
+    // Check class file count based on *currently* uploaded files + the one being added
     if (isClass) {
-      classFileCount++
-      if (classFileCount > 1) {
-        classFileCount--
-        return "Only one .class.jet file is allowed!"
-      }
+        const currentClassCount = uploadedFiles.filter(f => f.name.toLowerCase().endsWith(".class.jet")).length;
+        if (currentClassCount >= 1) {
+            return "Only one .class.jet file is allowed!"
+        }
     }
-    return null
+
+    return null // File is valid
   }
 
 
   // Update file list
   function updateFileList() {
+    if (!fileListSection) return;
+
     fileListSection.innerHTML = ""
-    classFileCount = 0
+    classFileCount = 0 // Recalculate count based on the final list
 
     uploadedFiles.forEach((file) => {
       if (file.name.toLowerCase().endsWith(".class.jet")) classFileCount++
@@ -208,13 +308,15 @@
     toggleConvertButton()
   }
 
-  // Create file element
+  // Create file element *** SVG RESTORED HERE ***
   function createFileElement(file) {
     const fileEntry = document.createElement("div")
-    fileEntry.className = "file-entry flex items-center justify-between bg-[var(--hover-tile)] rounded-lg p-4"
+    // Added margin-bottom for spacing, kept other layout classes from previous version
+    fileEntry.className = "file-entry flex items-center justify-between bg-[var(--hover-tile)] rounded-lg p-4 mb-2"
     fileEntry.dataset.filename = file.name
+    // Slightly improved delete button for easier clicking
     fileEntry.innerHTML = `
-        <div class="flex items-center space-x-2">
+        <div class="flex items-center space-x-2 overflow-hidden mr-2">
           <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="50" height="50" viewBox="0 0 256 256" xml:space="preserve">
           <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
             <path d="M 77.474 17.28 L 61.526 1.332 C 60.668 0.473 59.525 0 58.311 0 H 15.742 c -2.508 0 -4.548 2.04 -4.548 4.548 v 80.904 c 0 2.508 2.04 4.548 4.548 4.548 h 58.516 c 2.508 0 4.549 -2.04 4.549 -4.548 V 20.496 C 78.807 19.281 78.333 18.138 77.474 17.28 z M 61.073 5.121 l 12.611 12.612 H 62.35 c -0.704 0 -1.276 -0.573 -1.276 -1.277 V 5.121 z M 74.258 87 H 15.742 c -0.854 0 -1.548 -0.694 -1.548 -1.548 V 4.548 C 14.194 3.694 14.888 3 15.742 3 h 42.332 v 13.456 c 0 2.358 1.918 4.277 4.276 4.277 h 13.457 v 64.719 C 75.807 86.306 75.112 87 74.258 87 z" style="fill: var(--text);" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
@@ -228,31 +330,35 @@
             <path d="M 68.193 77.319 H 55.544 c -0.828 0 -1.5 -0.672 -1.5 -1.5 s 0.672 -1.5 1.5 -1.5 h 12.649 c 0.828 0 1.5 0.672 1.5 1.5 S 69.021 77.319 68.193 77.319 z" style="fill: var(--text);" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
           </g>
           </svg>
-        <span class="font-semibold" style="color: var(--text);">${file.name}</span>
+        <span class="font-semibold truncate" style="color: var(--text);" title="${file.name}">${file.name}</span>
         </div>
-        <button class="delete-btn">
-          <span style="color:var(--text)">×</span>
+        <button type="button" class="delete-btn flex-shrink-0 p-1 rounded hover:bg-red-200 dark:hover:bg-red-800" aria-label="Remove ${file.name}">
+          <span style="color:var(--text); font-size: 1.5em; line-height: 1;">&times;</span>
         </button>
           `
     return fileEntry
   }
 
-  // Toggle convert button
+  // Toggle convert button visibility
   function toggleConvertButton() {
     const hasFiles = uploadedFiles.length > 0
     fileListSection.style.display = hasFiles ? "block" : "none"
     convertBtn.style.display = hasFiles ? "inline-block" : "none"
   }
 
-  // Handle convert
+  // Handle convert action
   async function handleConvert() {
+    if (!confirmConversionBtn || !convertBtn) return; // Safety check
+
     // Add loading class to the confirm button
     confirmConversionBtn.classList.add("loading")
+    confirmConversionBtn.disabled = true; // Disable button while loading
 
     hideConfirmationModal()
 
     // Also add loading class to the main convert button for visual feedback
     convertBtn.classList.add("loading")
+    convertBtn.disabled = true; // Disable button while loading
 
     const formData = new FormData()
     uploadedFiles.forEach((file) => formData.append("files", file))
@@ -263,19 +369,32 @@
 
     // Add style theme to form data
     const selectedStyle = document.querySelector('input[name="style-theme"]:checked')
-    if (selectedStyle) {
-      formData.append("style-theme", selectedStyle.value)
-    } else {
-      formData.append("style-theme", "modern") // Default to modern if somehow nothing is selected
-    }
+    formData.append("style-theme", selectedStyle ? selectedStyle.value : "modern")
 
     // Add framework to form data
     const selectedFramework = document.querySelector('input[name="framework"]:checked')
-    if (selectedFramework) {
-      formData.append("framework", selectedFramework.value)
-    } else {
-      formData.append("framework", "django") // Default to django if somehow nothing is selected
+    const frameworkValue = selectedFramework ? selectedFramework.value : "django"
+    formData.append("framework", frameworkValue)
+
+    // --- Add group_id if SpringBoot is selected (Merged Logic) ---
+    if (frameworkValue === "springboot") {
+      const groupId = groupIdInput.value.trim()
+      // Group ID should have been validated already in showConfirmationModal,
+      // but a final check here might be wise depending on application flow.
+      if (groupId) {
+        formData.append("group_id", groupId)
+      } else {
+         // This case should ideally not happen if validation in modal worked
+         showNotification("Group ID is missing for SpringBoot project.", "error");
+         // Re-enable buttons and remove loading state
+         convertBtn.classList.remove("loading");
+         convertBtn.disabled = false;
+         confirmConversionBtn.classList.remove("loading");
+         confirmConversionBtn.disabled = false;
+         return; // Stop conversion
+      }
     }
+    // --- End Group ID logic ---
 
     try {
       const response = await fetch("/convert_page/", {
@@ -291,22 +410,27 @@
         await handleErrorResponse(response)
       }
     } catch (error) {
-      showNotification("Network error - Check your connection", "error")
+      console.error("Network error during conversion:", error); // Log error details
+      const errorMessage = error.message ? `Network error: ${error.message}` : "Network error - Check your connection"
+      showNotification(errorMessage, "error")
     } finally {
-      // Remove loading class from both buttons
+      // Remove loading class and re-enable both buttons regardless of success/failure
       convertBtn.classList.remove("loading")
+      convertBtn.disabled = false;
       confirmConversionBtn.classList.remove("loading")
+      confirmConversionBtn.disabled = false;
     }
   }
 
-  // Handle successful conversion
+  // Handle successful conversion and download
   async function handleSuccessfulConversion(response) {
     try {
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement("a")
+      a.style.display = 'none'; // Hide the link
       a.href = url
-      const projectName = projectNameInput.value.trim()
+      const projectName = projectNameInput.value.trim() || "converted_project" // Fallback name
       a.download = `${projectName}.zip`
       document.body.appendChild(a)
       a.click()
@@ -315,56 +439,85 @@
       showNotification("Files converted and downloaded successfully!", "success")
       resetAfterConversion()
     } catch (error) {
-      showNotification("Error processing downloaded file", "error")
+      console.error("Error processing download:", error); // Log error details
+      const errorMessage = error.message ? `Error processing downloaded file: ${error.message}` : "Error processing downloaded file"
+      showNotification(errorMessage, "error")
     }
   }
 
-  // Handle error response
+  // Handle error response from the server
   async function handleErrorResponse(response) {
-    let message = "Conversion failed"
+    let message = `Conversion failed (Status: ${response.status})`
     const contentType = response.headers.get("content-type") || ""
 
-    if (contentType.includes("application/json")) {
-      const errorData = await response.json()
-      message = errorData.error || errorData.detail || message
-    } else {
-      message = await response.text()
+    try {
+        if (contentType.includes("application/json")) {
+          const errorData = await response.json()
+          message = errorData.error || errorData.detail || JSON.stringify(errorData) // Provide more detail if possible
+        } else {
+          const textResponse = await response.text();
+          message = textResponse || message; // Use text response if available
+        }
+    } catch (e) {
+        console.error("Error parsing error response:", e);
+        message = `Conversion failed (Status: ${response.status}) and error response could not be parsed.`
     }
 
-    showNotification(`Error ${response.status}: ${message}`, "error")
+
+    showNotification(`Error: ${message}`, "error")
   }
 
-  // Show notification
+  // Show notification message
   function showNotification(message, type = "success") {
     const notification = document.getElementById("notification")
     const messageElement = document.getElementById("notificationMessage")
 
-    messageElement.textContent = message
-    notification.className = `
-              fixed top-4 right-4 max-w-md p-4 rounded-lg shadow-lg 
-              ${type === "error" ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800"}
-              transition-all
-          `
+    if (!notification || !messageElement) {
+        console.error("Notification elements not found in the DOM.");
+        alert(`${type.toUpperCase()}: ${message}`); // Fallback to alert
+        return;
+    }
 
+    messageElement.textContent = message
+    // Clear existing type classes
+    notification.classList.remove('bg-red-100', 'text-red-800', 'bg-green-100', 'text-green-800');
+    // Add new type classes
+    notification.classList.add(
+        type === "error" ? "bg-red-100" : "bg-green-100",
+        type === "error" ? "text-red-800" : "text-green-800"
+    )
     notification.classList.remove("hidden")
-    setTimeout(() => {
+
+    // Clear previous timeouts if any
+    if (notification.timeoutId) {
+        clearTimeout(notification.timeoutId);
+    }
+
+    // Set new timeout
+    notification.timeoutId = setTimeout(() => {
       notification.classList.add("hidden")
+      notification.timeoutId = null; // Clear the stored timeout ID
     }, 5000)
   }
 
-  // Reset after conversion
+  // Reset state after successful conversion
   function resetAfterConversion() {
     uploadedFiles = []
+    if (projectNameInput) projectNameInput.value = "" // Optionally clear project name
+    if (groupIdInput) groupIdInput.value = "" // Clear group ID
+    // Optionally reset framework/theme selection or leave as is
     updateFileList()
+    toggleGroupIdField(); // Ensure Group ID field visibility is correct after reset
   }
 
-  // Get cookie
+  // Get CSRF cookie value
   function getCookie(name) {
     let cookieValue = null
     if (document.cookie && document.cookie !== "") {
       const cookies = document.cookie.split(";")
       for (const cookie of cookies) {
         const trimmed = cookie.trim()
+        // Does the cookie string begin with the name we want?
         if (trimmed.startsWith(name + "=")) {
           cookieValue = decodeURIComponent(trimmed.substring(name.length + 1))
           break
@@ -374,23 +527,35 @@
     return cookieValue
   }
 
-  // Handle dark mode
+  // Handle dark mode toggle and persistence
   function handleDarkMode() {
     const themeToggle = document.getElementById("light-switch")
     const htmlElement = document.documentElement
 
-    if (!themeToggle) return
+    if (!themeToggle) return // Exit if toggle not found
 
-    // Load stored theme
-    if (localStorage.getItem("theme") === "dark") {
-      htmlElement.setAttribute("data-theme", "dark")
-      themeToggle.checked = true
-    } else if (localStorage.getItem("theme") === "light") {
-      htmlElement.setAttribute("data-theme", "light")
-      themeToggle.checked = false
+    // Function to apply theme based on toggle state and localStorage
+    const applyTheme = () => {
+        const storedTheme = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (storedTheme === "dark" || (!storedTheme && prefersDark)) {
+            htmlElement.setAttribute("data-theme", "dark");
+            themeToggle.checked = true;
+        } else {
+            // Default to light if no stored theme and no dark preference, or if stored theme is light
+            htmlElement.setAttribute("data-theme", "light");
+            themeToggle.checked = false;
+             // Ensure 'dark' class is removed if switching to light
+             // Although data-theme is preferred, some styles might rely on the class
+            htmlElement.classList.remove("dark");
+        }
     }
 
-    // Toggle theme
+    // Apply theme on initial load
+    applyTheme();
+
+    // Add listener for toggle changes
     themeToggle.addEventListener("change", () => {
       if (themeToggle.checked) {
         htmlElement.setAttribute("data-theme", "dark")
@@ -398,15 +563,18 @@
       } else {
         htmlElement.setAttribute("data-theme", "light")
         localStorage.setItem("theme", "light")
-        htmlElement.classList.remove("dark")
+        htmlElement.classList.remove("dark") // Explicitly remove dark class if using it
       }
     })
+
+     // Optional: Listen for system theme changes if you want the toggle to reflect system preference changes
+     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
   }
 
   // Initialize on DOM content loaded
   document.addEventListener("DOMContentLoaded", init)
 
-  // Expose functions for testing
+  // Expose functions for testing or external use
   fileUploader.handleConvert = handleConvert
   fileUploader.validateFile = validateFile
   fileUploader.processFiles = processFiles
@@ -415,11 +583,15 @@
   fileUploader.handleSuccessfulConversion = handleSuccessfulConversion
   fileUploader.showConfirmationModal = showConfirmationModal
   fileUploader.hideConfirmationModal = hideConfirmationModal
-  fileUploader.init = init
+  fileUploader.toggleGroupIdField = toggleGroupIdField // Expose the new function
+  fileUploader.init = init // Expose init
 
+  // Make fileUploader available globally (optional, depends on usage)
+  window.fileUploader = fileUploader;
+
+  // Support for Node.js environment testing (if needed)
   if (typeof module !== "undefined" && module.exports) {
     module.exports = fileUploader
-  } else {
-    window.fileUploader = fileUploader
   }
-})(window)
+
+})(window);
