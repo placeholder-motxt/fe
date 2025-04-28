@@ -18,7 +18,7 @@ def convert_page(request):
             # Get the selected style theme
             style_theme = request.POST.get('style-theme', 'modern')
             # Get the selected framework
-            framework = request.POST.get('project_type', 'django')
+            framework = request.POST.get('framework', 'django')
 
             # Validate project name
             if not project_name:
@@ -45,7 +45,7 @@ def convert_page(request):
             }
 
             # Add group_id if framework is springboot
-            if framework == 'spring':
+            if framework == 'springboot':
                 group_id = request.POST.get('group_id', '').strip()
                 
                 # Validate group_id is not empty for springboot
