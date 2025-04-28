@@ -348,11 +348,11 @@ class ConvertPageViewTests(TestCase):
         })
         
         # Check that the request failed with appropriate error
-        # self.assertEqual(response.status_code, 400)
-        # self.assertEqual(
-        #     response.json()['error'],
-        #     'Group ID is required for SpringBoot projects'
-        # )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json()['error'],
+            'Group ID is required for SpringBoot projects'
+        )
         
     # Test group_id validation for SpringBoot
     @patch('requests.post')
@@ -370,11 +370,11 @@ class ConvertPageViewTests(TestCase):
         })
         
         # Check that the request failed with appropriate error
-        # self.assertEqual(response.status_code, 400)
-        # self.assertEqual(
-        #     response.json()['error'],
-        #     'Group ID must contain at least one dot (e.g., com.example)'
-        # )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json()['error'],
+            'Group ID must contain at least one dot (e.g., com.example)'
+        )
         
     # Test valid group_id for SpringBoot
     @patch('requests.post')
