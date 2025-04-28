@@ -393,10 +393,10 @@ function capitalize(str) {
     // Add framework to form data
     const selectedFramework = document.querySelector('input[name="framework"]:checked')
     const frameworkValue = selectedFramework ? selectedFramework.value : "django"
-    formData.append("framework", frameworkValue)
+    formData.append("project_type", frameworkValue)
 
     // --- Add group_id if SpringBoot is selected (Merged Logic) ---
-    if (frameworkValue === "springboot") {
+    if (frameworkValue == "spring") {
       const groupId = groupIdInput.value.trim()
       // Group ID should have been validated already in showConfirmationModal,
       // but a final check here might be wise depending on application flow.
