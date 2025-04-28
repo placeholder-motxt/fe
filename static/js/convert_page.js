@@ -102,7 +102,6 @@
   // When Django is selected, hide Group ID and show style options.
   function toggleGroupIdField() {
     const springbootSelected = document.getElementById("framework-springboot")?.checked
-    const djangoSelected = document.getElementById("framework-django")?.checked
 
     // Toggle Group ID container
     if (groupIdContainer) {
