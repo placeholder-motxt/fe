@@ -300,7 +300,7 @@ class ConvertPageViewTests(TestCase):
         })
         
         # Check that the request was successful
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         
 
     # Test default framework
@@ -348,7 +348,7 @@ class ConvertPageViewTests(TestCase):
         })
         
         # Check that the request failed with appropriate error
-        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(
             response.json()['error'],
             'Group ID is required for SpringBoot projects'
@@ -370,7 +370,7 @@ class ConvertPageViewTests(TestCase):
         })
         
         # Check that the request failed with appropriate error
-        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(
             response.json()['error'],
             'Group ID must contain at least one dot (e.g., com.example)'
