@@ -29,6 +29,32 @@ DEBUG = not os.getenv("PRODUCTION", False)
 ALLOWED_HOSTS = ["*"]
 # ALLOWED_HOSTS = ["localhost", "127.0.0.1", "juan-maxwell-motxt.pbp.cs.ui.ac.id"]
 
+CSRF_TRUSTED_ORIGINS = ['https://motxt.ppl.cs.ui.ac.id']
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "unsafe-none"
+
+CORS_ALLOWED_ORIGINS = [
+    "https://motxt.ppl.cs.ui.ac.id",
+]
+
+CORS_ALLOW_HEADERS=[
+    'accept',
+    'ccept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user_agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'acces-control-allow-origin'
+]
+
 
 # Application definition
 
@@ -161,4 +187,4 @@ else:
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-VERSION = "2.0.0"
+VERSION = "2.7.0"
