@@ -300,7 +300,7 @@ class ConvertPageViewTests(TestCase):
         })
         
         # Check that the request was successful
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 200)
         
 
     # Test default framework
