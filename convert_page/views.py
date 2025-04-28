@@ -1,4 +1,3 @@
-# views.py
 import json
 import os
 import re
@@ -16,6 +15,10 @@ def convert_page(request):
         try:
             files = request.FILES.getlist('files')
             project_name = request.POST.get('project_name', '').strip()
+            # Get the selected style theme
+            style_theme = request.POST.get('style-theme', 'modern')
+            # Get the selected framework
+            framework = request.POST.get('project_type', 'django')
 
             # Validate project name
             if not project_name:
@@ -36,8 +39,24 @@ def convert_page(request):
             processed_data = {
                 'filename': filenames, 
                 'content': [],
-                'project_name': project_name
+                'project_name': project_name,
+                'style_theme': style_theme,
+                'project_type': framework  # For backward compatibility
             }
+
+            # Add group_id if framework is springboot
+            if framework == 'spring':
+                group_id = request.POST.get('group_id', '').strip()
+                
+                # Validate group_id is not empty for springboot
+                if not group_id:
+                    return JsonResponse({'error': 'Group ID is required for SpringBoot projects'}, status=400)
+                
+                # Validate group_id contains at least one dot
+                if '.' not in group_id:
+                    return JsonResponse({'error': 'Group ID must contain at least one dot (e.g., com.example)'}, status=400)
+                
+                processed_data['group_id'] = group_id
 
             for file in files:
                 if not file.name.lower().endswith(('.class.jet', '.sequence.jet')):
@@ -65,20 +84,24 @@ def convert_page(request):
             # Validate FastAPI response
             if response.status_code == 200:
                 content_type = response.headers.get('Content-Type', '')
-                if 'application/zip' not in content_type.lower():
+                if 'application/zip' in content_type.lower():
+                    # For ZIP files, return the binary content with appropriate headers
+                    http_response = HttpResponse(
+                        response.content,
+                        content_type='application/zip'
+                    )
+                    # Add Content-Disposition header for download
+                    http_response['Content-Disposition'] = f'attachment; filename="{files[0].name}.zip"'
+                    return http_response
+                else:
                     logger.error(f"Invalid content type from FastAPI: {content_type}")
                     return JsonResponse({
                         'error': 'Invalid response format from conversion service'
                     }, status=500)
-
-                return HttpResponse(
-                    response.content,
-                    content_type='application/zip'
-                )
             else:
                 # Properly parse FastAPI's error response
                 try:
-                    return JsonResponse(response.json(), status=response.status_code)
+                    return JsonResponse(response.json(), status=response.status_code, safe=False)
                 except json.JSONDecodeError as ex:
                     return JsonResponse({'error': 'Invalid service response'}, status=500)
 
@@ -87,4 +110,3 @@ def convert_page(request):
             return JsonResponse({'error': 'Internal server error'}, status=500)
 
     return render(request, 'convert_page.html')
-
