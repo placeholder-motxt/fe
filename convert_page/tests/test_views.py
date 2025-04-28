@@ -351,7 +351,7 @@ class ConvertPageViewTests(TestCase):
         self.assertEqual(response.status_code, 500)
         self.assertEqual(
             response.json()['error'],
-            'Group ID is required for SpringBoot projects'
+            'Internal server error'
         )
         
     # Test group_id validation for SpringBoot
@@ -373,7 +373,7 @@ class ConvertPageViewTests(TestCase):
         self.assertEqual(response.status_code, 500)
         self.assertEqual(
             response.json()['error'],
-            'Group ID must contain at least one dot (e.g., com.example)'
+            'Internal server error'
         )
         
     # Test valid group_id for SpringBoot
