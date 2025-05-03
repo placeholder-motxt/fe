@@ -23,8 +23,8 @@ class ConvertPageViewTests(TestCase):
     def test_post_no_file_returns_error(self):
         """POST request without a file returns 400 and an error message."""
         response = self.client.post('/convert_page/', {'project_name': 'test_project'})
-        self.assertEqual(response.status_code, 500)
-        self.assertEqual(response.json()['error'], 'Internal server error')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()['error'], 'No files uploaded')
 
     def test_post_missing_project_name(self):
         """POST request without a project name returns 400 and an error message."""
@@ -81,8 +81,8 @@ class ConvertPageViewTests(TestCase):
             'files': [file1, file2],
             'project_name': 'test_project'
         })
-        self.assertEqual(response.status_code, 500)
-        self.assertEqual(response.json()['error'], 'Internal server error')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()['error'], 'Duplicate filenames are not allowed')
 
     @patch('requests.post')
     def test_post_valid_class_file(self, mock_post):
@@ -127,8 +127,8 @@ class ConvertPageViewTests(TestCase):
             'project_name': 'test_project'
         })
         
-        self.assertEqual(response.status_code, 500)
-        self.assertEqual(response.json()['error'], 'Internal server error')
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(response.json()['error'], 'Conversion service unavailable')
 
     @patch('requests.post')
     def test_invalid_content_type_from_api(self, mock_post):
