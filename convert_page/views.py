@@ -140,8 +140,6 @@ def convert_page(request):
 
         # Call conversion service
         response, error = call_conversion_service(processed_data)
-        if error:
-            return JsonResponse(error[0], status=error[1])
 
         # Handle response
         return handle_conversion_response(response, files)
