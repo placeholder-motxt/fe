@@ -344,9 +344,8 @@ class ConvertPageViewTests(TestCase):
         response = self.client.post('/convert_page/', {
             'files': [valid_file],
             'project_name': 'test_project',
-            'framework': 'spring'
+            'project_type': 'spring'
         })
-        
         # Check that the request failed with appropriate error
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
@@ -365,7 +364,7 @@ class ConvertPageViewTests(TestCase):
         response = self.client.post('/convert_page/', {
             'files': [valid_file],
             'project_name': 'test_project',
-            'framework': 'spring',
+            'project_type': 'spring',
             'group_id': 'invalidgroupid'
         })
         
