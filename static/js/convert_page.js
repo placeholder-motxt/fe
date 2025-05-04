@@ -334,12 +334,23 @@
     fileListSection.innerHTML = ""
     classFileCount = 0
 
+    sortFiles()
+
     uploadedFiles.forEach((file) => {
       if (file.name.toLowerCase().endsWith(".class.jet")) classFileCount++
       fileListSection.appendChild(createFileElement(file))
     })
 
     toggleConvertButton()
+  }
+
+  function sortFiles() {
+    uploadedFiles.sort((a, b) => {
+      const priority = f =>
+        f.name.toLowerCase().endsWith(".class.jet")    ? 1 :
+        f.name.toLowerCase().endsWith(".sequence.jet") ? 2 : 3;
+      return priority(a) - priority(b);
+    })
   }
 
   // Create file element
