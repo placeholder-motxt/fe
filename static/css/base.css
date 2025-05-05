@@ -6,6 +6,7 @@
     --hover-tile: #BBEFEF;
     --text: #000000;
     --background: #ccc;
+    --main-tile: #A7BBD3;
 }
 
 [data-theme="dark"] {
@@ -15,5 +16,6 @@
     --button: #1F9B85;
     --hover-tile: #365656;
     --text: #FFFFFF;
-    --background: #1b1b1b;
+    --background: #232a2a;
+    --main-tile: #2c4058;
 }
