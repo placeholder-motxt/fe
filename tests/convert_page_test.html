@@ -378,12 +378,23 @@
       fileListSection.innerHTML = ""
       classFileCount = 0
 
+      sortFiles()
+
       uploadedFiles.forEach((file) => {
         if (file.name.toLowerCase().endsWith(".class.jet")) classFileCount++
         fileListSection.appendChild(createFileElement(file))
       })
 
       toggleConvertButton()
+    }
+
+    function sortFiles() {
+      uploadedFiles.sort((a, b) => {
+        const priority = f =>
+          f.name.toLowerCase().endsWith(".class.jet")    ? 1 :
+          f.name.toLowerCase().endsWith(".sequence.jet") ? 2 : 3;
+        return priority(a) - priority(b);
+      })
     }
 
     // Create file element
@@ -1394,6 +1405,33 @@
       // This test would need to be run in the actual page, not in the test fixture
       // Just a placeholder to remind that this should be tested manually
       assert.ok(true, 'Example file download link test should be performed manually');
+    });
+
+    QUnit.test('sorting files places .class.jet before .sequence.jet', function(assert) {
+      const done = assert.async();
+
+      // Create files: add .sequence.jet first, then .class.jet
+      const sequenceFile = new File(['seq'], 'b.sequence.jet', { type: 'application/octet-stream' });
+      const classFile    = new File(['cls'], 'a.class.jet',    { type: 'application/octet-stream' });
+
+      // Inject both into the file input in reverse order
+      const dt = new DataTransfer();
+      dt.items.add(sequenceFile);
+      dt.items.add(classFile);
+      const fileInput = document.getElementById('fileInput');
+      fileInput.files = dt.files;
+      fileInput.dispatchEvent(new Event('change'));
+
+      // Allow processing and rendering
+      setTimeout(function() {
+        const items = Array.from(
+          document.querySelectorAll('#fileListSection .file-item')
+        ).map(el => el.textContent.trim());
+
+        assert.equal(items[0], 'a.class.jet',    '.class.jet should come first');
+        assert.equal(items[1], 'b.sequence.jet', '.sequence.jet should come second');
+        done();
+      }, 150);
     });
   }
 
