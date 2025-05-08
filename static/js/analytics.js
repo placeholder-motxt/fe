@@ -38,7 +38,15 @@ function getClientId() {
 
   if (!clientId) {
     // Generate a new client ID if none exists
-    clientId = "user_" + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+    // Generate a random client ID with timestamp to improve uniqueness
+    const timestamp = Date.now().toString(36);
+    const randomPart1 = window.crypto && window.crypto.getRandomValues ? 
+      Array.from(window.crypto.getRandomValues(new Uint32Array(1)))[0].toString(36).substring(2, 10) : 
+      Math.random().toString(36).substring(2, 10);
+    const randomPart2 = window.crypto && window.crypto.getRandomValues ? 
+      Array.from(window.crypto.getRandomValues(new Uint32Array(1)))[0].toString(36).substring(2, 10) : 
+      Math.random().toString(36).substring(2, 10);
+    clientId = "user_" + timestamp + "_" + randomPart1 + randomPart2;
     localStorage.setItem("ga_client_id", clientId)
   }
 
