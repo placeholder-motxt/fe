@@ -82,185 +82,198 @@
       <form id="uploadForm" style="display: none;">
         {% csrf_token %}
       </form>
-      
-      <div class="container max-w-lg w-full p-4 rounded-2xl" style="background-color: var(--background);">
-        <h1 class="text-center text-3xl font-semibold mb-6" style="color: var(--text);">Convert Your Files</h1>
-        
-        <!-- Drop Zone -->
-        <div class="drop-zone rounded-lg p-6 mb-4">
-          <div class="relative group">
-            <button class="w-full px-6 py-4 bg-[var(--button)] text-white rounded-lg hover:bg-[var(--button-hover)] transition-all flex items-center justify-center space-x-2">
-              <svg width="100px" height="100px" viewBox="0 0 24 24" fill="none">
-                <path fill="var(--text)" fill-rule="evenodd" clip-rule="evenodd" d="M4.25 5C4.25 3.48122 5.48122 2.25 7 2.25H14.9868C15.5506 2.25 16.0798 2.52157 16.4085 2.97955L19.4217 7.17745C19.6352 7.47488 19.75 7.83178 19.75 8.1979V19C19.75 20.5188 18.5188 21.75 17 21.75H7C5.48122 21.75 4.25 20.5188 4.25 19V5ZM7 3.75C6.30964 3.75 5.75 4.30964 5.75 5V19C5.75 19.6904 6.30964 20.25 7 20.25H17C17.6904 20.25 18.25 19.6904 18.25 19V8.89705H15C14.5858 8.89705 14.25 8.56126 14.25 8.14705V3.75H7Z" fill="#000000"/>
-                <path fill="var(--text)" d="M15.0857 13.2185C14.8269 13.542 14.355 13.5944 14.0315 13.3357L12.7501 12.3105V15.75C12.7501 16.1642 12.4143 16.5 12.0001 16.5C11.5858 16.5 11.2501 16.1642 11.2501 15.75V12.3104L9.96855 13.3357C9.6451 13.5944 9.17313 13.542 8.91438 13.2185C8.65562 12.8951 8.70806 12.4231 9.03151 12.1643L11.5288 10.1665C11.6561 10.0636 11.8177 10.0015 11.9937 10C11.9958 10 11.9979 10 12.0001 10L12.0025 10C12.1816 10.0006 12.3459 10.0639 12.4746 10.1692L14.9685 12.1643C15.292 12.4231 15.3444 12.8951 15.0857 13.2185Z" fill="#000000"/>
-              </svg>
-              <span id="uploadText" class="font-medium text-xl" style="color: var(--text);">Upload files to Convert</span>
-            </button>
-            <input type="file" accept=".class.jet, .sequence.jet" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="fileInput">
-          </div>
-        </div>
+      <div class="grid grid-rows-2 gap-4 shadow-lg rounded-lg" style="background-color:#A7BBD3; max-height: 920px;">
 
-        <!-- File List Section -->
-        <div id="fileListSection" class="space-y-2 mb-4 hidden"></div>
-        
-        <!-- Project Name Input -->
-        <div class="mb-4">
-          <label for="projectName" class="block text-sm font-medium mb-2" style="color: var(--text);">Project Name</label>
-          <input 
-            type="text" 
-            id="projectName" 
-            name="projectName" 
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--button)] focus:border-[var(--button)]" 
-            placeholder="Enter your project name" 
-            required
-          >
-          <p class="mt-1 text-sm" style="color: var(--text);">Only letters, numbers, and underscores are allowed.</p>
-        </div>
-        
-        <!-- Framework Selection -->
-        <div class="mb-6">
-            <label for="framework-django" class="block text-sm font-medium mb-2" style="color: var(--text);">Select Framework</label>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Django Framework -->
-            <div class="framework-option">
-              <input type="radio" id="framework-django" name="framework" value="django" class="hidden" checked>
-              <label for="framework-django" class="framework-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
-                <div class="framework-preview-box bg-green-600 w-full h-16 rounded-md mb-2 flex items-center justify-center">
-                  <span class="text-white font-medium">Django</span>
+        <div class="flex flex-row items-start justify-center max-w-7xl md:grid-cols-2  rounded-lg p-6">
+          <!-- Left Column -->
+          <div class="pr-6">
+            <!-- Project Name Input -->
+            <div class="mb-4">
+              <label for="projectName" class="block text-sm font-medium mb-2" style="color: var(--text);">Project Name</label>
+              <input 
+                type="text" 
+                id="projectName" 
+                name="projectName" 
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--button)] focus:border-[var(--button)]" 
+                placeholder="Enter your project name" 
+                required
+              >
+              <p class="mt-1 text-sm" style="color: var(--text);">Only letters, numbers, and underscores are allowed.</p>
+            </div>
+            <!-- Framework Selection -->
+            <div class="mb-6">
+              <label for="framework-django" class="block text-sm font-medium mb-2" style="color: var(--text);">Select Framework</label>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Django Framework -->
+                <div class="framework-option">
+                  <input type="radio" id="framework-django" name="framework" value="django" class="hidden" checked>
+                  <label for="framework-django" class="framework-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
+                  <div class="framework-preview-box bg-green-600 w-full h-16 rounded-md mb-2 flex items-center justify-center">
+                    <span class="text-white font-medium">Django</span>
+                  </div>
+                  <span class="text-sm" style="color: var(--text);">Python-based web framework</span>
+                  </label>
                 </div>
-                <span class="text-sm" style="color: var(--text);">Python-based web framework</span>
-              </label>
+                
+                <!-- SpringBoot Framework -->
+                <div class="framework-option">
+                  <input type="radio" id="framework-springboot" name="framework" value="spring" class="hidden">
+                  <label for="framework-springboot" class="framework-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
+                    <div class="framework-preview-box bg-green-800 w-full h-16 rounded-md mb-2 flex items-center justify-center">
+                      <span class="text-white font-medium">SpringBoot</span>
+                    </div>
+                    <span class="text-sm" style="color: var(--text);">Java-based web framework</span>
+                  </label>
+                </div>
+              </div>
             </div>
             
-            <!-- SpringBoot Framework -->
-            <div class="framework-option">
-              <input type="radio" id="framework-springboot" name="framework" value="spring" class="hidden">
-              <label for="framework-springboot" class="framework-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
-                <div class="framework-preview-box bg-green-800 w-full h-16 rounded-md mb-2 flex items-center justify-center">
-                  <span class="text-white font-medium">SpringBoot</span>
-                </div>
-                <span class="text-sm" style="color: var(--text);">Java-based web framework</span>
-              </label>
+            <!-- Group ID Field (for SpringBoot) -->
+            <div id="group-id-container" class="mb-4 hidden" style="width: 600px;">
+              <label for="groupId" class="block text-sm font-medium mb-2" style="color: var(--text);">Group ID</label>
+              <input 
+                type="text" 
+                id="groupId" 
+                name="group_id" 
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--button)] focus:border-[var(--button)]" 
+                placeholder="com.example" 
+                pattern=".*\..*"
+                title="Group ID must contain at least one dot (e.g., com.example)"
+              >
+              <p class="mt-1 text-sm" style="color: var(--text);">Must contain at least one dot (e.g., com.example)</p>
+            </div>
+            
+            <!-- Style Options (Visible only for Django) -->
+            <div id="style-options-container" class="mb-6" style="width: 600px;">
+            <label id="style-options-title" for="style-modern" class="block text-sm font-medium mb-2" style="color: var(--text);">Select Style Theme</label>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <!-- Modern Style -->
+              <div class="style-option">
+                <input type="radio" id="style-modern" name="style-theme" value="modern" class="hidden" checked>
+                <label for="style-modern" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
+                  <div class="style-preview-box bg-blue-500 w-full h-16 rounded-md mb-2 flex items-center justify-center">
+                    <span class="text-white font-medium">Modern</span>
+                  </div>
+                  <span class="text-sm" style="color: var(--text);">Clean, minimal design with blue accents</span>
+                </label>
+              </div>
+              
+              <!-- Classic Style -->
+              <div class="style-option">
+                <input type="radio" id="style-classic" name="style-theme" value="classic" class="hidden">
+                <label for="style-classic" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
+                  <div class="style-preview-box bg-gray-700 w-full h-16 rounded-md mb-2 flex items-center justify-center">
+                    <span class="text-white font-medium">Classic</span>
+                  </div>
+                  <span class="text-sm" style="color: var(--text);">Traditional layout with neutral colors</span>
+                </label>
+              </div>
+              
+              <!-- Vibrant Style -->
+              <div class="style-option">
+                <input type="radio" id="style-vibrant" name="style-theme" value="vibrant" class="hidden">
+                <label for="style-vibrant" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
+                  <div class="style-preview-box bg-purple-600 w-full h-16 rounded-md mb-2 flex items-center justify-center">
+                    <span class="text-white font-medium">Vibrant</span>
+                  </div>
+                  <span class="text-sm" style="color: var(--text);">Bold colors and dynamic elements</span>
+                </label>
+              </div>
+              
+              <!-- Dark Style -->
+              <div class="style-option">
+                <input type="radio" id="style-dark" name="style-theme" value="dark" class="hidden">
+                <label for="style-dark" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
+                  <div class="style-preview-box bg-gray-900 w-full h-16 rounded-md mb-2 flex items-center justify-center">
+                    <span class="text-gray-300 font-medium">Dark</span>
+                  </div>
+                  <span class="text-sm" style="color: var(--text);">Dark theme with high contrast</span>
+                </label>
+              </div>
+              
+              <!-- Minimalist Style -->
+              <div class="style-option">
+                <input type="radio" id="style-minimalist" name="style-theme" value="minimalist" class="hidden">
+                <label for="style-minimalist" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
+                  <div class="style-preview-box bg-white w-full h-16 rounded-md mb-2 flex items-center justify-center border">
+                    <span class="text-gray-800 font-medium">Minimalist</span>
+                  </div>
+                  <span class="text-sm" style="color: var(--text);">Ultra-clean with minimal styling</span>
+                </label>
+              </div>
+            </div>
+            </div>
+            
+            
+            
+            <!-- Help Links -->
+            <div class=" space-y-4 mt-6">
+              <div style="color: var(--text)">
+                Don't have a diagram? 
+                <button id="toggleUserManual" class="w-auto px-4 py-2 bg-[var(--button)] rounded hover:bg-[var(--button-hover)]" style="color: var(--text);">
+                <a href="https://www.jetuml.org/docs/download.html" class="text-[var(--secondary)] hover:underline" target="_blank" rel="noopener noreferrer">
+                Click Me!
+                </a>
+                </button>
+              </div>
+              <div style="color: var(--text);">
+                Don't know what to do? 
+                <button id="toggleUserManual" class="w-auto px-4 py-2 bg-[var(--button)] rounded hover:bg-[var(--button-hover)]" style="color: var(--text);">
+                <a href="/doc/">
+                  Click Me!
+                </a>  
+                </button>
+              </div>
+              <div style="color: var(--text)">
+                Download example of correct JetUML file 
+                <button id="downloadExample" class="w-auto px-4 py-2 bg-[var(--button)] rounded hover:bg-[var(--button-hover)]" style="color: var(--text);">
+                <a href="{% static 'files/BurhanpediaLite.class.jet' %}" download>
+                  Click Me!
+                </a>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-        
-        <!-- Group ID Field (for SpringBoot) -->
-        <div id="group-id-container" class="mb-4 hidden">
-          <label for="groupId" class="block text-sm font-medium mb-2" style="color: var(--text);">Group ID</label>
-          <input 
-            type="text" 
-            id="groupId" 
-            name="group_id" 
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--button)] focus:border-[var(--button)]" 
-            placeholder="com.example" 
-            pattern=".*\..*"
-            title="Group ID must contain at least one dot (e.g., com.example)"
-          >
-          <p class="mt-1 text-sm" style="color: var(--text);">Must contain at least one dot (e.g., com.example)</p>
-        </div>
-        
-        <!-- Style Options (Visible only for Django) -->
-        <div id="style-options-container" class="mb-6">
-          <label id="style-options-title" for="style-modern" class="block text-sm font-medium mb-2" style="color: var(--text);">Select Style Theme</label>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <!-- Modern Style -->
-            <div class="style-option">
-              <input type="radio" id="style-modern" name="style-theme" value="modern" class="hidden" checked>
-              <label for="style-modern" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
-                <div class="style-preview-box bg-blue-500 w-full h-16 rounded-md mb-2 flex items-center justify-center">
-                  <span class="text-white font-medium">Modern</span>
-                </div>
-                <span class="text-sm" style="color: var(--text);">Clean, minimal design with blue accents</span>
-              </label>
-            </div>
+
+          <!-- Right Column -->
+          <div>
             
-            <!-- Classic Style -->
-            <div class="style-option">
-              <input type="radio" id="style-classic" name="style-theme" value="classic" class="hidden">
-              <label for="style-classic" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
-                <div class="style-preview-box bg-gray-700 w-full h-16 rounded-md mb-2 flex items-center justify-center">
-                  <span class="text-white font-medium">Classic</span>
-                </div>
-                <span class="text-sm" style="color: var(--text);">Traditional layout with neutral colors</span>
-              </label>
+            <!-- Drop Zone -->
+            <div class="drop-zone rounded-lg p-6 mb-4" style="width: 600px;">
+              <div class="relative group">
+                <button class="w-full px-6 py-4 bg-[var(--button)] text-white rounded-lg hover:bg-[var(--button-hover)] transition-all flex items-center justify-center space-x-2">
+                <svg width="100px" height="100px" viewBox="0 0 24 24" fill="none">
+                  <path fill="var(--text)" fill-rule="evenodd" clip-rule="evenodd" d="M4.25 5C4.25 3.48122 5.48122 2.25 7 2.25H14.9868C15.5506 2.25 16.0798 2.52157 16.4085 2.97955L19.4217 7.17745C19.6352 7.47488 19.75 7.83178 19.75 8.1979V19C19.75 20.5188 18.5188 21.75 17 21.75H7C5.48122 21.75 4.25 20.5188 4.25 19V5ZM7 3.75C6.30964 3.75 5.75 4.30964 5.75 5V19C5.75 19.6904 6.30964 20.25 7 20.25H17C17.6904 20.25 18.25 19.6904 18.25 19V8.89705H15C14.5858 8.89705 14.25 8.56126 14.25 8.14705V3.75H7Z" fill="#000000"/>
+                  <path fill="var(--text)" d="M15.0857 13.2185C14.8269 13.542 14.355 13.5944 14.0315 13.3357L12.7501 12.3105V15.75C12.7501 16.1642 12.4143 16.5 12.0001 16.5C11.5858 16.5 11.2501 16.1642 11.2501 15.75V12.3104L9.96855 13.3357C9.6451 13.5944 9.17313 13.542 8.91438 13.2185C8.65562 12.8951 8.70806 12.4231 9.03151 12.1643L11.5288 10.1665C11.6561 10.0636 11.8177 10.0015 11.9937 10C11.9958 10 11.9979 10 12.0001 10L12.0025 10C12.1816 10.0006 12.3459 10.0639 12.4746 10.1692L14.9685 12.1643C15.292 12.4231 15.3444 12.8951 15.0857 13.2185Z" fill="#000000"/>
+                </svg>
+                <span id="uploadText" class="font-medium text-xl" style="color: var(--text);">Upload files to Convert</span>
+                </button>
+                <input type="file" accept=".class.jet, .sequence.jet" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="fileInput">
+              </div>
             </div>
+
+            <!-- File List Section -->
+            <div id="fileListSection" class="space-y-2 mb-4 hidden"></div>
             
-            <!-- Vibrant Style -->
-            <div class="style-option">
-              <input type="radio" id="style-vibrant" name="style-theme" value="vibrant" class="hidden">
-              <label for="style-vibrant" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
-                <div class="style-preview-box bg-purple-600 w-full h-16 rounded-md mb-2 flex items-center justify-center">
-                  <span class="text-white font-medium">Vibrant</span>
-                </div>
-                <span class="text-sm" style="color: var(--text);">Bold colors and dynamic elements</span>
-              </label>
-            </div>
             
-            <!-- Dark Style -->
-            <div class="style-option">
-              <input type="radio" id="style-dark" name="style-theme" value="dark" class="hidden">
-              <label for="style-dark" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
-                <div class="style-preview-box bg-gray-900 w-full h-16 rounded-md mb-2 flex items-center justify-center">
-                  <span class="text-gray-300 font-medium">Dark</span>
-                </div>
-                <span class="text-sm" style="color: var(--text);">Dark theme with high contrast</span>
-              </label>
-            </div>
-            
-            <!-- Minimalist Style -->
-            <div class="style-option">
-              <input type="radio" id="style-minimalist" name="style-theme" value="minimalist" class="hidden">
-              <label for="style-minimalist" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
-                <div class="style-preview-box bg-white w-full h-16 rounded-md mb-2 flex items-center justify-center border">
-                  <span class="text-gray-800 font-medium">Minimalist</span>
-                </div>
-                <span class="text-sm" style="color: var(--text);">Ultra-clean with minimal styling</span>
-              </label>
-            </div>
           </div>
+          
         </div>
-        
-        <!-- Convert Button -->
-        <button id="convertButton" 
-                class="convert-btn w-full mt-4 bg-[var(--button)] py-3 px-6 rounded-lg hover:bg-[var(--button-hover)] transition-all relative overflow-hidden"
-                style="color: var(--text);">
+        <div class="flex justify-center items-end mb-8 px-4">
+          <!-- Convert Button -->
+          <button id="convertButton" 
+              class="convert-btn w-full mt-4 bg-[var(--button)] py-3 px-6 shadow-lg rounded-lg hover:bg-[var(--button-hover)] transition-all relative overflow-hidden"
+              style="color: var(--text);">
             <span class="btn-text">Convert</span>
             <div class="loading-bar absolute inset-0"></div>
-        </button>
-        <!-- Help Links -->
-        <div class="text-center space-y-4 mt-6">
-          <div style="color: var(--text)">
-            Don't have a diagram? 
-            <button id="toggleUserManual" class="w-auto px-4 py-2 bg-[var(--button)] rounded hover:bg-[var(--button-hover)]" style="color: var(--text);">
-              <a href="https://www.jetuml.org/docs/download.html" class="text-[var(--secondary)] hover:underline" target="_blank" rel="noopener noreferrer">
-              Click me!
-              </a>
-            </button>
-          </div>
-          <div style="color: var(--text)">
-            Download example of correct JetUML file 
-            <button id="downloadExample" class="w-auto px-4 py-2 bg-[var(--button)] rounded hover:bg-[var(--button-hover)]" style="color: var(--text);">
-              <a href="{% static 'files/BurhanpediaLite.class.jet' %}" download>
-                Click Here!
-              </a>
-            </button>
-          </div>
-          <div style="color: var(--text);">
-            Don't know what to do? 
-            <button id="toggleUserManual" class="w-auto px-4 py-2 bg-[var(--button)] rounded hover:bg-[var(--button-hover)]" style="color: var(--text);">
-              <a href="/doc/">
-                Click Here!
-              </a>
-            </button>
-          </div>
+          </button>
         </div>
       </div>
     </main>
   </div>
 
     <footer class="relative" style="background-color: var(--background);">
-        <img src="{% static 'images/bottom3.png' %}" alt="Decorative" class="w-full h-auto object-cover">
+      <img src="{% static 'images/bottom3.png' %}" alt="Decorative" class="w-full h-auto object-cover">
     </footer>
 
     <script src="{% static 'js/convert_page.js' %}"></script>
