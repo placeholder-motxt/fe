@@ -5,8 +5,8 @@
     --button: #4BDEC3;
     --hover-tile: #BBEFEF;
     --text: #000000;
-    --background: #ccc;
-    --main-tile: #A7BBD3;
+    --background: #e9e9e9;
+    --main-tile: #dbdee1;
 }
 
 [data-theme="dark"] {
@@ -16,6 +16,6 @@
     --button: #1F9B85;
     --hover-tile: #365656;
     --text: #FFFFFF;
-    --background: #232a2a;
-    --main-tile: #2c4058;
+    --background: #171717;
+    --main-tile: #3c4249;
 }
