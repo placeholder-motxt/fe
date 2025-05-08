@@ -16,7 +16,7 @@ class AnalyticsContextProcessorTests(TestCase):
         request = MagicMock()
         
         # Call the context processor
-        context = google_analytics(request)
+        context = google_analytics()
         
         # Verify the context contains the GA_TRACKING_ID
         self.assertIn('GA_TRACKING_ID', context)
