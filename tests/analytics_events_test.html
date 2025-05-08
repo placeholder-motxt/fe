@@ -12,7 +12,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/istanbul-lib-coverage/3.2.0/index.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/istanbul-lib-report/3.0.0/index.browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/istanbul-reports/3.1.5/index.browser.min.js"></script>
-
   <!-- Styles for coverage report display -->
   <style>
     #coverage-report {
@@ -66,7 +65,6 @@
       flex-grow: 1;
     }
   </style>
-
   <!-- Analytics Module for testing -->
   <script>
     window.trackEngagement = function(event, category, label, value) {
@@ -77,70 +75,71 @@
       console.log("trackConversion:", projectName, fileCount, framework);
     };
   </script>
-
   <!-- Analytics Events Module with Instrumentation -->
   <script id="analytics-events-module">
     document.addEventListener("DOMContentLoaded", () => {
-      // Make sure the functions exist before trying to use them
+      // Ensure tracking functions exist
       if (typeof window.trackEngagement !== "function") {
         window.trackEngagement = (event, category, label, value) => {
-          console.log("trackEngagement:", event, category, label, value)
-        }
+          console.log("trackEngagement:", event, category, label, value);
+        };
       }
-
       if (typeof window.trackConversion !== "function") {
         window.trackConversion = (projectName, fileCount, framework) => {
-          console.log("trackConversion:", projectName, fileCount, framework)
-        }
+          console.log("trackConversion:", projectName, fileCount, framework);
+        };
       }
-
-      // Track file uploads
-      const fileInput = document.getElementById("fileInput")
-      if (fileInput) {
-        fileInput.addEventListener("change", (e) => {
-          if (e.target.files.length > 0) {
-            window.trackEngagement("file_upload", "User Action", "Files", e.target.files.length)
+      
+      // Helper to attach tracking events on a given element.
+      const attachTracking = (element, eventType, callback) => {
+        element.addEventListener(eventType, function(e) {
+          const args = callback.call(this, e);
+          if (args) {
+            window.trackEngagement(...args);
           }
-        })
+        });
+      };
+      
+      // Helper for attaching tracking listeners to multiple elements by selector.
+      // Uses a given event name and always "User Preference" as category.
+      const attachTrackingForSelector = (selector, eventName) => {
+        document.querySelectorAll(selector).forEach(element => {
+          element.addEventListener("change", function() {
+            window.trackEngagement(eventName, "User Preference", this.value);
+          });
+        });
+      };
+      
+      // Track file uploads
+      const fileInput = document.getElementById("fileInput");
+      if (fileInput) {
+        attachTracking(fileInput, "change", function(e) {
+          if (e.target.files.length > 0) {
+            return ["file_upload", "User Action", "Files", e.target.files.length];
+          }
+          return null;
+        });
       }
-
-      // Track framework selection
-      const frameworkOptions = document.querySelectorAll('input[name="framework"]')
-      frameworkOptions.forEach((option) => {
-        option.addEventListener("change", function () {
-          window.trackEngagement("framework_selection", "User Preference", this.value)
-        })
-      })
-
-      // Track theme selection
-      const themeOptions = document.querySelectorAll('input[name="style-theme"]')
-      themeOptions.forEach((option) => {
-        option.addEventListener("change", function () {
-          window.trackEngagement("theme_selection", "User Preference", this.value)
-        })
-      })
-
-      // Track successful conversions by modifying the fileUploader object
-      const fileUploader = window.fileUploader
-      if (fileUploader && fileUploader.handleSuccessfulConversion) {
-        const originalHandleSuccessfulConversion = fileUploader.handleSuccessfulConversion
-
-        fileUploader.handleSuccessfulConversion = async function (response) {
-          // Call the original function
-          const result = await originalHandleSuccessfulConversion.call(this, response)
-
-          // Track the conversion
-          const projectName = document.getElementById("projectName")?.value || "unknown"
-          const uploadedFiles = window.uploadedFiles || []
-          const fileCount = uploadedFiles.length || 0
-          const framework = document.querySelector('input[name="framework"]:checked')?.value || "django"
-
-          window.trackConversion(projectName, fileCount, framework)
-
-          return result
-        }
+      
+      // Track framework and theme selections
+      attachTrackingForSelector('input[name="framework"]', "framework_selection");
+      attachTrackingForSelector('input[name="style-theme"]', "theme_selection");
+      
+      // Patch fileUploader for conversion tracking
+      const fileUploader = window.fileUploader;
+      if (fileUploader && typeof fileUploader.handleSuccessfulConversion === "function") {
+        const originalHandleSuccessfulConversion = fileUploader.handleSuccessfulConversion;
+        fileUploader.handleSuccessfulConversion = async function(response) {
+          const result = await originalHandleSuccessfulConversion.call(this, response);
+          const projectName = document.getElementById("projectName")?.value || "unknown";
+          const uploadedFiles = window.uploadedFiles || [];
+          const fileCount = uploadedFiles.length || 0;
+          const framework = document.querySelector('input[name="framework"]:checked')?.value || "django";
+          window.trackConversion(projectName, fileCount, framework);
+          return result;
+        };
       }
-    })
+    });
   </script>
   
   <!-- Simple instrumentation script -->
@@ -260,7 +259,6 @@
   
   <!-- Add this for the coverage report -->
   <div id="coverage-report"></div>
-
   <script>
     // Initialize coverage
     window.codeCoverage.init();
