@@ -109,7 +109,7 @@
 
       if (!clientId) {
         // Generate a new client ID if none exists
-        clientId = "user_" + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+        clientId = `user_${crypto.randomUUID().replace(/-/g, '')}${crypto.randomUUID().replace(/-/g, '')}`
         localStorage.setItem("ga_client_id", clientId)
       }
 
