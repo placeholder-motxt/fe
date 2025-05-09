@@ -52,7 +52,8 @@ CORS_ALLOW_HEADERS=[
     'user_agent',
     'x-csrftoken',
     'x-requested-with',
-    'acces-control-allow-origin'
+    'acces-control-allow-origin',
+    'analytics',
 ]
 
 
@@ -87,6 +88,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'fe.urls'
+
+GA_TRACKING_ID = 'G-PD1C44V6LL' 
 
 TEMPLATES = [
     {
