@@ -80,8 +80,9 @@
       <form id="uploadForm" style="display: none;">
         {% csrf_token %}
       </form>
-      <div class="md:block 2xl:grid 2xl:grid-cols-6 md:gap-4 w-full px-4">
-        <div class="bg-gray-400 p-4 rounded shadow sm:hidden 2xl:block 2xl:grow">
+      <div class="md:block 2xl:grid 2xl:grid-cols-[1fr_3fr_1fr] md:gap-4 w-full px-4">
+      <!-- <div class="flex md:block 2xl:grid 2xl:flex-row md:gap-4 w-full px-4"> -->
+        <div class="p-4 sm:hidden 2xl:block">
           <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7498719221422050"
           crossorigin="anonymous"></script>
           <!-- display ad ver -->
@@ -95,8 +96,8 @@
                 (adsbygoogle = window.adsbygoogle || []).push({});
           </script>
         </div>
-        <div class="grid grid-rows-[2fr_1fr] gap-4 shadow-xl border-4 border-zinc-500 rounded-lg md:col-span-1 2xl:flex-none 2xl:col-span-4 " style="background-color:var(--main-tile);">
-          <div class="flex flex-row justify-center max-w-7xl md:grid-cols-2 rounded-lg px-6 pt-6">
+        <div class="grid grid-rows-[2fr_1fr] gap-4 shadow-xl border-4 border-zinc-500 rounded-lg md:col-span-1 2xl:basis-256 2xl:min-w-2xl 2xl:w-full 2xl:grow-0 mx-auto" style="background-color:var(--main-tile);">
+          <div class="flex flex-row justify-center mx-auto max-w-7xl md:grid-cols-2 rounded-lg px-6 pt-6">
             <!-- Left Column -->
             <div class="pr-6">
               <!-- Project Name Input -->
@@ -292,7 +293,7 @@
             </div>
           </div>
         </div>
-        <div class="bg-gray-400 p-4 rounded shadow md:hidden 2xl:block 2xl:grow">
+        <div class="p-4 md:hidden 2xl:block">
           <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7498719221422050"
           crossorigin="anonymous"></script>
           <!-- display ad ver -->
@@ -310,7 +311,7 @@
     </main>
   </div>
     <footer class="relative bg-(--background)">
-      <div class="bg-gray-400 dark:bg-gray-200 p-4 rounded shadow">
+      <div class="p-4 mx-6 flex grow">
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7498719221422050"
             crossorigin="anonymous"></script>
         <ins class="adsbygoogle"
