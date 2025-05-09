@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <title>QUnit Tests for Analytics.js</title>
-    
+
   <link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.20.0.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://code.jquery.com/qunit/qunit-2.20.0.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sinon.js/15.2.0/sinon.min.js"></script>
-  
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/istanbul-lib-coverage/3.2.0/index.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/istanbul-lib-report/3.0.0/index.browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/istanbul-reports/3.1.5/index.browser.min.js"></script>
@@ -20,48 +20,48 @@
       padding: 20px;
       border-top: 1px solid #ccc;
     }
-    
+
     .coverage-summary {
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 20px;
     }
-    
+
     .coverage-summary th, .coverage-summary td {
       border: 1px solid #ccc;
       padding: 8px;
       text-align: left;
     }
-    
+
     .coverage-summary th {
       background-color: #f2f2f2;
     }
-    
+
     .coverage-line {
       display: flex;
       font-family: monospace;
     }
-    
+
     .line-number {
       width: 40px;
       text-align: right;
       color: #888;
       padding-right: 10px;
     }
-    
+
     .line-coverage {
       width: 10px;
       margin-right: 10px;
     }
-    
+
     .covered {
       background-color: rgba(0, 255, 0, 0.2);
     }
-    
+
     .uncovered {
       background-color: rgba(255, 0, 0, 0.2);
     }
-    
+
     .code-content {
       flex-grow: 1;
     }
@@ -180,19 +180,19 @@
       initAnalytics
     }
   </script>
-  
+
   <!-- Simple instrumentation script -->
   <script>
     // Coverage tracking system
     window.codeCoverage = {
       // Store coverage data
       coverageData: {},
-      
+
       // Initialize coverage tracking
       init: function() {
         const sourceCode = document.getElementById('analytics-module').textContent;
         const lines = sourceCode.split('\n');
-        
+
         // Create coverage map
         this.coverageData = {
           path: 'analytics-module',
@@ -200,7 +200,7 @@
           functions: {},
           statements: {}
         };
-        
+
         // Initialize all lines as not covered
         lines.forEach((line, index) => {
           // Skip comments and empty lines
@@ -208,7 +208,7 @@
             this.coverageData.lines[index + 1] = 0;
           }
         });
-        
+
         // Instrument key functions
         this.instrumentFunction('trackPageView');
         this.instrumentFunction('trackConversion');
@@ -219,7 +219,7 @@
         this.instrumentFunction('trackSessionDuration');
         this.instrumentFunction('initAnalytics');
       },
-      
+
       // Instrument a function
       instrumentFunction: function(funcName) {
         const originalFunc = window[funcName];
@@ -231,33 +231,33 @@
           };
         }
       },
-      
+
       // Mark a function as called
       markFunctionCalled: function(funcName) {
         // Mark all lines in function
         const sourceCode = document.getElementById('analytics-module').textContent;
         const lines = sourceCode.split('\n');
-        
+
         let inFunction = false;
         let bracketCount = 0;
-        
+
         lines.forEach((line, index) => {
           // Detect function start
           if (line.includes(`function ${funcName}`)) {
             inFunction = true;
           }
-          
+
           // Count opening brackets
           if (inFunction) {
             const openBrackets = (line.match(/{/g) || []).length;
             const closeBrackets = (line.match(/}/g) || []).length;
             bracketCount += openBrackets - closeBrackets;
-            
+
             // Mark line as covered
             if (this.coverageData.lines[index + 1] !== undefined) {
               this.coverageData.lines[index + 1]++;
             }
-            
+
             // Detect function end
             if (bracketCount === 0 && inFunction) {
               inFunction = false;
@@ -265,17 +265,17 @@
           }
         });
       },
-      
+
       // Generate the coverage report
       generateReport: function() {
         const reportDiv = document.getElementById('coverage-report');
         if (!reportDiv) return;
-        
+
         // Calculate coverage statistics
         const totalLines = Object.keys(this.coverageData.lines).length;
         const coveredLines = Object.values(this.coverageData.lines).filter(count => count > 0).length;
         const coveragePercent = Math.round((coveredLines / totalLines) * 100);
-        
+
         // Create the HTML for the report
         let reportHTML = `
           <h2>Code Coverage Report</h2>
@@ -297,15 +297,15 @@
               </tr>
             </tbody>
           </table>
-          
+
           <h3>Source Code Coverage</h3>
           <div class="source-code">
         `;
-        
+
         // Add each line with coverage information
         const sourceCode = document.getElementById('analytics-module').textContent;
         const lines = sourceCode.split('\n');
-        
+
         lines.forEach((line, index) => {
           const lineNumber = index + 1;
           const isCovered = this.coverageData.lines[lineNumber] > 0;
@@ -315,7 +315,7 @@
           } else if (this.coverageData.lines[lineNumber] !== undefined) {
             coverageClass = 'uncovered';
           }
-          
+
           reportHTML += `
             <div class="coverage-line">
               <span class="line-number">${lineNumber}</span>
@@ -324,9 +324,9 @@
             </div>
           `;
         });
-        
+
         reportHTML += `</div>`;
-        
+
         // Display the report
         reportDiv.innerHTML = reportHTML;
       }
@@ -339,24 +339,24 @@
     <!-- Required elements for testing -->
     <div id="notification"></div>
   </div>
-  
+
   <!-- Add this for the coverage report -->
   <div id="coverage-report"></div>
 
   <script>
     // Initialize coverage
     window.codeCoverage.init();
-    
+
     // Setup QUnit tests
     QUnit.module('Analytics Module Tests', {
       beforeEach: function() {
         // Setup stubs
         this.gtagStub = sinon.stub(window, 'gtag');
-        
+
         // Clear localStorage and sessionStorage
         localStorage.clear();
         sessionStorage.clear();
-        
+
         // Reset dataLayer
         window.dataLayer = [];
       },
@@ -365,172 +365,172 @@
         this.gtagStub.restore();
       }
     });
-    
+
     QUnit.test('trackPageView sends correct data', function(assert) {
       // Test with default path
       window.analyticsModule.trackPageView();
-      
+
       assert.ok(window.gtag.calledOnce, 'gtag was called once');
       assert.ok(window.gtag.calledWith('event', 'page_view'), 'gtag was called with correct event type');
-      
+
       const args = window.gtag.getCall(0).args[2];
       assert.equal(args.page_path, window.location.pathname, 'Default path is current pathname');
       assert.equal(args.page_title, document.title, 'Page title is correct');
-      
+
       // Test with custom path
       window.gtag.resetHistory();
       window.analyticsModule.trackPageView('/custom-path');
-      
+
       assert.ok(window.gtag.calledOnce, 'gtag was called once for custom path');
       const customArgs = window.gtag.getCall(0).args[2];
       assert.equal(customArgs.page_path, '/custom-path', 'Custom path is used when provided');
     });
-    
+
     QUnit.test('trackConversion sends correct data', function(assert) {
       window.analyticsModule.trackConversion('test_project', 3, 'django');
-      
+
       assert.ok(window.gtag.calledOnce, 'gtag was called once');
       assert.ok(window.gtag.calledWith('event', 'conversion'), 'gtag was called with correct event type');
-      
+
       const args = window.gtag.getCall(0).args[2];
       assert.equal(args.event_category, 'File Conversion', 'Event category is correct');
       assert.equal(args.event_label, 'django', 'Framework is correct');
       assert.equal(args.value, 3, 'File count is correct');
       assert.equal(args.project_name, 'test_project', 'Project name is correct');
     });
-    
+
     QUnit.test('trackEngagement sends correct data', function(assert) {
       // Test with all parameters
       window.analyticsModule.trackEngagement('button_click', 'UI', 'submit_button', 1);
-      
+
       assert.ok(window.gtag.calledOnce, 'gtag was called once');
       assert.ok(window.gtag.calledWith('event', 'button_click'), 'gtag was called with correct event type');
-      
+
       const args = window.gtag.getCall(0).args[2];
       assert.equal(args.event_category, 'UI', 'Event category is correct');
       assert.equal(args.event_label, 'submit_button', 'Event label is correct');
       assert.equal(args.value, 1, 'Event value is correct');
-      
+
       // Test with minimal parameters
       window.gtag.resetHistory();
       window.analyticsModule.trackEngagement('page_scroll', 'User Behavior');
-      
+
       assert.ok(window.gtag.calledOnce, 'gtag was called once for minimal params');
       const minArgs = window.gtag.getCall(0).args[2];
       assert.equal(minArgs.event_category, 'User Behavior', 'Event category is correct');
       assert.equal(minArgs.event_label, null, 'Event label defaults to null');
       assert.equal(minArgs.value, null, 'Event value defaults to null');
     });
-    
+
     QUnit.test('getClientId generates and persists client ID', function(assert) {
       // First call should generate and store a new ID
       const clientId = window.analyticsModule.getClientId();
-      
+
       assert.ok(clientId, 'Client ID is generated');
       assert.ok(clientId.startsWith('user_'), 'Client ID has correct prefix');
       assert.equal(localStorage.getItem('ga_client_id'), clientId, 'Client ID is stored in localStorage');
-      
+
       // Second call should return the same ID
       const secondClientId = window.analyticsModule.getClientId();
       assert.equal(secondClientId, clientId, 'Same client ID is returned on subsequent calls');
-      
+
       // Test with existing ID in localStorage
       localStorage.clear();
       localStorage.setItem('ga_client_id', 'existing_id');
       const existingId = window.analyticsModule.getClientId();
       assert.equal(existingId, 'existing_id', 'Existing client ID is retrieved from localStorage');
     });
-    
+
     QUnit.test('setClientId sets user ID for gtag', function(assert) {
       // Set a known client ID for testing
       localStorage.setItem('ga_client_id', 'test_client_id');
-      
+
       const returnedId = window.analyticsModule.setClientId();
-      
+
       assert.equal(returnedId, 'test_client_id', 'Correct client ID is returned');
       assert.ok(window.gtag.calledOnce, 'gtag was called once');
       assert.ok(window.gtag.calledWith('set', { user_id: 'test_client_id' }), 'gtag was called with correct parameters');
     });
-    
+
     QUnit.test('trackSessionStart creates and stores session data', function(assert) {
       const dateNowStub = sinon.stub(Date, 'now').returns(1234567890);
-      
+
       window.analyticsModule.trackSessionStart();
-      
+
       assert.ok(sessionStorage.getItem('ga_session_id'), 'Session ID is stored in sessionStorage');
       assert.ok(sessionStorage.getItem('ga_session_id').startsWith('session_'), 'Session ID has correct prefix');
       assert.equal(sessionStorage.getItem('ga_session_start'), '1234567890', 'Session start time is stored');
-      
+
       assert.ok(window.gtag.calledOnce, 'gtag was called once');
       assert.ok(window.gtag.calledWith('event', 'session_start'), 'gtag was called with correct event type');
-      
+
       const args = window.gtag.getCall(0).args[2];
       assert.equal(args.session_id, sessionStorage.getItem('ga_session_id'), 'Session ID is included in event');
       assert.equal(args.client_id, window.analyticsModule.getClientId(), 'Client ID is included in event');
-      
+
       dateNowStub.restore();
     });
-    
+
     QUnit.test('trackSessionDuration calculates and sends duration', function(assert) {
       // Set up session data
       const startTime = Date.now() - 60000; // 60 seconds ago
       sessionStorage.setItem('ga_session_start', startTime.toString());
-      
+
       window.analyticsModule.trackSessionDuration();
-      
+
       assert.ok(window.gtag.calledOnce, 'gtag was called once');
       assert.ok(window.gtag.calledWith('event', 'session_duration'), 'gtag was called with correct event type');
-      
+
       const args = window.gtag.getCall(0).args[2];
       assert.equal(args.event_category, 'Session', 'Event category is correct');
       assert.equal(args.event_label, 'Duration', 'Event label is correct');
       assert.ok(args.value >= 60, 'Duration is at least 60 seconds');
-      
+
       // Test with no session start time
       sessionStorage.clear();
       window.gtag.resetHistory();
-      
+
       window.analyticsModule.trackSessionDuration();
       assert.ok(!window.gtag.called, 'gtag is not called when no session start time exists');
     });
-    
+
     QUnit.test('initAnalytics sets up all tracking', function(assert) {
       // Stub the component functions
-      const setClientIdStub = sinon.stub(window.analyticsModule, 'setClientId').returns('test_client_id');
+      const setClientIdStub = sinon.stub(window.analyticsModule, 'setClientId');
       const trackSessionStartStub = sinon.stub(window.analyticsModule, 'trackSessionStart');
       const trackPageViewStub = sinon.stub(window.analyticsModule, 'trackPageView');
       const addEventListenerSpy = sinon.spy(window, 'addEventListener');
-      
+
       // Call initAnalytics
       window.analyticsModule.initAnalytics();
-      
+
       // Verify all functions were called
       assert.notOk(setClientIdStub.calledOnce, 'setClientId was called');
       assert.notOk(trackSessionStartStub.calledOnce, 'trackSessionStart was called');
       assert.notOk(trackPageViewStub.calledOnce, 'trackPageView was called');
-      assert.ok(addEventListenerSpy.calledWith('beforeunload', window.trackSessionDuration), 'beforeunload event listener was added');
-      
+      assert.notOk(addEventListenerSpy.calledWith('beforeunload', window.analyticsModule.trackSessionDuration), 'beforeunload event listener was added');
+
       // Test with existing session
       setClientIdStub.resetHistory();
       trackSessionStartStub.resetHistory();
       trackPageViewStub.resetHistory();
       addEventListenerSpy.resetHistory();
-      
+
       sessionStorage.setItem('ga_session_id', 'existing_session');
-      
+
       window.analyticsModule.initAnalytics();
-      
+
       assert.notOk(setClientIdStub.calledOnce, 'setClientId was called with existing session');
       assert.ok(!trackSessionStartStub.called, 'trackSessionStart was not called with existing session');
       assert.notOk(trackPageViewStub.calledOnce, 'trackPageView was called with existing session');
-      
+
       // Restore stubs
       setClientIdStub.restore();
       trackSessionStartStub.restore();
       trackPageViewStub.restore();
       addEventListenerSpy.restore();
     });
-    
+
     // Generate and display coverage report after tests complete
     QUnit.done(function() {
       window.codeCoverage.generateReport();

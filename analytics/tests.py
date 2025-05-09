@@ -11,10 +11,7 @@ class AnalyticsContextProcessorTests(TestCase):
     def test_google_analytics_context_processor(self):
         """Test that the google_analytics context processor adds GA_TRACKING_ID to the context."""
         from analytics.context_processors import google_analytics
-        
-        # Create a mock request
-        request = MagicMock()
-        
+                
         # Call the context processor
         context = google_analytics()
         
