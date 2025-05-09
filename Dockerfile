@@ -13,7 +13,6 @@ ENV PYTHONUNBUFFERED=1 \
 RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
-
 RUN addgroup --system django \
     && adduser --system --ingroup django django
 
@@ -28,13 +27,18 @@ RUN pip install prometheus_client
 COPY . .
 RUN python manage.py collectstatic --noinput
 
+# Create startup script
+RUN echo '#!/bin/bash\n\
+exec gunicorn --bind 0.0.0.0:8000 --workers "$WEB_CONCURRENCY" fe.wsgi:application & \n\
+exec python manage.py runserver 0.0.0.0:8001\n' > /app/start.sh && \
+    chmod +x /app/start.sh
+
 # Run as non-root user
 RUN chown -R django:django /app
 USER django
 
-
 # Expose both ports. Important!
 EXPOSE 8000 8001
 
-# Run the Django application with gunicorn and bind it correctly to both interfaces.
-CMD exec gunicorn --bind 0.0.0.0:8000 --workers $WEB_CONCURRENCY fe.wsgi:application & python manage.py runserver 0.0.0.0:8001
+# Run the startup script using exec form
+CMD ["/app/start.sh"]
