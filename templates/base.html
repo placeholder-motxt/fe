@@ -1,38 +1,20 @@
-{% load static %}
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <link
-        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        rel="stylesheet"
-      />
-      {% block meta %} {% endblock meta %}
-      <script src="https://cdn.tailwindcss.com"></script>
-    </head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2WGHGE1J95"></script>
+<html lang="en" xml:lang="en">
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    {% if GA_TRACKING_ID %}
+    <!-- Google Analytics GA4 tag -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ GA_TRACKING_ID }}"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-2WGHGE1J95');
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{ GA_TRACKING_ID }}');
     </script>
-
-    <body>
-        <nav class=>
-          <div class="w-full" >
-            <p> navbar </p>
-            <p>p</p>
-            <p>p</p>
-
-          </div>
-        </nav>
-
-        <main class="content">{% block content %} {% endblock content %}</main>
-        {% block js_page %}
-        {% endblock js_page %}
-    </body>
+    {% endif %}
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    {% block content %}{% endblock %}
+</body>
 </html>
