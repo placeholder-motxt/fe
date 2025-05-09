@@ -20,9 +20,6 @@ RUN addgroup --system django \
 COPY ./requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
 
-# Prometheus client if it's not in your requirements.txt (recommended to put it in there)
-RUN pip install prometheus_client
-
 # Copy project code
 COPY . .
 RUN python manage.py collectstatic --noinput
