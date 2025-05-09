@@ -385,8 +385,7 @@
   // Toggle convert button visibility
   function toggleConvertButton() {
     const hasFiles = uploadedFiles.length > 0
-    fileListSection.style.display = hasFiles ? "block" : "none"
-    convertBtn.style.display = hasFiles ? "inline-block" : "none"
+    fileListSection.classList.add = hasFiles ? "" : "hidden"
   }
 
   // Handle convert action
