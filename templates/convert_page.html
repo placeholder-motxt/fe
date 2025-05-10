@@ -18,6 +18,7 @@
           person_profiles: 'identified_only', // or 'always' to create profiles for anonymous users as well
       })
     </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7498719221422050" crossorigin="anonymous"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2WGHGE1J95"></script>
     <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="MoTxT" data-description="Support me on Buy me a coffee!" data-message="Thank you for Supporting MoTxT! " data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
     <script src="{% static 'js/analytics.js' %}"></script>
@@ -92,20 +93,22 @@
         {% csrf_token %}
       </form>
       <div class="md:block 2xl:grid 2xl:grid-cols-[1fr_3fr_1fr] md:gap-4 w-full px-4">
-        <div class="p-4 sm:hidden 2xl:block">
-          <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7498719221422050"
-          crossorigin="anonymous"></script>
+        <div>
           <!-- display ad ver -->
           <ins class="adsbygoogle"
-                style="display:block"
-                data-ad-client="ca-pub-7498719221422050"
-                data-ad-slot="6423160270"
-                data-ad-format="auto"
-                data-full-width-responsive="true"></ins>
+               style="display:block; width:100%;"
+               data-ad-client="ca-pub-7498719221422050"
+               data-ad-slot="6423160270"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
           <script>
-                window.addEventListener('load', function (){
-                  (adsbygoogle = window.adsbygoogle || []).push({});
-                })
+            try {
+              window.addEventListener('load', function (){
+                (adsbygoogle = window.adsbygoogle || []).push({});
+              })
+            } catch (e) {
+              console.error("Ad loading error:", e);
+            }
 
           </script>
         </div>
@@ -306,38 +309,43 @@
             </div>
           </div>
         </div>
-        <div class="p-4 md:hidden 2xl:block">
-          <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7498719221422050"
-          crossorigin="anonymous"></script>
-          <!-- display ad ver -->
-          <ins class="adsbygoogle"
-                style="display:block"
-                data-ad-client="ca-pub-7498719221422050"
-                data-ad-slot="6423160270"
-                data-ad-format="auto"
-                data-full-width-responsive="true"></ins>
+        <div>
+            <!-- display ad ver -->
+            <ins class="adsbygoogle"
+                 style="display:block; width:100%;"
+                 data-ad-client="ca-pub-7498719221422050"
+                 data-ad-slot="6423160270"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+          </div>
           <script>
-                window.addEventListener('load', function (){
-                  (adsbygoogle = window.adsbygoogle || []).push({});
-                })
+            try {
+              window.addEventListener('load', function (){
+                (adsbygoogle = window.adsbygoogle || []).push({});
+              })
+            } catch (e) {
+              console.error("Ad loading error:", e);
+            }
           </script>
         </div>
       </div>
     </main>
   </div>
     <footer class="relative bg-(--background)">
-      <div class="p-4 mx-6 flex grow">
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7498719221422050"
-            crossorigin="anonymous"></script>
+      <div>
         <ins class="adsbygoogle"
             style="display:block"
             data-ad-format="autorelaxed"
             data-ad-client="ca-pub-7498719221422050"
             data-ad-slot="5519248501"></ins>
         <script>
+          try {
             window.addEventListener('load', function (){
               (adsbygoogle = window.adsbygoogle || []).push({});
             })
+          } catch (e) {
+            console.error("Ad loading error:", e);
+          }
         </script>
       </div>
       <img src="{% static 'images/bottom3.png' %}" alt="Decorative" class="w-full h-auto object-cover">
