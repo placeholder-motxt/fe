@@ -1,4 +1,4 @@
-FROM python:3.10-slim-buster
+FROM python:3.11-slim-buster
 
 WORKDIR /app
 
@@ -29,4 +29,4 @@ RUN chown -R django:django /app
 USER django
 
 # Run application
-CMD ["gunicorn","fe.wsgi:application"]
+CMD ["gunicorn", "fe.wsgi:application", "--log-config-json", "./logger_conf.json"]
