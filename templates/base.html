@@ -3,6 +3,7 @@
 <html lang="en" xml:lang="en">
 <head>
     <meta name="google-site-verification" content="OnbEtXd_Ko_4ARsMpaOJ6UksZu4cK4xgH8E6ZzmbzJo" />
+    <meta name="google-adsense-account" content="ca-pub-7498719221422050">
     <title>{% block title %}{% endblock %}</title>
     {% if GA_TRACKING_ID %}
     <!-- Google Analytics GA4 tag -->
@@ -14,6 +15,7 @@
 
       gtag('config', 'G-2WGHGE1J95');
     </script>
+    <script src="{% static 'js/analytics.js' %}"></script>
 
     <body>
         <nav class=>
