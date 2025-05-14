@@ -1,11 +1,50 @@
-# Cuman buat testing prometheus scrapenya bener gk
 version: '3.6'
 services:
+  web:  # Give your Django app a service name
+    build: .  # Build the image from the Dockerfile in the current directory
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+    networks:
+      - monitoring
+
   prometheus:
     image: prom/prometheus
     volumes:
       - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
     ports:
-      - 9090:9090
+      - "9090:9090"
+    networks:
+      - monitoring
+    depends_on:
+      - web  # Ensure Prometheus starts after the web service
+
+  grafana:
+    image: grafana/grafana:latest
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin  # Change this in production!
+      - GF_USERS_ALLOW_SIGN_UP=false
+    ports:
+      - "3001:3000"  # Changed from 3000:3000 to avoid port conflict
+    networks:
+      - monitoring
+    depends_on:
+      - prometheus
+
+networks:
+  monitoring:  # Define the network
+
+volumes:
+  prometheus_data:
+  grafana_data:

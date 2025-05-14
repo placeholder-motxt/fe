@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+<title>Analytics Dashboard</title>
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+<style>
+    .dashboard-container {
+        padding: 20px;
+    }
+    .metric-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    .metric-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    .metric-value {
+        font-size: 32px;
+        font-weight: bold;
+        color: #4285F4;
+    }
+    .chart-container {
+        height: 300px;
+        margin-top: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h1 class="text-3xl font-bold mb-6">Analytics Dashboard</h1>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="metric-card">
+            <div class="metric-title">Unique Users</div>
+            <div class="metric-value" id="unique-users">--</div>
+            <div class="chart-container" id="users-chart"></div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-title">Total Conversions</div>
+            <div class="metric-value" id="total-conversions">--</div>
+            <div class="chart-container" id="conversions-chart"></div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-title">Conversions per User</div>
+            <div class="metric-value" id="conversions-per-user">--</div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-title">Avg. Session Duration</div>
+            <div class="metric-value" id="avg-session-duration">--</div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-title">Sessions per User</div>
+            <div class="metric-value" id="sessions-per-user">--</div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-title">Total Visitors</div>
+            <div class="metric-value" id="total-visitors">--</div>
+        </div>
+    </div>
+</div>
+
+<script>
+// This is a simplified example - in a real application, you would fetch this data 
+// from your backend which would use the Google Analytics API
+document.addEventListener('DOMContentLoaded', function() {
+    // Load the Google Charts library
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(initDashboard);
+    
+    function initDashboard() {
+        // In a real application, these values would come from your backend API
+        // which would fetch them from Google Analytics
+        updateMetric('unique-users', '1,245');
+        updateMetric('total-conversions', '328');
+        updateMetric('conversions-per-user', '0.26');
+        updateMetric('avg-session-duration', '3m 42s');
+        updateMetric('sessions-per-user', '2.3');
+        updateMetric('total-visitors', '2,864');
+        
+        // Draw example charts
+        drawUsersChart();
+        drawConversionsChart();
+    }
+    
+    function updateMetric(id, value) {
+        document.getElementById(id).textContent = value;
+    }
+    
+    function drawUsersChart() {
+        var data = google.visualization.arrayToDataTable([
+            ['Day', 'Users'],
+            ['Mon', 120],
+            ['Tue', 132],
+            ['Wed', 101],
+            ['Thu', 134],
+            ['Fri', 190],
+            ['Sat', 230],
+            ['Sun', 210]
+        ]);
+
+        var options = {
+            curveType: 'function',
+            legend: { position: 'none' },
+            colors: ['#4285F4'],
+            chartArea: {width: '80%', height: '70%'},
+            hAxis: {textPosition: 'none'},
+            vAxis: {textPosition: 'none'}
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('users-chart'));
+        chart.draw(data, options);
+    }
+    
+    function drawConversionsChart() {
+        var data = google.visualization.arrayToDataTable([
+            ['Day', 'Conversions'],
+            ['Mon', 32],
+            ['Tue', 41],
+            ['Wed', 25],
+            ['Thu', 39],
+            ['Fri', 49],
+            ['Sat', 72],
+            ['Sun', 70]
+        ]);
+
+        var options = {
+            curveType: 'function',
+            legend: { position: 'none' },
+            colors: ['#0F9D58'],
+            chartArea: {width: '80%', height: '70%'},
+            hAxis: {textPosition: 'none'},
+            vAxis: {textPosition: 'none'}
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('conversions-chart'));
+        chart.draw(data, options);
+    }
+});
+</script>
+{% endblock %}
