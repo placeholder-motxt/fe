@@ -1,18 +1,12 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <link
-        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        rel="stylesheet"
-      />
-      {% block meta %} {% endblock meta %}
-      <script src="https://cdn.tailwindcss.com"></script>
-    </head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2WGHGE1J95"></script>
+<html lang="en" xml:lang="en">
+<head>
+    <meta name="google-site-verification" content="OnbEtXd_Ko_4ARsMpaOJ6UksZu4cK4xgH8E6ZzmbzJo" />
+    <title>{% block title %}{% endblock %}</title>
+    {% if GA_TRACKING_ID %}
+    <!-- Google Analytics GA4 tag -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ GA_TRACKING_ID }}"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
