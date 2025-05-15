@@ -27,12 +27,12 @@
   gtag('config', 'G-2WGHGE1J95');
 </script>
 <body class="bg-gray-200 flex min-h-screen text-black">
-    <div class="bg-[#A7BBD2] w-64 h-screen text-black px-3 py-4 flex flex-col ml-20 font-[Consolas] justify-between">
-        <div>
+    <div class="bg-[#A7BBD2] w-64 h-screen overflow-y-hidden text-black px-3 py-4 flex flex-col ml-20 font-[Consolas] justify-between">
+        <div class="overflow-y-auto">
             <h1 class="text-white text-3xl font-bold mb-6 text-center">MoTxT User Manual</h1>
-            <nav class="flex flex-col space-y-2 overflow-y-auto max-h-full">
+            <nav class="flex flex-col space-y-2 overflow-y-auto">
                 <div class="flex flex-col">
-                    <a href="#section6" class="px-4 py-2 bg-white rounded hover:bg-[#35BAA2] block">Project Name Rules</a>
+                    <a href="#section6" class="px-4 py-2 bg-white rounded hover:bg-[#35BAA2] block">Project Rules</a>
                 </div>
                 <div class="flex flex-col">
                     <a href="#section1" class="px-4 py-2 bg-white rounded hover:bg-[#35BAA2] block">File Upload Rules</a>
@@ -68,7 +68,7 @@
             </nav>
         </div>
         
-        <a href="/convert_page/" class="text-blue-500 px-4 py-2 bg-gray-800 rounded hover:bg-blue-200">Go Back to Convert</a>
+        <a href="/convert_page/" class="text-red-500 px-4 py-2 bg-gray-800 rounded hover:bg-blue-200">Go Back to Convert</a>
     </div>
     <div id="mainContent" class="flex-1 p-10 mr-20 bg-white overflow-y-auto h-screen">
         <h2 class="text-3xl font-bold">User Manual</h2>
@@ -82,15 +82,25 @@
         <div class="flex-1 p-10">
 
             <section id="section6" class="h-auto p-3 mb-10 break-words">
-                <h2 class="text-3xl font-bold">Project Name Rules</h2>
+                <h2 class="text-3xl font-bold">Project Rules</h2>
                 <div class="flex flex-col gap-2 pt-2">
-                    <p >Project name follows python variable naming conventions</p>
-                    <p></p>
+                    <p class="font-bold text-2xl py-2">Django</p>
+                    <p><strong>Project name</strong> is used to name the django project like how you would run django-admin startproject &#60name&#62</p>
                     <ul>
                         <li class="list-inside list-disc">Project name must consist of only alphanumeric characters and _ (underscore)</li>
                         <li class="list-inside list-disc">No number on the start of the project name</li>
                         <li class="list-inside list-disc">_ (underscore) is the only special character allowed</li>
                     </ul>
+                    <p>You can also choose <strong>the theme</strong> you want to use for the frontend generated in by MoTxT. Try choosing which one you like best and find what suites you!</p>
+                    <p>For now, the available themes are:</p>
+                    <ul>
+                        <li class="list-inside list-disc">Modern</li>
+                        <li class="list-inside list-disc">Classic</li>
+                        <li class="list-inside list-disc">Vibrant</li>
+                        <li class="list-inside list-disc">Dark</li>
+                        <li class="list-inside list-disc">Minimalistic</li>
+                    </ul>
+                    <p ><strong>Group ID</strong> is for springboot projects and needs to be two string seperated by a fullstop (<strong>.</strong>)</p>
                 </div>
             </section>
             <section id="section1" class="h-auto p-3 mb-10 break-words">
@@ -320,7 +330,7 @@
                     class="text-[#4BDEC3]">here</a></p>
             </section>
 
-            <section id="section5" class="h-screen mb-10 break-words">
+            <section id="section5" class="h-auto mb-10 break-words">
                 <h2 class="text-3xl font-bold">Errors that May Occur</h2>
                 <p class="my-4">This is a compilation of errors that you might encounter in your 
                     exploration of MoTxT</p>
@@ -354,7 +364,7 @@
                 </div>
             </section>
 
-            <section id="section7" class="h-screen mb-10 break-words">
+            <section id="section7" class="h-auto mb-10 break-words">
                 <h2 class="text-3xl font-bold">Support Us</h2>
                 <p class="my-4"><strong>Love the App? Help Keep It Growing!</strong></p>
                 <p>
