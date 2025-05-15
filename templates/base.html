@@ -1,20 +1,29 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en" xml:lang="en">
 <head>
+    <meta name="google-site-verification" content="OnbEtXd_Ko_4ARsMpaOJ6UksZu4cK4xgH8E6ZzmbzJo" />
+    <meta name="google-adsense-account" content="ca-pub-7498719221422050">
     <title>{% block title %}{% endblock %}</title>
-    {% if GA_TRACKING_ID %}
+    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Analytics GA4 tag -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ GA_TRACKING_ID }}"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PD1C44V6LL"></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', '{{ GA_TRACKING_ID }}');
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-PD1C44V6LL');
     </script>
-    {% endif %}
-    {% block extra_head %}{% endblock %}
-</head>
-<body>
-    {% block content %}{% endblock %}
-</body>
+    <script src="{% static 'js/analytics.js' %}"></script>
+    {% block meta %}
+    {% endblock meta %}
+
+    <body>
+
+        <main class="content">{% block content %} {% endblock content %}</main>
+        {% block js_page %}
+        {% endblock js_page %}
+    </body>
 </html>

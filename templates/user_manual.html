@@ -1,7 +1,8 @@
+{% extends 'base.html' %}
+
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 <head>
+    {% block meta %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Manual</title>
@@ -17,15 +18,9 @@
             person_profiles: 'identified_only', // or 'always' to create profiles for anonymous users as well
         })
     </script>    
+    {% endblock %}
 </head>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-2WGHGE1J95"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-2WGHGE1J95');
-</script>
+{% block content %}
 <body class="bg-gray-200 flex min-h-screen text-black">
     <div class="bg-[#A7BBD2] w-64 h-screen text-black px-3 py-4 flex flex-col ml-20 font-[Consolas] justify-between">
         <div>
@@ -351,4 +346,4 @@
     </div>
     <script src="{% static 'js/usermanual.js' %}"></script>
 </body>
-</html>
+{% endblock %}
