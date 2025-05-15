@@ -19,6 +19,11 @@ from django.urls import path, include, re_path
 from django.views.static import serve
 from django.conf import settings
 from django_prometheus import exports
+from django.http import HttpResponseNotFound
+from django.shortcuts import render
+
+def page_404(request):
+    return HttpResponseNotFound(render(request, '404.html'))
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,4 +34,5 @@ urlpatterns = [
     path('analytics/', include('analytics.urls')),
     re_path(r"^static/(?P<path>.*)$", serve, {"document_root": settings.STATIC_ROOT}),
     path("metrics/", exports.ExportToDjangoView, name="metrics"),
+    path('404/', page_404),
 ]
