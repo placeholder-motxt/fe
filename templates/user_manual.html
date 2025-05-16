@@ -1,7 +1,8 @@
+{% extends 'base.html' %}
+
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 <head>
+    {% block meta %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Manual</title>
@@ -19,19 +20,13 @@
         })
     </script> 
     <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="MoTxT" data-description="Support me on Buy me a coffee!" data-message="Thank you for Supporting MoTxT! " data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+    {% endblock %}
 </head>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-2WGHGE1J95"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-2WGHGE1J95');
-</script>
+{% block content %}
 <body class="bg-gray-200 flex min-h-screen text-black">
     <div class="bg-[#A7BBD2] w-64 h-screen overflow-y-hidden text-black px-3 py-4 flex flex-col ml-20 font-[Consolas] justify-between">
         <div class="overflow-y-auto">
-            <h1 class="text-white text-3xl font-bold mb-6 text-center">MoTxT User Manual</h1>
+            <h1 class="text-white text-6xl font-bold mb-6 text-center">MoTxT User Manual</h1>
             <nav class="flex flex-col space-y-2 overflow-y-auto">
                 <div class="flex flex-col">
                     <a href="#section6" class="px-4 py-2 bg-white rounded hover:bg-[#35BAA2] block">Project Rules</a>
@@ -381,4 +376,4 @@
     </div>
     <script src="{% static 'js/usermanual.js' %}"></script>
 </body>
-</html>
+{% endblock %}
