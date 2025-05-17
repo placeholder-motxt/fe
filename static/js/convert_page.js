@@ -481,18 +481,18 @@
     const contentType = response.headers.get("content-type") || ""
 
     try {
-        if (contentType.includes("application/json")) {
-          const errorData = await response.json()
-          message = errorData.error || errorData.detail || JSON.stringify(errorData)
-        } else {
-          const textResponse = await response.text();
-          message = textResponse || message;
-        }
+      if (contentType.includes("application/json")) {
+        const errorData = await response.json()
+        message = errorData.error || errorData.detail || JSON.stringify(errorData)
+      } else {
+        const textResponse = await response.text();
+        message = textResponse || message;
+      }
     } catch (e) {
-        console.error("Error parsing error response:", e);
-        message = `Conversion failed (Status: ${response.status}) and error response could not be parsed.`
+      console.error("Error parsing error response:", e);
+      message = `Conversion failed (Status: ${response.status}) and error response could not be parsed.`
     }
-    showNotification(`Error: ${message}`, "error")
+    showNotification(`Error (${response.status}): ${message}`, "error")
   }
 
   // Show notification message
