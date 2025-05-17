@@ -130,6 +130,9 @@ DATABASES = {
     }
 }
 
+if not os.path.exists("./logs"):
+    os.mkdir("./logs")
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
