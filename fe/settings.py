@@ -26,10 +26,15 @@ SECRET_KEY = 'django-insecure-mo1qat85$!41ub9c+eq-*^1#1(42)s=@9(k)ntneluf%yt=-8p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = not os.getenv("PRODUCTION", False)
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "motxt.ppl.cs.ui.ac.id", "motxt.site"]
 # ALLOWED_HOSTS = ["localhost", "127.0.0.1", "juan-maxwell-motxt.pbp.cs.ui.ac.id"]
 
-CSRF_TRUSTED_ORIGINS = ['https://motxt.ppl.cs.ui.ac.id']
+CSRF_TRUSTED_ORIGINS = [
+    'https://motxt.ppl.cs.ui.ac.id',
+    'http://motxt.ppl.cs.ui.ac.id',
+    'https://motxt.site',
+    'http://motxt.site',
+]
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_SECURE = True
@@ -39,7 +44,10 @@ SESSION_COOKIE_SAMESITE = 'None'
 SECURE_CROSS_ORIGIN_OPENER_POLICY = "unsafe-none"
 
 CORS_ALLOWED_ORIGINS = [
-    "https://motxt.ppl.cs.ui.ac.id",
+    'https://motxt.ppl.cs.ui.ac.id',
+    'http://motxt.ppl.cs.ui.ac.id',
+    'https://motxt.site',
+    'http://motxt.site',
 ]
 
 CORS_ALLOW_HEADERS=[
