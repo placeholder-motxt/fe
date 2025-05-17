@@ -93,8 +93,11 @@
     // Add event listeners for framework selection to toggle fields
     const frameworkOptions = document.querySelectorAll('input[name="framework"]')
     frameworkOptions.forEach((option) => {
-      option.addEventListener("change", toggleGroupIdField)
-    })
+      option.addEventListener("change", function() {
+        console.log("Framework changed to:", this.value);
+        toggleGroupIdField();
+      });
+    });
   }
 
   // Toggle Group ID field and Style Options based on selected framework.
@@ -102,7 +105,7 @@
   // When Django is selected, hide Group ID and show style options.
   function toggleGroupIdField() {
     const springbootSelected = document.getElementById("framework-springboot")?.checked
-
+  
     // Toggle Group ID container
     if (groupIdContainer) {
       if (springbootSelected) {
@@ -114,7 +117,7 @@
     } else {
       console.warn("Group ID container not found. Cannot toggle visibility.")
     }
-
+  
     // Toggle Style Options container
     if (styleOptionsContainer && styleOptionsTitle) {
       if (springbootSelected) {
@@ -135,23 +138,33 @@
     
     // Early exit for empty files
     if (uploadedFiles.length === 0) {
-        showNotification("Please select files to convert.", "error");
-        return;
+      showNotification("Please select files to convert.", "error");
+      return;
     }
-
+  
     // Validate project name
     const projectName = projectNameInput.value.trim();
     if (!validateProjectName(projectName)) return;
-
+  
     // Get framework/theme selections
     const { frameworkValue } = getFrameworkSelection();
     const { themeValue } = getThemeSelection();
-
+  
     // Handle framework-specific validation
     if (frameworkValue === "spring" && !validateSpringBootGroupId()) return;
-
+  
     // Update confirmation modal content
     updateConfirmationModalContent(projectName, frameworkValue, themeValue);
+    
+    // Show/hide group ID confirmation based on framework
+    if (groupIdConfirmation) {
+      if (frameworkValue === "spring") {
+        groupIdConfirmation.classList.remove("hidden");
+      } else {
+        groupIdConfirmation.classList.add("hidden");
+      }
+    }
+    
     confirmationModal.classList.remove("hidden");
   }
 
@@ -218,11 +231,29 @@
   function updateConfirmationModalContent(projectName, frameworkValue, themeValue) {
     const confirmationMessage = document.getElementById("confirmationMessage");
     if (confirmationMessage) {
-        confirmationMessage.textContent = `Are you sure you want to create a project named "${projectName}" in ${capitalize(frameworkValue)}?`;
+      confirmationMessage.textContent = `Are you sure you want to create a project named "${projectName}" in ${capitalize(frameworkValue)}?`;
     }
-
+  
     updateConfirmationElement(frameworkConfirmation, "Framework", frameworkValue);
-    updateConfirmationElement(themeConfirmation, "Theme", themeValue);
+    
+    // Only show theme confirmation for Django
+    if (themeConfirmation) {
+      if (frameworkValue === "django") {
+        themeConfirmation.classList.remove("hidden");
+        updateConfirmationElement(themeConfirmation, "Theme", themeValue);
+      } else {
+        themeConfirmation.classList.add("hidden");
+      }
+    }
+    
+    // Show group ID only for SpringBoot
+    if (groupIdConfirmation) {
+      if (frameworkValue === "spring") {
+        groupIdConfirmation.classList.remove("hidden");
+      } else {
+        groupIdConfirmation.classList.add("hidden");
+      }
+    }
   }
 
   function updateConfirmationElement(element, label, value) {
