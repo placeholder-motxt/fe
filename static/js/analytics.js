@@ -19,6 +19,7 @@ function trackConversion(projectName, fileCount, framework) {
     event_label: framework,
     value: fileCount,
     project_name: projectName,
+    framework_type: framework, // Added for easier filtering
   })
 }
 
@@ -29,6 +30,20 @@ function trackEngagement(action, category, label = null, value = null) {
     event_label: label,
     value: value,
   })
+
+  // Special handling for framework selections to track counts
+  if (action === "framework_django" || action === "framework_spring") {
+    // These events can be used to create custom metrics in GA
+    console.log(`Framework selected: ${label}`)
+  }
+
+  // Special handling for conversion failures
+  if (action === "conversion_failed") {
+    gtag("event", "exception", {
+      description: `${category}: ${label} - ${value}`,
+      fatal: false,
+    })
+  }
 }
 
 // Generate a client ID to track unique users without login
@@ -38,7 +53,7 @@ function getClientId() {
 
   if (!clientId) {
     // Generate a new client ID if none exists
-    clientId = `user_${crypto.randomUUID().replace(/-/g, '')}${crypto.randomUUID().replace(/-/g, '')}`
+    clientId = `user_${crypto.randomUUID().replace(/-/g, "")}${crypto.randomUUID().replace(/-/g, "")}`
     localStorage.setItem("ga_client_id", clientId)
   }
 
