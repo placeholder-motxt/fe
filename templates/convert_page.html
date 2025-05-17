@@ -1,30 +1,44 @@
+{% extends 'base.html' %}
+
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
+
 <head>
+  {% block meta %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Convert Your Files</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>{% block title %}Convert Your Files{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/convert_page.css' %}">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" href="{% static 'css/hamburger_menu.css' %}">
     <link rel="stylesheet" href="{% static 'css/style_options.css' %}">
+    <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" integrity="sha512-1L9VPmCfLWZzOXos9mzKnxgZ8wY8v5YK0OKDHgFHJKLGHBXXlGfTe5hT3h6Hf5HsLe+sHn7cJMrh95h9K+7tZg==" crossorigin="anonymous" data-id="MoTxT" data-description="Support me on Buy me a coffee!" data-message="Thank you for Supporting MoTxT! " data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+    <script>
+      !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init me ws ys ps bs capture je Di ks register register_once register_for_session unregister unregister_for_session Ps getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey canRenderSurveyAsync identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty Es $s createPersonProfile Is opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing Ss debug xs getPageViewId captureTraceFeedback captureTraceMetric".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+      posthog.init('phc_WDtrH9fNEE1ByXSVwlqzyymaVMwYBLqfDUp2ut5nFIe', {
+          api_host: 'https://us.i.posthog.com',
+          person_profiles: 'identified_only', // or 'always' to create profiles for anonymous users as well
+      })
+    </script>
+    <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="MoTxT" data-description="Support me on Buy me a coffee!" data-message="Thank you for Supporting MoTxT! " data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+    <script src="{% static 'js/analytics.js' %}"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7498719221422050" crossorigin="anonymous"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PD1C44V6LL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-PD1C44V6LL');
+    </script>
+{% endblock %}
 </head>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-2WGHGE1J95"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-2WGHGE1J95');
-</script>
-
+{% block content %}
 <body class="flex flex-col min-h-screen text-black relative" style="background-color: var(--background);">
 
   <!-- Confirmation Modal -->
   <div id="confirmationModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
-    <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
+    <div class="bg-white p-6 rou  nded-lg shadow-xl max-w-md w-full">
         <h2 class="text-xl font-bold mb-4">Confirm File Conversion</h2>
         <p class="mb-4" id="confirmationMessage">Are you sure you want to convert these files?</p>
         <div id="frameworkConfirmation" class="mb-2">Framework: <span class="font-semibold">Django</span></div>
@@ -44,7 +58,7 @@
 
     <!-- Notification System -->
     <div id="notification" 
-         class="fixed top-4 right-4 max-w-md p-4 rounded-lg shadow-lg hidden transition-all">
+         class="fixed top-4 right-4 max-w-md p-4 rounded-lg shadow-lg hidden transition-all z-30">
         <div id="notificationMessage" class="font-semibold"></div>
     </div>
 
@@ -76,192 +90,271 @@
   
   <!-- Main content container -->
   <div id="mainContainer" class="flex flex-col flex-grow transition">
-    <main class="flex-grow flex items-center justify-center py-8">
+    <main class="flex-grow flex items-center justify-center py-8 2xl:px-0">
       <form id="uploadForm" style="display: none;">
         {% csrf_token %}
       </form>
-      
-      <div class="container max-w-lg w-full p-4 rounded-2xl" style="background-color: var(--background);">
-        <h1 class="text-center text-3xl font-semibold mb-6" style="color: var(--text);">Convert Your Files</h1>
-        
-        <!-- Drop Zone -->
-        <div class="drop-zone rounded-lg p-6 mb-4">
-          <div class="relative group">
-            <button class="w-full px-6 py-4 bg-[var(--button)] text-white rounded-lg hover:bg-[var(--button-hover)] transition-all flex items-center justify-center space-x-2">
-              <svg width="100px" height="100px" viewBox="0 0 24 24" fill="none">
-                <path fill="var(--text)" fill-rule="evenodd" clip-rule="evenodd" d="M4.25 5C4.25 3.48122 5.48122 2.25 7 2.25H14.9868C15.5506 2.25 16.0798 2.52157 16.4085 2.97955L19.4217 7.17745C19.6352 7.47488 19.75 7.83178 19.75 8.1979V19C19.75 20.5188 18.5188 21.75 17 21.75H7C5.48122 21.75 4.25 20.5188 4.25 19V5ZM7 3.75C6.30964 3.75 5.75 4.30964 5.75 5V19C5.75 19.6904 6.30964 20.25 7 20.25H17C17.6904 20.25 18.25 19.6904 18.25 19V8.89705H15C14.5858 8.89705 14.25 8.56126 14.25 8.14705V3.75H7Z" fill="#000000"/>
-                <path fill="var(--text)" d="M15.0857 13.2185C14.8269 13.542 14.355 13.5944 14.0315 13.3357L12.7501 12.3105V15.75C12.7501 16.1642 12.4143 16.5 12.0001 16.5C11.5858 16.5 11.2501 16.1642 11.2501 15.75V12.3104L9.96855 13.3357C9.6451 13.5944 9.17313 13.542 8.91438 13.2185C8.65562 12.8951 8.70806 12.4231 9.03151 12.1643L11.5288 10.1665C11.6561 10.0636 11.8177 10.0015 11.9937 10C11.9958 10 11.9979 10 12.0001 10L12.0025 10C12.1816 10.0006 12.3459 10.0639 12.4746 10.1692L14.9685 12.1643C15.292 12.4231 15.3444 12.8951 15.0857 13.2185Z" fill="#000000"/>
-              </svg>
-              <span id="uploadText" class="font-medium text-xl" style="color: var(--text);">Upload files to Convert</span>
-            </button>
-            <input type="file" accept=".class.jet, .sequence.jet" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="fileInput">
-          </div>
-        </div>
+      <div class="md:block 2xl:grid 2xl:grid-cols-[1fr_3fr_1fr] md:gap-4 w-full px-4">
+        <div>
+          <!-- display ad ver -->
+          <ins class="adsbygoogle"
+               style="display:block; width:100%;"
+               data-ad-client="ca-pub-7498719221422050"
+               data-ad-slot="6423160270"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+          <script>
+            try {
+              window.addEventListener('load', function (){
+                (adsbygoogle = window.adsbygoogle || []).push({});
+              })
+            } catch (e) {
+              console.error("Ad loading error:", e);
+            }
 
-        <!-- File List Section -->
-        <div id="fileListSection" class="space-y-2 mb-4 hidden"></div>
-        
-        <!-- Project Name Input -->
-        <div class="mb-4">
-          <label for="projectName" class="block text-sm font-medium mb-2" style="color: var(--text);">Project Name</label>
-          <input 
-            type="text" 
-            id="projectName" 
-            name="projectName" 
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--button)] focus:border-[var(--button)]" 
-            placeholder="Enter your project name" 
-            required
-          >
-          <p class="mt-1 text-sm" style="color: var(--text);">Only letters, numbers, and underscores are allowed.</p>
+          </script>
         </div>
-        
-        <!-- Framework Selection -->
-        <div class="mb-6">
-            <label for="framework-django" class="block text-sm font-medium mb-2" style="color: var(--text);">Select Framework</label>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Django Framework -->
-            <div class="framework-option">
-              <input type="radio" id="framework-django" name="framework" value="django" class="hidden" checked>
-              <label for="framework-django" class="framework-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
-                <div class="framework-preview-box bg-green-600 w-full h-16 rounded-md mb-2 flex items-center justify-center">
-                  <span class="text-white font-medium">Django</span>
+        <div class="grid grid-rows-[2fr_1fr] gap-4 shadow-xl border-4 border-zinc-500 rounded-lg md:col-span-1 2xl:basis-256 2xl:min-w-2xl 2xl:w-full 2xl:grow-0 mx-auto" style="background-color:var(--main-tile);">
+          <div class="flex flex-row justify-center mx-auto max-w-7xl md:grid-cols-2 rounded-lg px-6 pt-6">
+            <!-- Left Column -->
+            <div class="pr-6">
+              <!-- Project Name Input -->
+              <div class="mb-4">
+                <label for="projectName" class="block text-sm font-medium mb-2" style="color: var(--text);">Project Name</label>
+                <input 
+                  type="text" 
+                  id="projectName" 
+                  name="projectName" 
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--button)] focus:border-[var(--button)]" 
+                  placeholder="Enter your project name" 
+                  required
+                  style="background-color: var(--background); color: var(--text);"
+                >
+                <p class="mt-1 text-sm" style="color: var(--text);">Only letters, numbers, and underscores are allowed.</p>
+              </div>
+              <!-- Framework Selection -->
+              <div class="mb-6">
+                <label for="framework-django" class="block text-sm font-medium mb-2" style="color: var(--text);">Select Framework</label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <!-- Django Framework -->
+                  <div class="framework-option tooltip">
+                    <input type="radio" id="framework-django" name="framework" value="django" class="hidden" checked>
+                    <label for="framework-django" class="framework-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
+                      <div class="framework-preview-box bg-green-600 w-full h-16 rounded-md mb-2 flex items-center justify-center">
+                        <span class="text-white font-medium">Django</span>
+                      </div>
+                    <span class="text-sm tooltiptext" style="color: var(--text);">Python-based web framework</span>
+                    </label>
+                  </div>
+                  
+                  <!-- SpringBoot Framework -->
+                  <div class="framework-option  tooltip">
+                    <input type="radio" id="framework-springboot" name="framework" value="spring" class="hidden">
+                    <label for="framework-springboot" class="framework-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
+                      <div class="framework-preview-box bg-green-800 w-full h-16 rounded-md mb-2 flex items-center justify-center">
+                        <span class="text-white font-medium">SpringBoot</span>
+                      </div>
+                      <span class="text-sm tooltiptext" style="color: var(--text);">Java-based web framework</span>
+                    </label>
+                  </div>
                 </div>
-                <span class="text-sm" style="color: var(--text);">Python-based web framework</span>
-              </label>
+              </div>
+              
+              <!-- Group ID Field (for SpringBoot) -->
+              <div id="group-id-container" class="mb-4 hidden" style="width: 600px;">
+                <label for="groupId" class="block text-sm font-medium mb-2" style="color: var(--text);">Group ID</label>
+                <input 
+                  type="text" 
+                  id="groupId" 
+                  name="group_id" 
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--button)] focus:border-[var(--button)]" 
+                  placeholder="com.example" 
+                  pattern=".*\..*"
+                  title="Group ID must contain at least one dot (e.g., com.example)"
+                  style="background-color: var(--background); color: var(--text);"
+                >
+                <p class="mt-1 text-sm" style="color: var(--text);">Must contain at least one dot (e.g., com.example)</p>
+              </div>
+              
+              <!-- Style Options (Visible only for Django) -->
+              <div id="style-options-container" class="mb-6" style="width: 600px;">
+              <label id="style-options-title" for="style-modern" class="block text-sm font-medium mb-2" style="color: var(--text);">Select Style Theme</label>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Modern Style -->
+                <div class="style-option tooltip">
+                  <input type="radio" id="style-modern" name="style-theme" value="modern" class="hidden" checked>
+                  <label for="style-modern" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
+                    <div class="style-preview-box bg-blue-500 w-full h-16 rounded-md mb-2 flex items-center justify-center">
+                      <span class="text-white font-medium">Modern</span>
+                    </div>
+                    <span class="text-sm tooltiptext" style="color: var(--text);">Clean, minimal design with blue accents</span>
+                  </label>
+                </div>
+                
+                <!-- Classic Style -->
+                <div class="style-option tooltip">
+                  <input type="radio" id="style-classic" name="style-theme" value="classic" class="hidden">
+                  <label for="style-classic" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
+                      <div class="style-preview-box bg-gray-700 w-full h-16 rounded-md mb-2 flex items-center justify-center dark:border dark:border-[var(--text)]">
+                      <span class="text-white font-medium">Classic</span>
+                      </div>
+                    <span class="text-sm tooltiptext" style="color: var(--text);">Traditional layout with neutral colors</span>
+                  </label>
+                </div>
+                
+                <!-- Vibrant Style -->
+                <div class="style-option tooltip">
+                  <input type="radio" id="style-vibrant" name="style-theme" value="vibrant" class="hidden">
+                  <label for="style-vibrant" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
+                    <div class="style-preview-box bg-purple-600 w-full h-16 rounded-md mb-2 flex items-center justify-center">
+                      <span class="text-white font-medium">Vibrant</span>
+                    </div>
+                    <span class="text-sm tooltiptext" style="color: var(--text);">Bold colors and dynamic elements</span>
+                  </label>
+                </div>
+                
+                <!-- Dark Style -->
+                <div class="style-option tooltip">
+                  <input type="radio" id="style-dark" name="style-theme" value="dark" class="hidden">
+                  <label for="style-dark" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
+                    <div class="style-preview-box bg-gray-900 w-full h-16 rounded-md mb-2 flex items-center justify-center">
+                      <span class="text-gray-300 font-medium">Dark</span>
+                    </div>
+                    <span class="text-sm tooltiptext" style="color: var(--text);">Dark theme with high contrast</span>
+                  </label>
+                </div>
+                
+                <!-- Minimalist Style -->
+                <div class="style-option tooltip">
+                  <input type="radio" id="style-minimalist" name="style-theme" value="minimalist" class="hidden">
+                  <label for="style-minimalist" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
+                    <div class="style-preview-box bg-white w-full h-16 rounded-md mb-2 flex items-center justify-center border">
+                      <span class="text-gray-800 font-medium">Minimalist</span>
+                    </div>
+                    <span class="text-sm tooltiptext" style="color: var(--text);">Ultra-clean with minimal styling</span>
+                  </label>
+                </div>
+              </div>
+              </div>
+            </div>
+
+            <!-- Right Column -->
+            <div>
+              
+              <!-- Drop Zone -->
+              <div class="drop-zone rounded-lg p-6 mb-4" style="width: 600px;">
+                <div class="relative group">
+                  <button class="w-full px-6 py-4 bg-[var(--button)] text-white rounded-lg hover:bg-[var(--button-hover)] transition-all flex items-center justify-center space-x-2">
+                  <svg width="100px" height="100px" viewBox="0 0 24 24" fill="none">
+                    <path fill="var(--text)" fill-rule="evenodd" clip-rule="evenodd" d="M4.25 5C4.25 3.48122 5.48122 2.25 7 2.25H14.9868C15.5506 2.25 16.0798 2.52157 16.4085 2.97955L19.4217 7.17745C19.6352 7.47488 19.75 7.83178 19.75 8.1979V19C19.75 20.5188 18.5188 21.75 17 21.75H7C5.48122 21.75 4.25 20.5188 4.25 19V5ZM7 3.75C6.30964 3.75 5.75 4.30964 5.75 5V19C5.75 19.6904 6.30964 20.25 7 20.25H17C17.6904 20.25 18.25 19.6904 18.25 19V8.89705H15C14.5858 8.89705 14.25 8.56126 14.25 8.14705V3.75H7Z" fill="#000000"/>
+                    <path fill="var(--text)" d="M15.0857 13.2185C14.8269 13.542 14.355 13.5944 14.0315 13.3357L12.7501 12.3105V15.75C12.7501 16.1642 12.4143 16.5 12.0001 16.5C11.5858 16.5 11.2501 16.1642 11.2501 15.75V12.3104L9.96855 13.3357C9.6451 13.5944 9.17313 13.542 8.91438 13.2185C8.65562 12.8951 8.70806 12.4231 9.03151 12.1643L11.5288 10.1665C11.6561 10.0636 11.8177 10.0015 11.9937 10C11.9958 10 11.9979 10 12.0001 10L12.0025 10C12.1816 10.0006 12.3459 10.0639 12.4746 10.1692L14.9685 12.1643C15.292 12.4231 15.3444 12.8951 15.0857 13.2185Z" fill="#000000"/>
+                  </svg>
+                  <span id="uploadText" class="font-medium text-xl" style="color: var(--text);">Upload files to Convert</span>
+                  </button>
+                  <input type="file" accept=".class.jet, .sequence.jet" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="fileInput">
+                </div>
+              </div>
+
+              <!-- File List Section -->
+              <div class="h-[340px] bg-teal-300/40 rounded-lg p-4 pb-6">
+                <div id="fileListSection" class="overflow-y-scroll space-y-2 h-[305px]"></div>
+              </div>
+              
+              
             </div>
             
-            <!-- SpringBoot Framework -->
-            <div class="framework-option">
-              <input type="radio" id="framework-springboot" name="framework" value="spring" class="hidden">
-              <label for="framework-springboot" class="framework-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
-                <div class="framework-preview-box bg-green-800 w-full h-16 rounded-md mb-2 flex items-center justify-center">
-                  <span class="text-white font-medium">SpringBoot</span>
-                </div>
-                <span class="text-sm" style="color: var(--text);">Java-based web framework</span>
-              </label>
+          </div>
+          <div class="justify-center items-end pb-6">
+            <!-- Convert Button -->
+
+            <div class="btn-wrapper">
+              <button id="convertButton" class="cta convert-btn">
+                <span class="font-bold">CONVERT</span>
+                <span>
+                  <svg width="60px" height="25px" viewBox="0 0 66 43" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <g id="arrow" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                      <path class="one" d="M40.1543933,3.89485454 L43.9763149,0.139296592 C44.1708311,-0.0518420739 44.4826329,-0.0518571125 44.6771675,0.139262789 L65.6916134,20.7848311 C66.0855801,21.1718824 66.0911863,21.8050225 65.704135,22.1989893 C65.7000188,22.2031791 65.6958657,22.2073326 65.6916762,22.2114492 L44.677098,42.8607841 C44.4825957,43.0519059 44.1708242,43.0519358 43.9762853,42.8608513 L40.1545186,39.1069479 C39.9575152,38.9134427 39.9546793,38.5968729 40.1481845,38.3998695 C40.1502893,38.3977268 40.1524132,38.395603 40.1545562,38.3934985 L56.9937789,21.8567812 C57.1908028,21.6632968 57.193672,21.3467273 57.0001876,21.1497035 C56.9980647,21.1475418 56.9959223,21.1453995 56.9937605,21.1432767 L40.1545208,4.60825197 C39.9574869,4.41477773 39.9546013,4.09820839 40.1480756,3.90117456 C40.1501626,3.89904911 40.1522686,3.89694235 40.1543933,3.89485454 Z" fill="#FFFFFF"></path>
+                      <path class="two" d="M20.1543933,3.89485454 L23.9763149,0.139296592 C24.1708311,-0.0518420739 24.4826329,-0.0518571125 24.6771675,0.139262789 L45.6916134,20.7848311 C46.0855801,21.1718824 46.0911863,21.8050225 45.704135,22.1989893 C45.7000188,22.2031791 45.6958657,22.2073326 45.6916762,22.2114492 L24.677098,42.8607841 C24.4825957,43.0519059 24.1708242,43.0519358 23.9762853,42.8608513 L20.1545186,39.1069479 C19.9575152,38.9134427 19.9546793,38.5968729 20.1481845,38.3998695 C20.1502893,38.3977268 20.1524132,38.395603 20.1545562,38.3934985 L36.9937789,21.8567812 C37.1908028,21.6632968 37.193672,21.3467273 37.0001876,21.1497035 C36.9980647,21.1475418 36.9959223,21.1453995 36.9937605,21.1432767 L20.1545208,4.60825197 C19.9574869,4.41477773 19.9546013,4.09820839 20.1480756,3.90117456 C20.1501626,3.89904911 20.1522686,3.89694235 20.1543933,3.89485454 Z" fill="#FFFFFF"></path>
+                      <path class="three" d="M0.154393339,3.89485454 L3.97631488,0.139296592 C4.17083111,-0.0518420739 4.48263286,-0.0518571125 4.67716753,0.139262789 L25.6916134,20.7848311 C26.0855801,21.1718824 26.0911863,21.8050225 25.704135,22.1989893 C25.7000188,22.2031791 25.6958657,22.2073326 25.6916762,22.2114492 L4.67709797,42.8607841 C4.48259567,43.0519059 4.17082418,43.0519358 3.97628526,42.8608513 L0.154518591,39.1069479 C-0.0424848215,38.9134427 -0.0453206733,38.5968729 0.148184538,38.3998695 C0.150289256,38.3977268 0.152413239,38.395603 0.154556228,38.3934985 L16.9937789,21.8567812 C17.1908028,21.6632968 17.193672,21.3467273 17.0001876,21.1497035 C16.9980647,21.1475418 16.9959223,21.1453995 16.9937605,21.1432767 L0.15452076,4.60825197 C-0.0425130651,4.41477773 -0.0453986756,4.09820839 0.148075568,3.90117456 C0.150162624,3.89904911 0.152268631,3.89694235 0.154393339,3.89485454 Z" fill="#FFFFFF"></path>
+                    </g>
+                  </svg>
+                </span> 
+              </button>
+            </div>
+
+            <!-- Help Links -->
+            <div class=" space-y-4 mt-6 px-6 flex flex-col justify-center items-center">
+              <div class="text-[var(--text)]">
+                Don't have a diagram? 
+                <button id="toggleUserManual" class="w-auto px-4 py-2 bg-[var(--button)] rounded hover:bg-[var(--hover-tile)] text-[var(--text)] font-[650]">
+                  <a href="https://www.jetuml.org/docs/download.html" class="text-[var(--text)]" target="_blank" rel="noopener noreferrer">
+                  Click Me!
+                  </a>
+                </button>
+              </div>
+              <div class="text-[var(--text)]"">
+                Don't know what to do? 
+                <button id="toggleUserManual" class="w-auto px-4 py-2 bg-[var(--button)] rounded hover:bg-[var(--hover-tile)] text-[var(--text)] font-[650]">
+                  <a href="/doc/">
+                    Click Me!
+                  </a>  
+                </button>
+              </div>
+              <div class="text-[var(--text)]">
+                Download example of correct JetUML file 
+                <button id="downloadExample" class="w-auto px-4 py-2 bg-[var(--button)] rounded hover:bg-[var(--hover-tile)] text-[var(--text)] font-[650]">
+                  <a href="{% static 'files/BurhanpediaLite.class.jet' %}" download>
+                    Click Me!
+                  </a>
+                </button>
+              </div>
             </div>
           </div>
         </div>
-        
-        <!-- Group ID Field (for SpringBoot) -->
-        <div id="group-id-container" class="mb-4 hidden">
-          <label for="groupId" class="block text-sm font-medium mb-2" style="color: var(--text);">Group ID</label>
-          <input 
-            type="text" 
-            id="groupId" 
-            name="group_id" 
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--button)] focus:border-[var(--button)]" 
-            placeholder="com.example" 
-            pattern=".*\..*"
-            title="Group ID must contain at least one dot (e.g., com.example)"
-          >
-          <p class="mt-1 text-sm" style="color: var(--text);">Must contain at least one dot (e.g., com.example)</p>
-        </div>
-        
-        <!-- Style Options (Visible only for Django) -->
-        <div id="style-options-container" class="mb-6">
-          <label id="style-options-title" for="style-modern" class="block text-sm font-medium mb-2" style="color: var(--text);">Select Style Theme</label>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <!-- Modern Style -->
-            <div class="style-option">
-              <input type="radio" id="style-modern" name="style-theme" value="modern" class="hidden" checked>
-              <label for="style-modern" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
-                <div class="style-preview-box bg-blue-500 w-full h-16 rounded-md mb-2 flex items-center justify-center">
-                  <span class="text-white font-medium">Modern</span>
-                </div>
-                <span class="text-sm" style="color: var(--text);">Clean, minimal design with blue accents</span>
-              </label>
-            </div>
-            
-            <!-- Classic Style -->
-            <div class="style-option">
-              <input type="radio" id="style-classic" name="style-theme" value="classic" class="hidden">
-              <label for="style-classic" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
-                <div class="style-preview-box bg-gray-700 w-full h-16 rounded-md mb-2 flex items-center justify-center">
-                  <span class="text-white font-medium">Classic</span>
-                </div>
-                <span class="text-sm" style="color: var(--text);">Traditional layout with neutral colors</span>
-              </label>
-            </div>
-            
-            <!-- Vibrant Style -->
-            <div class="style-option">
-              <input type="radio" id="style-vibrant" name="style-theme" value="vibrant" class="hidden">
-              <label for="style-vibrant" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
-                <div class="style-preview-box bg-purple-600 w-full h-16 rounded-md mb-2 flex items-center justify-center">
-                  <span class="text-white font-medium">Vibrant</span>
-                </div>
-                <span class="text-sm" style="color: var(--text);">Bold colors and dynamic elements</span>
-              </label>
-            </div>
-            
-            <!-- Dark Style -->
-            <div class="style-option">
-              <input type="radio" id="style-dark" name="style-theme" value="dark" class="hidden">
-              <label for="style-dark" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
-                <div class="style-preview-box bg-gray-900 w-full h-16 rounded-md mb-2 flex items-center justify-center">
-                  <span class="text-gray-300 font-medium">Dark</span>
-                </div>
-                <span class="text-sm" style="color: var(--text);">Dark theme with high contrast</span>
-              </label>
-            </div>
-            
-            <!-- Minimalist Style -->
-            <div class="style-option">
-              <input type="radio" id="style-minimalist" name="style-theme" value="minimalist" class="hidden">
-              <label for="style-minimalist" class="style-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
-                <div class="style-preview-box bg-white w-full h-16 rounded-md mb-2 flex items-center justify-center border">
-                  <span class="text-gray-800 font-medium">Minimalist</span>
-                </div>
-                <span class="text-sm" style="color: var(--text);">Ultra-clean with minimal styling</span>
-              </label>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Convert Button -->
-        <button id="convertButton" 
-                class="convert-btn w-full mt-4 bg-[var(--button)] py-3 px-6 rounded-lg hover:bg-[var(--button-hover)] transition-all relative overflow-hidden"
-                style="color: var(--text);">
-            <span class="btn-text">Convert</span>
-            <div class="loading-bar absolute inset-0"></div>
-        </button>
-        <!-- Help Links -->
-        <div class="text-center space-y-4 mt-6">
-          <div style="color: var(--text)">
-            Don't have a diagram? 
-            <button id="toggleUserManual" class="w-auto px-4 py-2 bg-[var(--button)] rounded hover:bg-[var(--button-hover)]" style="color: var(--text);">
-              <a href="https://www.jetuml.org/docs/download.html" class="text-[var(--secondary)] hover:underline" target="_blank" rel="noopener noreferrer">
-              Click me!
-              </a>
-            </button>
-          </div>
-          <div style="color: var(--text)">
-            Download example of correct JetUML file 
-            <button id="downloadExample" class="w-auto px-4 py-2 bg-[var(--button)] rounded hover:bg-[var(--button-hover)]" style="color: var(--text);">
-              <a href="{% static 'files/BurhanpediaLite.class.jet' %}" download>
-                Click Here!
-              </a>
-            </button>
-          </div>
-          <div style="color: var(--text);">
-            Don't know what to do? 
-            <button id="toggleUserManual" class="w-auto px-4 py-2 bg-[var(--button)] rounded hover:bg-[var(--button-hover)]" style="color: var(--text);">
-              <a href="/doc/">
-                Click Here!
-              </a>
-            </button>
-          </div>
+        <div>
+            <!-- display ad ver -->
+            <ins class="adsbygoogle"
+                 style="display:block; width:100%;"
+                 data-ad-client="ca-pub-7498719221422050"
+                 data-ad-slot="6423160270"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+          <script>
+            try {
+              window.addEventListener('load', function (){
+                (adsbygoogle = window.adsbygoogle || []).push({});
+              })
+            } catch (e) {
+              console.error("Ad loading error:", e);
+            }
+          </script>
         </div>
       </div>
     </main>
   </div>
-
-    <footer class="relative" style="background-color: var(--background);">
-        <img src="{% static 'images/bottom3.png' %}" alt="Decorative" class="w-full h-auto object-cover">
+    <footer class="relative bg-(--background)">
+      <div>
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-format="autorelaxed"
+            data-ad-client="ca-pub-7498719221422050"
+            data-ad-slot="5519248501"></ins>
+        <script>
+          try {
+            window.addEventListener('load', function (){
+              (adsbygoogle = window.adsbygoogle || []).push({});
+            })
+          } catch (e) {
+            console.error("Ad loading error:", e);
+          }
+        </script>
+      </div>
+      <img src="{% static 'images/bottom3.png' %}" alt="Decorative" class="w-full h-auto object-cover">
     </footer>
 
-    <script src="{% static 'js/convert_page.js' %}"></script>
-    <script src="{% static 'js/hamburger_menu.js' %}"></script>
-</body>
-</html>
+  </body>
+  {% endblock %}
+  {% block js_page %}
+  <script src="{% static 'js/convert_page.js' %}"></script>
+  <script src="{% static 'js/hamburger_menu.js' %}"></script>
+  {% endblock %}

@@ -7,9 +7,9 @@ ENV PYTHONUNBUFFERED=1 \
     DJANGO_SETTINGS_MODULE=fe.settings \
     PORT=8000 \
     WEB_CONCURRENCY=4 \
-    PRODUCTION=true 
+    PRODUCTION=true
 
-# Install system packages required by Django.
+# Install system packages required by Django (if needed).
 RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 

@@ -1,6 +1,5 @@
-# Cuman buat tes prometheus scrapenya bener gk
 global:
-  scrape_interval: 15s  # How often Prometheus scrapes data
+  scrape_interval: 15s
 
 scrape_configs:
   - job_name: 'prometheus'
@@ -9,5 +8,4 @@ scrape_configs:
 
   - job_name: 'django'
     static_configs:
-      - targets: ['host.docker.internal:8001']  # Change if Django is running on a different host
-  
+      - targets: ['web:8001']  # Target the Django app by service name within the network
