@@ -11,23 +11,25 @@
     rel="stylesheet"
     />
     <script src="https://cdn.tailwindcss.com"></script>
+    <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" integrity="sha512-1L9VPmCfLWZzOXos9mzKnxgZ8wY8v5YK0OKDHgFHJKLGHBXXlGfTe5hT3h6Hf5HsLe+sHn7cJMrh95h9K+7tZg==" crossorigin="anonymous" data-id="MoTxT" data-description="Support me on Buy me a coffee!" data-message="Thank you for Supporting MoTxT! " data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
     <script>
         !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init me ws ys ps bs capture je Di ks register register_once register_for_session unregister unregister_for_session Ps getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey canRenderSurveyAsync identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty Es $s createPersonProfile Is opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing Ss debug xs getPageViewId captureTraceFeedback captureTraceMetric".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
         posthog.init('phc_WDtrH9fNEE1ByXSVwlqzyymaVMwYBLqfDUp2ut5nFIe', {
             api_host: 'https://us.i.posthog.com',
             person_profiles: 'identified_only', // or 'always' to create profiles for anonymous users as well
         })
-    </script>    
+    </script> 
+    <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="MoTxT" data-description="Support me on Buy me a coffee!" data-message="Thank you for Supporting MoTxT! " data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
     {% endblock %}
 </head>
 {% block content %}
 <body class="bg-gray-200 flex min-h-screen text-black">
-    <div class="bg-[#A7BBD2] w-64 h-screen text-black px-3 py-4 flex flex-col ml-20 font-[Consolas] justify-between">
-        <div>
-            <h1 class="text-white text-3xl font-bold mb-6 text-center">MoTxT User Manual</h1>
-            <nav class="flex flex-col space-y-2 overflow-y-auto max-h-full">
+    <div class="bg-[#A7BBD2] w-64 h-screen overflow-y-hidden text-black px-3 py-4 flex flex-col ml-20 font-[Consolas] justify-between">
+        <div class="overflow-y-auto">
+            <h1 class="text-white text-6xl font-bold mb-6 text-center">MoTxT User Manual</h1>
+            <nav class="flex flex-col space-y-2 overflow-y-auto">
                 <div class="flex flex-col">
-                    <a href="#section6" class="px-4 py-2 bg-white rounded hover:bg-[#35BAA2] block">Project Name Rules</a>
+                    <a href="#section6" class="px-4 py-2 bg-white rounded hover:bg-[#35BAA2] block">Project Rules</a>
                 </div>
                 <div class="flex flex-col">
                     <a href="#section1" class="px-4 py-2 bg-white rounded hover:bg-[#35BAA2] block">File Upload Rules</a>
@@ -57,10 +59,13 @@
                 <div>
                     <a href="#section5" class="px-4 py-2 bg-white text-black rounded hover:bg-[#35BAA2] block">Errors that may occur</a>
                 </div>
+                <div>
+                    <a href="#section7" class="px-4 py-2 bg-white text-black rounded hover:bg-[#35BAA2] block">Support Us</a>
+                </div>
             </nav>
         </div>
         
-        <a href="/convert_page/" class="text-blue-500 px-4 py-2 bg-gray-800 rounded hover:bg-blue-200">Go Back to Convert</a>
+        <a href="/convert_page/" class="text-red-500 px-4 py-2 bg-gray-800 rounded hover:bg-blue-200">Go Back to Convert</a>
     </div>
     <div id="mainContent" class="flex-1 p-10 mr-20 bg-white overflow-y-auto h-screen">
         <h2 class="text-3xl font-bold">User Manual</h2>
@@ -74,15 +79,25 @@
         <div class="flex-1 p-10">
 
             <section id="section6" class="h-auto p-3 mb-10 break-words">
-                <h2 class="text-3xl font-bold">Project Name Rules</h2>
+                <h2 class="text-3xl font-bold">Project Rules</h2>
                 <div class="flex flex-col gap-2 pt-2">
-                    <p >Project name follows python variable naming conventions</p>
-                    <p></p>
+                    <p class="font-bold text-2xl py-2">Django</p>
+                    <p><strong>Project name</strong> is used to name the django project like how you would run django-admin startproject &#60name&#62</p>
                     <ul>
                         <li class="list-inside list-disc">Project name must consist of only alphanumeric characters and _ (underscore)</li>
                         <li class="list-inside list-disc">No number on the start of the project name</li>
                         <li class="list-inside list-disc">_ (underscore) is the only special character allowed</li>
                     </ul>
+                    <p>You can also choose <strong>the theme</strong> you want to use for the frontend generated in by MoTxT. Try choosing which one you like best and find what suites you!</p>
+                    <p>For now, the available themes are:</p>
+                    <ul>
+                        <li class="list-inside list-disc">Modern</li>
+                        <li class="list-inside list-disc">Classic</li>
+                        <li class="list-inside list-disc">Vibrant</li>
+                        <li class="list-inside list-disc">Dark</li>
+                        <li class="list-inside list-disc">Minimalistic</li>
+                    </ul>
+                    <p ><strong>Group ID</strong> is for springboot projects and needs to be two string seperated by a fullstop (<strong>.</strong>)</p>
                 </div>
             </section>
             <section id="section1" class="h-auto p-3 mb-10 break-words">
@@ -195,13 +210,16 @@
                     <div class="flex flex-col gap-2 pt-2">
                         <p class="font-bold">Relationships:</p>
                         <ul>
-                            <li class="list-inside list-disc">Use the 'Association' tool</li>
+                            <li class="list-inside list-disc">All types of relationships are now supported in MoTxT
+                                'Association', 'Aggregation' and 'Composition' tools in JetUML can be used for generating relationships in the diagram.  
+                                <strong>Aggregation relationship with start label many and end label one is not supported</strong>
+                            </li>
                             <li class="list-inside list-disc">Accepted multiplicities:</li>
                             <ul>
                                 <li class="list-inside list-disc indent-10">Start label: 1 or *</li>
                                 <li class="list-inside list-disc indent-10">Middle label: must be empty</li>
                                 <li class="list-inside list-disc indent-10">End label: 1 or *</li>
-                                <li class="list-inside list-disc indent-10">Directionality: must be ‘Unspecified’</li>
+                                <li class="list-inside list-disc indent-10">Directionality: must be 'Unspecified'</li>
                             </ul>
                         </ul>
                     </div>
@@ -309,7 +327,7 @@
                     class="text-[#4BDEC3]">here</a></p>
             </section>
 
-            <section id="section5" class="h-screen mb-10 break-words">
+            <section id="section5" class="h-auto mb-10 break-words">
                 <h2 class="text-3xl font-bold">Errors that May Occur</h2>
                 <p class="my-4">This is a compilation of errors that you might encounter in your 
                     exploration of MoTxT</p>
@@ -341,6 +359,18 @@
                             You should make sure the file you submitted contains a JSON format</p>
                     </div>
                 </div>
+            </section>
+
+            <section id="section7" class="h-auto mb-10 break-words">
+                <h2 class="text-3xl font-bold">Support Us</h2>
+                <p class="my-4"><strong>Love the App? Help Keep It Growing!</strong></p>
+                <p>
+                    We're building this tech app with passion and purpose, 
+                    and your support can help us keep improving, expanding features, 
+                    and reaching more users. If you find value in what we’re creating, 
+                    consider contributing — every bit makes a difference.
+                </p>
+                <p> To support us, use the 'buy me a coffee' button on the convert page. </p>
             </section>
         </div>
     </div>
