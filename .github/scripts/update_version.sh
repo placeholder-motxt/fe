@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Path to the config file
-CONFIG_FILE="app/config.py"
+CONFIG_FILE="fe/settings.py"
 
 # Get the current branch (or the branch the PR is being merged into)
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
