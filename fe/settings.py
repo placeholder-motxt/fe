@@ -129,9 +129,11 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-if not os.path.exists("./logs"):
-    os.mkdir("./logs")
+if not os.path.exists(BASE_DIR / "logs"):
+    os.mkdir(BASE_DIR / "logs")
+if not os.path.exists(BASE_DIR / "logs/fe_django.log"):
+    with open(BASE_DIR / "logs/fe_django.log", "w") as f:
+        pass
 
 LOGGING = {
     'version': 1,
@@ -145,7 +147,7 @@ LOGGING = {
         'django_file': {
             'formatter': 'default',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/app/logs/fe_django.log',
+            'filename': BASE_DIR / 'logs/fe_django.log',
             'maxBytes': 10 * 1024 * 1024,
             'backupCount': 5,
             'encoding': 'utf8',
