@@ -22,11 +22,16 @@
     <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="MoTxT" data-description="Support me on Buy me a coffee!" data-message="Thank you for Supporting MoTxT! " data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
     {% endblock %}
 </head>
-{% block content %}
+{% block user_manual %}
 <body class="bg-gray-200 flex min-h-screen text-black">
-    <div class="bg-[#A7BBD2] w-64 h-screen overflow-y-hidden text-black px-3 py-4 flex flex-col ml-20 font-[Consolas] justify-between">
+    <aside id="sidebar" class="bg-[#A7BBD2] w-64 h-screen overflow-y-hidden text-black px-3 xl:py-4 flex flex-col xl:ml-20 font-[Consolas] justify-between fixed left-0 top-0 z-40 transition-transform duration-300">
         <div class="overflow-y-auto">
-            <h1 class="text-white text-6xl font-bold mb-6 text-center">MoTxT User Manual</h1>
+            <div class="flex items-center justify-between mb-2">
+                <h1 class="text-white text-4xl font-bold text-center flex-1">MoTxT User Manual</h1>
+                <button id="sidebarToggle" class="ml-2 text-black bg-white rounded-full w-10 h-10 flex items-center justify-center focus:outline-none xl:hidden">
+                    <span id="sidebarToggleIcon" style="font-size:2rem;">&times;</span>
+                </button>
+            </div>
             <nav class="flex flex-col space-y-2 overflow-y-auto">
                 <div class="flex flex-col">
                     <a href="#section6" class="px-4 py-2 bg-white rounded hover:bg-[#35BAA2] block">Project Rules</a>
@@ -35,17 +40,16 @@
                     <a href="#section1" class="px-4 py-2 bg-white rounded hover:bg-[#35BAA2] block">File Upload Rules</a>
                 </div>
                 <div class="flex flex-col">
-                    <a href="#section2" class="px-4 py-2 bg-white text-black rounded hover:bg-[#35BAA2] block">Valid input for class</a>
+                    <a href="#section2" class="px-4 py-2 bg-white text-black rounded hover:bg-[#35BAA2] block" onclick="toggleSubmenu('sub2menu', event)">Valid input for class</a>
                     <div id="sub2menu" class="submenu hidden flex flex-col space-y-1 pl-4 mt-1">
                         <a href="#sub2-1" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Class name</a>
                         <a href="#sub2-2" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Class attributes</a>
                         <a href="#sub2-3" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Class methods</a>
                         <a href="#sub2-4" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Relationships</a>
                     </div>
-
                 </div>
                 <div class="flex flex-col">
-                    <a href="#section3" class="px-4 py-2 bg-white text-black rounded hover:bg-[#35BAA2] block">Valid input for sequence</a>
+                    <a href="#section3" class="px-4 py-2 bg-white text-black rounded hover:bg-[#35BAA2] block" onclick="toggleSubmenu('sub3menu', event)">Valid input for sequence</a>
                     <div id="sub3menu" class="submenu hidden flex flex-col space-y-1 pl-4 mt-1">
                         <a href="#sub3-1" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Implicit Parameter</a>
                         <a href="#sub3-2" class="px-3 py-2 bg-white rounded hover:bg-[#35BAA2] block">Name</a>
@@ -64,10 +68,12 @@
                 </div>
             </nav>
         </div>
-        
         <a href="/convert_page/" class="text-red-500 px-4 py-2 bg-gray-800 rounded hover:bg-blue-200">Go Back to Convert</a>
-    </div>
-    <div id="mainContent" class="flex-1 p-10 mr-20 bg-white overflow-y-auto h-screen">
+    </aside>
+    <button id="sidebarCollapseBtn" class="fixed top-5 left-5 z-50 bg-[#A7BBD2] text-black rounded-full w-12 h-12 flex items-center justify-center shadow-xl xl:hidden text-3xl" style="display:none; opacity:0.7;">
+        <span>&#9776;</span>
+    </button>
+    <div id="mainContent" class="flex-1 p-10 xl:ml-80 bg-white overflow-y-auto h-screen">
         <h2 class="text-3xl font-bold">User Manual</h2>
         <p class="mt-4">Welcome to the MoTxT User Manual. 
             This guide will help you understand how to use the features
@@ -76,12 +82,12 @@
         <p class="mt-4">In this section, we'll explain what MoTxT can parse so that you can 
             get the most out of MoTxT convert feature.
         </p>
-        <div class="flex-1 p-10">
+        <div class="flex-1 sm:py-10 xl:pl-8 xl:py-10 py-10">
 
-            <section id="section6" class="h-auto p-3 mb-10 break-words">
+            <section id="section6" class="h-auto sm:max-md:py-3 xl:p-3 mb-10 break-words">
                 <h2 class="text-3xl font-bold">Project Rules</h2>
                 <div class="flex flex-col gap-2 pt-2">
-                    <p class="font-bold text-2xl py-2">Django</p>
+                    <p class="font-bold text-2xl">Django</p>
                     <p><strong>Project name</strong> is used to name the django project like how you would run django-admin startproject &#60name&#62</p>
                     <ul>
                         <li class="list-inside list-disc">Project name must consist of only alphanumeric characters and _ (underscore)</li>
@@ -100,7 +106,7 @@
                     <p ><strong>Group ID</strong> is for springboot projects and needs to be two string seperated by a fullstop (<strong>.</strong>)</p>
                 </div>
             </section>
-            <section id="section1" class="h-auto p-3 mb-10 break-words">
+            <section id="section1" class="h-auto sm:max-md:py-3 xl:p-3 mb-10 break-words">
                 <h2 class="text-3xl font-bold">File Upload Rules</h2>
                 <div class="flex flex-col gap-2 pt-2">
                     <p >Upload Requirements for <span class="font-bold">Class Diagram Files</span>:</p>
@@ -118,7 +124,7 @@
                     </ul>
                 </div>
             </section>
-            <section id="section2" class="h-fit p-3 mb-10 flex flex-col gap-4">
+            <section id="section2" class="h-fit sm:max-md:py-3 xl:p-3 mb-10 flex flex-col gap-4">
                 <h2 class="text-3xl font-bold">Valid Inputs for Class</h2>
                 <section id="sub2-1">
                     <div class="flex flex-col gap-2 pt-2">
@@ -226,7 +232,7 @@
                 </section>
             </section>
                 
-            <section id="section3"  class="h-fit p-3 mb-10 flex flex-col gap-4">
+            <section id="section3"  class="h-fit sm:max-md:py-3 xl:p-3 mb-10 flex flex-col gap-4">
 
                 <section id="sub3-1">
                     <div class="flex flex-col gap-2 pt-2">
