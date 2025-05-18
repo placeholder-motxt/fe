@@ -93,8 +93,11 @@
     // Add event listeners for framework selection to toggle fields
     const frameworkOptions = document.querySelectorAll('input[name="framework"]')
     frameworkOptions.forEach((option) => {
-      option.addEventListener("change", toggleGroupIdField)
-    })
+      option.addEventListener("change", function() {
+        console.log("Framework changed to:", this.value);
+        toggleGroupIdField();
+      });
+    });
   }
 
   // Toggle Group ID field and Style Options based on selected framework.
@@ -102,7 +105,7 @@
   // When Django is selected, hide Group ID and show style options.
   function toggleGroupIdField() {
     const springbootSelected = document.getElementById("framework-springboot")?.checked
-
+  
     // Toggle Group ID container
     if (groupIdContainer) {
       if (springbootSelected) {
@@ -114,7 +117,7 @@
     } else {
       console.warn("Group ID container not found. Cannot toggle visibility.")
     }
-
+  
     // Toggle Style Options container
     if (styleOptionsContainer && styleOptionsTitle) {
       if (springbootSelected) {
@@ -135,23 +138,33 @@
     
     // Early exit for empty files
     if (uploadedFiles.length === 0) {
-        showNotification("Please select files to convert.", "error");
-        return;
+      showNotification("Please select files to convert.", "error");
+      return;
     }
-
+  
     // Validate project name
     const projectName = projectNameInput.value.trim();
     if (!validateProjectName(projectName)) return;
-
+  
     // Get framework/theme selections
     const { frameworkValue } = getFrameworkSelection();
     const { themeValue } = getThemeSelection();
-
+  
     // Handle framework-specific validation
     if (frameworkValue === "spring" && !validateSpringBootGroupId()) return;
-
+  
     // Update confirmation modal content
     updateConfirmationModalContent(projectName, frameworkValue, themeValue);
+    
+    // Show/hide group ID confirmation based on framework
+    if (groupIdConfirmation) {
+      if (frameworkValue === "spring") {
+        groupIdConfirmation.classList.remove("hidden");
+      } else {
+        groupIdConfirmation.classList.add("hidden");
+      }
+    }
+    
     confirmationModal.classList.remove("hidden");
   }
 
@@ -218,11 +231,29 @@
   function updateConfirmationModalContent(projectName, frameworkValue, themeValue) {
     const confirmationMessage = document.getElementById("confirmationMessage");
     if (confirmationMessage) {
-        confirmationMessage.textContent = `Are you sure you want to create a project named "${projectName}" in ${capitalize(frameworkValue)}?`;
+      confirmationMessage.textContent = `Are you sure you want to create a project named "${projectName}" in ${capitalize(frameworkValue)}?`;
     }
-
+  
     updateConfirmationElement(frameworkConfirmation, "Framework", frameworkValue);
-    updateConfirmationElement(themeConfirmation, "Theme", themeValue);
+    
+    // Only show theme confirmation for Django
+    if (themeConfirmation) {
+      if (frameworkValue === "django") {
+        themeConfirmation.classList.remove("hidden");
+        updateConfirmationElement(themeConfirmation, "Theme", themeValue);
+      } else {
+        themeConfirmation.classList.add("hidden");
+      }
+    }
+    
+    // Show group ID only for SpringBoot
+    if (groupIdConfirmation) {
+      if (frameworkValue === "spring") {
+        groupIdConfirmation.classList.remove("hidden");
+      } else {
+        groupIdConfirmation.classList.add("hidden");
+      }
+    }
   }
 
   function updateConfirmationElement(element, label, value) {
@@ -334,12 +365,23 @@
     fileListSection.innerHTML = ""
     classFileCount = 0
 
+    sortFiles()
+
     uploadedFiles.forEach((file) => {
       if (file.name.toLowerCase().endsWith(".class.jet")) classFileCount++
       fileListSection.appendChild(createFileElement(file))
     })
 
     toggleConvertButton()
+  }
+
+  function sortFiles() {
+    uploadedFiles.sort((a, b) => {
+      const priority = f =>
+        f.name.toLowerCase().endsWith(".class.jet")    ? 1 :
+        f.name.toLowerCase().endsWith(".sequence.jet") ? 2 : 3;
+      return priority(a) - priority(b);
+    })
   }
 
   // Create file element
@@ -349,19 +391,17 @@
     fileEntry.dataset.filename = file.name
     fileEntry.innerHTML = `
         <div class="flex items-center space-x-2 overflow-hidden mr-2">
-          <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="50" height="50" viewBox="0 0 256 256">
-          <g transform="translate(1.4066 1.4066) scale(2.81)">
-            <path d="M 77.474 17.28 L 61.526 1.332 C 60.668 0.473 59.525 0 58.311 0 H 15.742 c -2.508 0 -4.548 2.04 -4.548 4.548 v 80.904 c 0 2.508 2.04 4.548 4.548 4.548 h 58.516 c 2.508 0 4.549 -2.04 4.549 -4.548 V 20.496 C 78.807 19.281 78.333 18.138 77.474 17.28 z" style="fill: var(--text);" stroke-linecap="round"/>
-            <path d="M 61.073 5.121 l 12.611 12.612 H 62.35 c -0.704 0 -1.276 -0.573 -1.276 -1.277 V 5.121 z" style="fill: var(--text);" stroke-linecap="round"/>
-            <path d="M 74.258 87 H 15.742 c -0.854 0 -1.548 -0.694 -1.548 -1.548 V 4.548 C 14.194 3.694 14.888 3 15.742 3 h 42.332 v 13.456 c 0 2.358 1.918 4.277 4.276 4.277 h 13.457 v 64.719 C 75.807 86.306 75.112 87 74.258 87 z" style="fill: var(--text);" stroke-linecap="round"/>
-            <path d="M 68.193 33.319 H 41.808 c -0.829 0 -1.5 -0.671 -1.5 -1.5 s 0.671 -1.5 1.5 -1.5 h 26.385 c 0.828 0 1.5 0.671 1.5 1.5 S 69.021 33.319 68.193 33.319 z" style="fill: var(--text);" stroke-linecap="round"/>
-            <path d="M 34.456 33.319 H 21.807 c -0.829 0 -1.5 -0.671 -1.5 -1.5 s 0.671 -1.5 1.5 -1.5 h 12.649 c 0.829 0 1.5 0.671 1.5 1.5 S 35.285 33.319 34.456 33.319 z" style="fill: var(--text);" stroke-linecap="round"/>
-            <path d="M 42.298 20.733 H 21.807 c -0.829 0 -1.5 -0.671 -1.5 -1.5 s 0.671 -1.5 1.5 -1.5 h 20.492 c 0.829 0 1.5 0.671 1.5 1.5 S 43.127 20.733 42.298 20.733 z" style="fill: var(--text);" stroke-linecap="round"/>
-            <path d="M 68.193 44.319 H 21.807 c -0.829 0 -1.5 -0.671 -1.5 -1.5 s 0.671 -1.5 1.5 -1.5 h 46.387 c 0.828 0 1.5 0.671 1.5 1.5 S 69.021 44.319 68.193 44.319 z" style="fill: var(--text);" stroke-linecap="round"/>
-            <path d="M 48.191 55.319 H 21.807 c -0.829 0 -1.5 -0.672 -1.5 -1.5 s 0.671 -1.5 1.5 -1.5 h 26.385 c 0.828 0 1.5 0.672 1.5 1.5 S 49.02 55.319 48.191 55.319 z" style="fill: var(--text);" stroke-linecap="round"/>
-            <path d="M 68.193 55.319 H 55.544 c -0.828 0 -1.5 -0.672 -1.5 -1.5 s 0.672 -1.5 1.5 -1.5 h 12.649 c 0.828 0 1.5 0.672 1.5 1.5 S 69.021 55.319 68.193 55.319 z" style="fill: var(--text);" stroke-linecap="round"/>
-            <path d="M 68.193 66.319 H 21.807 c -0.829 0 -1.5 -0.672 -1.5 -1.5 s 0.671 -1.5 1.5 -1.5 h 46.387 c 0.828 0 1.5 0.672 1.5 1.5 S 69.021 66.319 68.193 66.319 z" style="fill: var(--text);" stroke-linecap="round"/>
-            <path d="M 68.193 77.319 H 55.544 c -0.828 0 -1.5 -0.672 -1.5 -1.5 s 0.672 -1.5 1.5 -1.5 h 12.649 c 0.828 0 1.5 0.672 1.5 1.5 S 69.021 77.319 68.193 77.319 z" style="fill: var(--text);" stroke-linecap="round"/>
+          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="50" height="50" viewBox="0 0 256 256" xml:space="preserve">
+          <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
+            <path d="M 77.474 17.28 L 61.526 1.332 C 60.668 0.473 59.525 0 58.311 0 H 15.742 c -2.508 0 -4.548 2.04 -4.548 4.548 v 80.904 c 0 2.508 2.04 4.548 4.548 4.548 h 58.516 c 2.508 0 4.549 -2.04 4.549 -4.548 V 20.496 C 78.807 19.281 78.333 18.138 77.474 17.28 z M 61.073 5.121 l 12.611 12.612 H 62.35 c -0.704 0 -1.276 -0.573 -1.276 -1.277 V 5.121 z M 74.258 87 H 15.742 c -0.854 0 -1.548 -0.694 -1.548 -1.548 V 4.548 C 14.194 3.694 14.888 3 15.742 3 h 42.332 v 13.456 c 0 2.358 1.918 4.277 4.276 4.277 h 13.457 v 64.719 C 75.807 86.306 75.112 87 74.258 87 z" style="fill: var(--text);" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
+            <path d="M 68.193 33.319 H 41.808 c -0.829 0 -1.5 -0.671 -1.5 -1.5 s 0.671 -1.5 1.5 -1.5 h 26.385 c 0.828 0 1.5 0.671 1.5 1.5 S 69.021 33.319 68.193 33.319 z" style="fill: var(--text);" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
+            <path d="M 34.456 33.319 H 21.807 c -0.829 0 -1.5 -0.671 -1.5 -1.5 s 0.671 -1.5 1.5 -1.5 h 12.649 c 0.829 0 1.5 0.671 1.5 1.5 S 35.285 33.319 34.456 33.319 z" style="fill: var(--text);" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
+            <path d="M 42.298 20.733 H 21.807 c -0.829 0 -1.5 -0.671 -1.5 -1.5 s 0.671 -1.5 1.5 -1.5 h 20.492 c 0.829 0 1.5 0.671 1.5 1.5 S 43.127 20.733 42.298 20.733 z" style="fill: var(--text);" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
+            <path d="M 68.193 44.319 H 21.807 c -0.829 0 -1.5 -0.671 -1.5 -1.5 s 0.671 -1.5 1.5 -1.5 h 46.387 c 0.828 0 1.5 0.671 1.5 1.5 S 69.021 44.319 68.193 44.319 z" style="fill: var(--text);" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
+            <path d="M 48.191 55.319 H 21.807 c -0.829 0 -1.5 -0.672 -1.5 -1.5 s 0.671 -1.5 1.5 -1.5 h 26.385 c 0.828 0 1.5 0.672 1.5 1.5 S 49.02 55.319 48.191 55.319 z" style="fill: var(--text);" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
+            <path d="M 68.193 55.319 H 55.544 c -0.828 0 -1.5 -0.672 -1.5 -1.5 s 0.672 -1.5 1.5 -1.5 h 12.649 c 0.828 0 1.5 0.672 1.5 1.5 S 69.021 55.319 68.193 55.319 z" style="fill: var(--text);" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
+            <path d="M 68.193 66.319 H 21.807 c -0.829 0 -1.5 -0.672 -1.5 -1.5 s 0.671 -1.5 1.5 -1.5 h 46.387 c 0.828 0 1.5 0.672 1.5 1.5 S 69.021 66.319 68.193 66.319 z" style="fill: var(--text);" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
+            <path d="M 68.193 77.319 H 55.544 c -0.828 0 -1.5 -0.672 -1.5 -1.5 s 0.672 -1.5 1.5 -1.5 h 12.649 c 0.828 0 1.5 0.672 1.5 1.5 S 69.021 77.319 68.193 77.319 z" style="fill: var(--text);" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
           </g>
           </svg>
           <span class="font-semibold truncate" style="color: var(--text);" title="${file.name}">${file.name}</span>
@@ -376,8 +416,7 @@
   // Toggle convert button visibility
   function toggleConvertButton() {
     const hasFiles = uploadedFiles.length > 0
-    fileListSection.style.display = hasFiles ? "block" : "none"
-    convertBtn.style.display = hasFiles ? "inline-block" : "none"
+    fileListSection.classList.add = hasFiles ? "" : "hidden"
   }
 
   // Handle convert action
@@ -473,18 +512,18 @@
     const contentType = response.headers.get("content-type") || ""
 
     try {
-        if (contentType.includes("application/json")) {
-          const errorData = await response.json()
-          message = errorData.error || errorData.detail || JSON.stringify(errorData)
-        } else {
-          const textResponse = await response.text();
-          message = textResponse || message;
-        }
+      if (contentType.includes("application/json")) {
+        const errorData = await response.json()
+        message = errorData.error || errorData.detail || JSON.stringify(errorData)
+      } else {
+        const textResponse = await response.text();
+        message = textResponse || message;
+      }
     } catch (e) {
-        console.error("Error parsing error response:", e);
-        message = `Conversion failed (Status: ${response.status}) and error response could not be parsed.`
+      console.error("Error parsing error response:", e);
+      message = `Conversion failed (Status: ${response.status}) and error response could not be parsed.`
     }
-    showNotification(`Error: ${message}`, "error")
+    showNotification(`Error (${response.status}): ${message}`, "error")
   }
 
   // Show notification message

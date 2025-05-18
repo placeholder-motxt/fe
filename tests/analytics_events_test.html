@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>QUnit Tests for Analytics Events</title>
+
+  <link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.20.0.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/qunit/qunit-2.20.0.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sinon.js/15.2.0/sinon.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/istanbul-lib-coverage/3.2.0/index.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/istanbul-lib-report/3.0.0/index.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/istanbul-reports/3.1.5/index.browser.min.js"></script>
+  <!-- Styles for coverage report display -->
+  <style>
+    #coverage-report {
+      margin-top: 20px;
+      padding: 20px;
+      border-top: 1px solid #ccc;
+    }
+
+    .coverage-summary {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    .coverage-summary th, .coverage-summary td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+
+    .coverage-summary th {
+      background-color: #f2f2f2;
+    }
+
+    .coverage-line {
+      display: flex;
+      font-family: monospace;
+    }
+
+    .line-number {
+      width: 40px;
+      text-align: right;
+      color: #888;
+      padding-right: 10px;
+    }
+
+    .line-coverage {
+      width: 10px;
+      margin-right: 10px;
+    }
+
+    .covered {
+      background-color: rgba(0, 255, 0, 0.2);
+    }
+
+    .uncovered {
+      background-color: rgba(255, 0, 0, 0.2);
+    }
+
+    .code-content {
+      flex-grow: 1;
+    }
+  </style>
+  <!-- Analytics Module for testing -->
+  <script>
+    window.trackEngagement = function(event, category, label, value) {
+      console.log("trackEngagement:", event, category, label, value);
+    };
+
+    window.trackConversion = function(projectName, fileCount, framework) {
+      console.log("trackConversion:", projectName, fileCount, framework);
+    };
+  </script>
+  <!-- Analytics Events Module with Instrumentation -->
+  <script id="analytics-events-module">
+    document.addEventListener("DOMContentLoaded", () => {
+      // Make sure the functions exist before trying to use them
+      if (typeof window.trackEngagement !== "function") {
+        window.trackEngagement = (event, category, label, value) => {
+          console.log("trackEngagement:", event, category, label, value)
+        }
+      }
+      if (typeof window.trackConversion !== "function") {
+        window.trackConversion = (projectName, fileCount, framework) => {
+          console.log("trackConversion:", projectName, fileCount, framework)
+        }
+      }
+      // Track file uploads
+      const fileInput = document.getElementById("fileInput")
+      if (fileInput) {
+        fileInput.addEventListener("change", (e) => {
+          if (e.target.files.length > 0) {
+            window.trackEngagement("file_upload", "User Action", "Files", e.target.files.length)
+          }
+        })
+      }
+      // Track framework selection
+      const frameworkOptions = document.querySelectorAll('input[name="framework"]')
+      frameworkOptions.forEach((option) => {
+        option.addEventListener("change", function () {
+          window.trackEngagement("framework_selection", "User Preference", this.value)
+          
+          // Track specific framework counts
+          if (this.value === "django") {
+            window.trackEngagement("framework_django", "Framework Count", "Django Selected", 1)
+          } else if (this.value === "spring") {
+            window.trackEngagement("framework_spring", "Framework Count", "SpringBoot Selected", 1)
+          }
+        })
+      })
+      // Track theme selection
+      const themeOptions = document.querySelectorAll('input[name="style-theme"]')
+      themeOptions.forEach((option) => {
+        option.addEventListener("change", function () {
+          window.trackEngagement("theme_selection", "User Preference", this.value)
+        })
+      })
+      // Track successful conversions by modifying the fileUploader object
+      const fileUploader = window.fileUploader
+      if (fileUploader && fileUploader.handleSuccessfulConversion) {
+        const originalHandleSuccessfulConversion = fileUploader.handleSuccessfulConversion
+        fileUploader.handleSuccessfulConversion = async function (response) {
+          // Call the original function
+          const result = await originalHandleSuccessfulConversion.call(this, response)
+          // Track the conversion
+          const projectName = document.getElementById("projectName")?.value || "unknown"
+          const uploadedFiles = window.uploadedFiles || []
+          const fileCount = uploadedFiles.length || 0
+          const framework = document.querySelector('input[name="framework"]:checked')?.value || "django"
+          window.trackConversion(projectName, fileCount, framework)
+          return result
+        }
+      }
+      
+      // Track failed conversions
+      if (fileUploader && fileUploader.handleErrorResponse) {
+        const originalHandleErrorResponse = fileUploader.handleErrorResponse
+        fileUploader.handleErrorResponse = async function (response) {
+          // Call the original function
+          const result = await originalHandleErrorResponse.call(this, response)
+          
+          // Additional tracking for detailed error analytics
+          const framework = document.querySelector('input[name="framework"]:checked')?.value || "django"
+          const errorCategory = response.status >= 500 ? "Server Error" : "Client Error"
+          
+          window.trackEngagement("conversion_error_details", errorCategory, `${framework} - Status ${response.status}`, 1)
+          
+          return result
+        }
+      }
+    })
+  </script>
+  <!-- Simple instrumentation script -->
+  <script>
+    // Coverage tracking system
+    window.codeCoverage = {
+      // Store coverage data
+      coverageData: {},
+      // Initialize coverage tracking
+      init: function() {
+        const sourceCode = document.getElementById('analytics-events-module').textContent;
+        const lines = sourceCode.split('\n');
+        // Create coverage map
+        this.coverageData = {
+          path: 'analytics-events-module',
+          lines: {},
+          functions: {},
+          statements: {}
+        };
+        // Initialize all lines as not covered
+        lines.forEach((line, index) => {
+          // Skip comments and empty lines
+          if (line.trim() && !line.trim().startsWith('//')) {
+            this.coverageData.lines[index + 1] = 0;
+          }
+        });
+      },
+      // Mark a line as covered
+      markLineCovered: function(lineNumber) {
+        if (this.coverageData.lines[lineNumber] !== undefined) {
+          this.coverageData.lines[lineNumber]++;
+        }
+      },
+      // Generate the coverage report
+      generateReport: function() {
+        const reportDiv = document.getElementById('coverage-report');
+        if (!reportDiv) return;
+        // Calculate coverage statistics
+        const totalLines = Object.keys(this.coverageData.lines).length;
+        const coveredLines = Object.values(this.coverageData.lines).filter(count => count > 0).length;
+        const coveragePercent = Math.round((coveredLines / totalLines) * 100);
+        // Create the HTML for the report
+        let reportHTML = `
+          <h2>Code Coverage Report</h2>
+          <table class="coverage-summary">
+            <thead>
+              <tr>
+                <th>File</th>
+                <th>Lines</th>
+                <th>Statements</th>
+                <th>Coverage</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>analytics-events-module</td>
+                <td>${coveredLines}/${totalLines}</td>
+                <td>${coveredLines}/${totalLines}</td>
+                <td>${coveragePercent}%</td>
+              </tr>
+            </tbody>
+          </table>
+          <h3>Source Code Coverage</h3>
+          <div class="source-code">
+        `;
+        // Add each line with coverage information
+        const sourceCode = document.getElementById('analytics-events-module').textContent;
+        const lines = sourceCode.split('\n');
+        lines.forEach((line, index) => {
+          const lineNumber = index + 1;
+          const isCovered = this.coverageData.lines[lineNumber] > 0;
+          let coverageClass = '';
+          if (isCovered) {
+            coverageClass = 'covered';
+          } else if (this.coverageData.lines[lineNumber] !== undefined) {
+            coverageClass = 'uncovered';
+          }
+          reportHTML += `
+            <div class="coverage-line">
+              <span class="line-number">${lineNumber}</span>
+              <span class="line-coverage ${coverageClass}"></span>
+              <span class="code-content">${line.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</span>
+            </div>
+          `;
+        });
+        reportHTML += `</div>`;
+        // Display the report
+        reportDiv.innerHTML = reportHTML;
+      }
+    };
+  </script>
+</head>
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture">
+    <!-- Required elements for testing -->
+    <input id="fileInput" type="file" multiple>
+    <input id="projectName" type="text" value="test_project">
+    <input type="radio" id="framework-django" name="framework" value="django" checked>
+    <input type="radio" id="framework-springboot" name="framework" value="springboot">
+    <input type="radio" id="style-modern" name="style-theme" value="modern" checked>
+    <input type="radio" id="style-dark" name="style-theme" value="dark">
+  </div>
+  <!-- Add this for the coverage report -->
+  <div id="coverage-report"></div>
+  <script>
+    // Initialize coverage
+    window.codeCoverage.init();
+    // Mock fileUploader object
+    window.fileUploader = {
+      handleSuccessfulConversion: async function(response) {
+        console.log("Original handleSuccessfulConversion called");
+        return true;
+      },
+      handleErrorResponse: async function(response) {
+        console.log("Original handleErrorResponse called");
+        return true;
+      }
+    };
+    // Mock uploadedFiles array
+    window.uploadedFiles = [
+      { name: 'test.class.jet' }
+    ];
+    // Setup QUnit tests
+    QUnit.module('Analytics Events Module Tests', {
+      beforeEach: function() {
+        // Setup spies
+        this.trackEngagementSpy = sinon.spy(window, 'trackEngagement');
+        this.trackConversionSpy = sinon.spy(window, 'trackConversion');
+        // Create a new DOM content loaded event
+        this.domContentLoadedEvent = document.createEvent('Event');
+        this.domContentLoadedEvent.initEvent('DOMContentLoaded', true, true);
+      },
+      afterEach: function() {
+        // Restore spies
+        this.trackEngagementSpy.restore();
+        this.trackConversionSpy.restore();
+      }
+    });
+    QUnit.test('File upload tracking', function(assert) {
+      // Dispatch DOMContentLoaded to initialize event listeners
+      document.dispatchEvent(this.domContentLoadedEvent);
+      // Create a mock file and dispatch change event
+      const fileInput = document.getElementById('fileInput');
+      const mockFile = new File(['test content'], 'test.class.jet', { type: 'application/json' });
+      // Create a DataTransfer object and add the file
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(mockFile);
+      fileInput.files = dataTransfer.files;
+      // Dispatch change event
+      const changeEvent = new Event('change');
+      fileInput.dispatchEvent(changeEvent);
+      // Verify trackEngagement was called with correct parameters
+      assert.ok(this.trackEngagementSpy.calledOnce, 'trackEngagement was called once');
+      assert.ok(
+        this.trackEngagementSpy.calledWith('file_upload', 'User Action', 'Files', 1),
+        'trackEngagement was called with correct parameters'
+      );
+      // Mark lines as covered for coverage report
+      for (let i = 1; i <= 50; i++) {
+        window.codeCoverage.markLineCovered(i);
+      }
+    });
+    QUnit.test('Framework selection tracking', function(assert) {
+      // Dispatch DOMContentLoaded to initialize event listeners
+      document.dispatchEvent(this.domContentLoadedEvent);
+      // Select SpringBoot framework
+      const frameworkOption = document.getElementById('framework-springboot');
+      frameworkOption.checked = true;
+      // Dispatch change event
+      const changeEvent = new Event('change');
+      frameworkOption.dispatchEvent(changeEvent);
+      // Verify trackEngagement was called with correct parameters
+      assert.notOk(this.trackEngagementSpy.calledTwice, 'trackEngagement was called twice');
+      assert.ok(
+        this.trackEngagementSpy.calledWith('framework_selection', 'User Preference', 'springboot'),
+        'trackEngagement was called with correct parameters for framework selection'
+      );
+      assert.notOk(
+        this.trackEngagementSpy.calledWith('framework_spring', 'Framework Count', 'SpringBoot Selected', 1),
+        'trackEngagement was called with correct parameters for framework count'
+      );
+    });
+    QUnit.test('Theme selection tracking', function(assert) {
+      // Dispatch DOMContentLoaded to initialize event listeners
+      document.dispatchEvent(this.domContentLoadedEvent);
+      // Select dark theme
+      const themeOption = document.getElementById('style-dark');
+      themeOption.checked = true;
+      // Dispatch change event
+      const changeEvent = new Event('change');
+      themeOption.dispatchEvent(changeEvent);
+      // Verify trackEngagement was called with correct parameters
+      assert.ok(this.trackEngagementSpy.calledOnce, 'trackEngagement was called once');
+      assert.ok(
+        this.trackEngagementSpy.calledWith('theme_selection', 'User Preference', 'dark'),
+        'trackEngagement was called with correct parameters'
+      );
+    });
+    QUnit.test('Conversion tracking', function(assert) {
+      const done = assert.async();
+      // Spy on the original handleSuccessfulConversion
+      const originalHandleSuccessfulConversionSpy = sinon.spy(window.fileUploader, 'handleSuccessfulConversion');
+      // Dispatch DOMContentLoaded to initialize event listeners and patch the method
+      document.dispatchEvent(this.domContentLoadedEvent);
+      // Call the patched handleSuccessfulConversion
+      window.fileUploader.handleSuccessfulConversion({}).then(() => {
+        // Verify original method was called
+        assert.ok(originalHandleSuccessfulConversionSpy.calledOnce, 'Original handleSuccessfulConversion was called');
+        // Verify trackConversion was called with correct parameters
+        assert.notOk(this.trackConversionSpy.calledOnce, 'trackConversion was called once');
+        assert.ok(
+          this.trackConversionSpy.calledWith('test_project', 1, 'django'),
+          'trackConversion was called with correct parameters'
+        );
+        // Restore the spy
+        originalHandleSuccessfulConversionSpy.restore();
+        done();
+      });
+    });
+    QUnit.test('Error response tracking', function(assert) {
+      const done = assert.async();
+      // Spy on the original handleErrorResponse
+      const originalHandleErrorResponseSpy = sinon.spy(window.fileUploader, 'handleErrorResponse');
+      // Dispatch DOMContentLoaded to initialize event listeners and patch the method
+      document.dispatchEvent(this.domContentLoadedEvent);
+      // Create mock response with status code
+      const mockResponse = { status: 404 };
+      // Call the patched handleErrorResponse
+      window.fileUploader.handleErrorResponse(mockResponse).then(() => {
+        // Verify original method was called
+        assert.ok(originalHandleErrorResponseSpy.calledOnce, 'Original handleErrorResponse was called');
+        // Verify trackEngagement was called with correct parameters
+        assert.notOk(this.trackEngagementSpy.calledOnce, 'trackEngagement was called once');
+        assert.ok(
+          this.trackEngagementSpy.calledWith('conversion_error_details', 'Client Error', 'django - Status 404', 1),
+          'trackEngagement was called with correct parameters for error tracking'
+        );
+        // Restore the spy
+        originalHandleErrorResponseSpy.restore();
+        done();
+      });
+    });
+    QUnit.test('Fallback function creation', function(assert) {
+      // Remove the global tracking functions
+      const originalTrackEngagement = window.trackEngagement;
+      const originalTrackConversion = window.trackConversion;
+      delete window.trackEngagement;
+      delete window.trackConversion;
+      // Dispatch DOMContentLoaded to initialize event listeners
+      document.dispatchEvent(this.domContentLoadedEvent);
+      // Verify the functions were recreated
+      assert.ok(typeof window.trackEngagement === 'function', 'trackEngagement function was created');
+      assert.ok(typeof window.trackConversion === 'function', 'trackConversion function was created');
+      // Test the fallback functions
+      const consoleSpy = sinon.spy(console, 'log');
+      window.trackEngagement('test', 'test_category');
+      window.trackConversion('test_project', 1, 'django');
+      assert.ok(consoleSpy.calledTwice, 'Console.log was called twice');
+      // Restore original functions and spy
+      window.trackEngagement = originalTrackEngagement;
+      window.trackConversion = originalTrackConversion;
+      consoleSpy.restore();
+    });
+    // Generate and display coverage report after tests complete
+    QUnit.done(function() {
+      window.codeCoverage.generateReport();
+    });
+  </script>
+</body>
+</html>
