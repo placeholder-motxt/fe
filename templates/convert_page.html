@@ -74,8 +74,8 @@
           </button>
           <div id="dropdownMenu" class="dropdown-menu">
               <a href="/" class="menu-item">Home</a>
-              <a href="#" class="menu-item">Diagram Explorer</a>
-              <a href="#" class="menu-item">Discover</a>
+              <a href="/convert_page/" class="menu-item">Convert</a>
+              <a href="/doc/" class="menu-item">User Manual</a>
           </div>
       </div>
       
@@ -94,7 +94,7 @@
       <form id="uploadForm" style="display: none;">
         {% csrf_token %}
       </form>
-      <div class="md:block 2xl:grid 2xl:grid-cols-[1fr_3fr_1fr] md:gap-4 w-full px-4">
+      <div class="xl:none 2xl:grid 2xl:grid-cols-[1fr_3fr_1fr] md:gap-4 w-full px-4">
         <div>
           <!-- display ad ver -->
           <ins class="adsbygoogle"
@@ -114,12 +114,12 @@
 
           </script>
         </div>
-        <div class="grid grid-rows-[2fr_1fr] gap-4 shadow-xl border-4 border-zinc-500 rounded-lg md:col-span-1 2xl:basis-256 2xl:min-w-2xl 2xl:w-full 2xl:grow-0 mx-auto" style="background-color:var(--main-tile);">
-          <div class="flex flex-row justify-center mx-auto max-w-7xl md:grid-cols-2 rounded-lg px-6 pt-6">
+        <div class="sm:max-md:flex sm:max-md:flex-col 2xl:grid 2xl:grid-rows-[2fr_1fr] 2xl:gap-4 shadow-xl border-4 border-zinc-500 rounded-lg md:col-span-1 2xl:basis-256 2xl:min-w-2xl 2xl:w-full 2xl:grow-0 mx-auto" style="background-color:var(--main-tile);">
+          <div class="flex flex-col md:flex-row justify-center mx-auto max-w-7xl xl:grid-cols-2 rounded-lg px-6 pt-6 w-full">
             <!-- Left Column -->
-            <div class="pr-6">
+            <div class="md:pr-6 sm:w-screen">
               <!-- Project Name Input -->
-              <div class="mb-4">
+              <div class="mb-4 sm:max-md:w-screen px-auto">
                 <label for="projectName" class="block text-sm font-medium mb-2" style="color: var(--text);">Project Name</label>
                 <input 
                   type="text" 
@@ -133,22 +133,22 @@
                 <p class="mt-1 text-sm" style="color: var(--text);">Only letters, numbers, and underscores are allowed.</p>
               </div>
               <!-- Framework Selection -->
-              <div class="mb-6">
+              <div class="mb-6 sm:max-md:w-screen mx-auto">
                 <label for="framework-django" class="block text-sm font-medium mb-2" style="color: var(--text);">Select Framework</label>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex flex-row gap-4">
                   <!-- Django Framework -->
-                  <div class="framework-option tooltip">
+                  <div class="framework-option tooltip flex-1">
                     <input type="radio" id="framework-django" name="framework" value="django" class="hidden" checked>
                     <label for="framework-django" class="framework-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
                       <div class="framework-preview-box bg-green-600 w-full h-16 rounded-md mb-2 flex items-center justify-center">
                         <span class="text-white font-medium">Django</span>
                       </div>
-                    <span class="text-sm tooltiptext" style="color: var(--text);">Python-based web framework</span>
+                      <span class="text-sm tooltiptext" style="color: var(--text);">Python-based web framework</span>
                     </label>
                   </div>
                   
                   <!-- SpringBoot Framework -->
-                  <div class="framework-option  tooltip">
+                  <div class="framework-option tooltip flex-1">
                     <input type="radio" id="framework-springboot" name="framework" value="spring" class="hidden">
                     <label for="framework-springboot" class="framework-preview flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[var(--button)]">
                       <div class="framework-preview-box bg-green-800 w-full h-16 rounded-md mb-2 flex items-center justify-center">
@@ -161,7 +161,7 @@
               </div>
               
               <!-- Group ID Field (for SpringBoot) -->
-              <div id="group-id-container" class="mb-4 hidden" style="width: 600px;">
+              <div id="group-id-container" class="mb-4 hidden sm:max-md:w-screen mx-auto ">
                 <label for="groupId" class="block text-sm font-medium mb-2" style="color: var(--text);">Group ID</label>
                 <input 
                   type="text" 
@@ -177,9 +177,9 @@
               </div>
               
               <!-- Style Options (Visible only for Django) -->
-              <div id="style-options-container" class="mb-6" style="width: 600px;">
+              <div id="style-options-container" class="mb-6 sm:max-sm:w-screen mx-auto xl:w-[37.5rem]">
               <label id="style-options-title" for="style-modern" class="block text-sm font-medium mb-2" style="color: var(--text);">Select Style Theme</label>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
                 <!-- Modern Style -->
                 <div class="style-option tooltip">
                   <input type="radio" id="style-modern" name="style-theme" value="modern" class="hidden" checked>
@@ -242,7 +242,7 @@
             <div>
               
               <!-- Drop Zone -->
-              <div class="drop-zone rounded-lg p-6 mb-4" style="width: 600px;">
+              <div class="drop-zone rounded-lg p-6 mb-4 sm:max-sm:w-screen sm:mx-auto xl:w-[37.5rem]">
                 <div class="relative group">
                   <button class="w-full px-6 py-4 bg-[var(--button)] text-white rounded-lg hover:bg-[var(--button-hover)] transition-all flex items-center justify-center space-x-2">
                   <svg width="100px" height="100px" viewBox="0 0 24 24" fill="none">
@@ -264,7 +264,7 @@
             </div>
             
           </div>
-          <div class="justify-center items-end pb-6">
+          <div class="justify-center items-end py-6">
             <!-- Convert Button -->
 
             <div class="btn-wrapper">
@@ -300,9 +300,9 @@
                   </a>  
                 </button>
               </div>
-              <div class="text-[var(--text)]">
+              <div class="text-[var(--text)] flex flex-col sm:flex-row sm:justify-center items-center">
                 Download example of correct JetUML file 
-                <button id="downloadExample" class="w-auto px-4 py-2 bg-[var(--button)] rounded hover:bg-[var(--hover-tile)] text-[var(--text)] font-[650]">
+                <button id="downloadExample" class="w-auto px-4 py-2 bg-[var(--button)] rounded hover:bg-[var(--hover-tile)] text-[var(--text)] font-[650] mt-2 sm:mt-0 sm:ml-2">
                   <a href="{% static 'files/BurhanpediaLite.class.jet' %}" download>
                     Click Me!
                   </a>

@@ -103,6 +103,13 @@
       frameworkOptions.forEach((option) => {
         option.addEventListener("change", function () {
           window.trackEngagement("framework_selection", "User Preference", this.value)
+          
+          // Track specific framework counts
+          if (this.value === "django") {
+            window.trackEngagement("framework_django", "Framework Count", "Django Selected", 1)
+          } else if (this.value === "spring") {
+            window.trackEngagement("framework_spring", "Framework Count", "SpringBoot Selected", 1)
+          }
         })
       })
       // Track theme selection
@@ -125,6 +132,23 @@
           const fileCount = uploadedFiles.length || 0
           const framework = document.querySelector('input[name="framework"]:checked')?.value || "django"
           window.trackConversion(projectName, fileCount, framework)
+          return result
+        }
+      }
+      
+      // Track failed conversions
+      if (fileUploader && fileUploader.handleErrorResponse) {
+        const originalHandleErrorResponse = fileUploader.handleErrorResponse
+        fileUploader.handleErrorResponse = async function (response) {
+          // Call the original function
+          const result = await originalHandleErrorResponse.call(this, response)
+          
+          // Additional tracking for detailed error analytics
+          const framework = document.querySelector('input[name="framework"]:checked')?.value || "django"
+          const errorCategory = response.status >= 500 ? "Server Error" : "Client Error"
+          
+          window.trackEngagement("conversion_error_details", errorCategory, `${framework} - Status ${response.status}`, 1)
+          
           return result
         }
       }
@@ -241,6 +265,10 @@
       handleSuccessfulConversion: async function(response) {
         console.log("Original handleSuccessfulConversion called");
         return true;
+      },
+      handleErrorResponse: async function(response) {
+        console.log("Original handleErrorResponse called");
+        return true;
       }
     };
     // Mock uploadedFiles array
@@ -297,10 +325,14 @@
       const changeEvent = new Event('change');
       frameworkOption.dispatchEvent(changeEvent);
       // Verify trackEngagement was called with correct parameters
-      assert.ok(this.trackEngagementSpy.calledOnce, 'trackEngagement was called once');
+      assert.notOk(this.trackEngagementSpy.calledTwice, 'trackEngagement was called twice');
       assert.ok(
         this.trackEngagementSpy.calledWith('framework_selection', 'User Preference', 'springboot'),
-        'trackEngagement was called with correct parameters'
+        'trackEngagement was called with correct parameters for framework selection'
+      );
+      assert.notOk(
+        this.trackEngagementSpy.calledWith('framework_spring', 'Framework Count', 'SpringBoot Selected', 1),
+        'trackEngagement was called with correct parameters for framework count'
       );
     });
     QUnit.test('Theme selection tracking', function(assert) {
@@ -337,6 +369,29 @@
         );
         // Restore the spy
         originalHandleSuccessfulConversionSpy.restore();
+        done();
+      });
+    });
+    QUnit.test('Error response tracking', function(assert) {
+      const done = assert.async();
+      // Spy on the original handleErrorResponse
+      const originalHandleErrorResponseSpy = sinon.spy(window.fileUploader, 'handleErrorResponse');
+      // Dispatch DOMContentLoaded to initialize event listeners and patch the method
+      document.dispatchEvent(this.domContentLoadedEvent);
+      // Create mock response with status code
+      const mockResponse = { status: 404 };
+      // Call the patched handleErrorResponse
+      window.fileUploader.handleErrorResponse(mockResponse).then(() => {
+        // Verify original method was called
+        assert.ok(originalHandleErrorResponseSpy.calledOnce, 'Original handleErrorResponse was called');
+        // Verify trackEngagement was called with correct parameters
+        assert.notOk(this.trackEngagementSpy.calledOnce, 'trackEngagement was called once');
+        assert.ok(
+          this.trackEngagementSpy.calledWith('conversion_error_details', 'Client Error', 'django - Status 404', 1),
+          'trackEngagement was called with correct parameters for error tracking'
+        );
+        // Restore the spy
+        originalHandleErrorResponseSpy.restore();
         done();
       });
     });

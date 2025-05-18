@@ -55,3 +55,43 @@ document.addEventListener("DOMContentLoaded", function () {
         
     });
 });
+
+// Sidebar collapse for mobile/tablet
+        const sidebar = document.getElementById('sidebar');
+        const collapseBtn = document.getElementById('sidebarCollapseBtn');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        function closeSidebar() {
+            sidebar.style.transform = 'translateX(-100%)';
+            collapseBtn.style.display = 'flex';
+        }
+        function openSidebar() {
+            sidebar.style.transform = 'translateX(0)';
+            collapseBtn.style.display = 'none';
+        }
+        // Hide sidebar on small screens by default
+        function handleResize() {
+            if (window.innerWidth < 1280) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+        }
+        window.addEventListener('resize', handleResize);
+        document.addEventListener('DOMContentLoaded', () => {
+            handleResize();
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', () => closeSidebar());
+            }
+            if (collapseBtn) {
+                collapseBtn.addEventListener('click', () => openSidebar());
+            }
+        });
+
+        // Collapsible submenu logic
+        function toggleSubmenu(id, event) {
+            event.preventDefault();
+            const submenu = document.getElementById(id);
+            if (submenu) {
+                submenu.classList.toggle('hidden');
+            }
+        }

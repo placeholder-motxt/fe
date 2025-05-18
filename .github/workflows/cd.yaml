@@ -4,34 +4,59 @@ on:
   workflow_run:
     workflows: [Update Version]
     types: [completed]
-    branches: [main, staging, dev]
+    branches:
+      - main
+      - staging
+      - dev
+      - 'BUG-FIX-*'
 
 jobs:
-  build-and-push:
+  determine-branch:
     runs-on: ubuntu-latest
 
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    outputs:
+      stop: ${{ steps.result.outputs.stop }}
+      branch: ${{ steps.result.outputs.branch }}
     steps:
-      - name: Determine branch to checkout
+      - name: Download merge info
+        uses: actions/download-artifact@v4
+        with:
+          name: merge-metadata
+          path: ./merge-data
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Determine branch to checkout or stop
+        id: result
         run: |
-          if [[ "${{ github.event.workflow_run.head_branch }}" == "dev" ]]; then
-            echo "BRANCH=staging" >> $GITHUB_ENV
-          elif [[ "${{ github.event.workflow_run.head_branch }}" == "staging" ]]; then
-            echo "BRANCH=main" >> $GITHUB_ENV
-          else
-            echo "Invalid branch to build from"
+          if [ ! -f "./merge-data/merge_info.env" ]; then
+            echo "Error: merge_info.env not found!"
             exit 1
           fi
 
+          source ./merge-data/merge_info.env
+          if [[ "$BRANCH" == "dev" ]]; then
+            echo "stop=true" >> $GITHUB_OUTPUT
+          else
+            echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+            echo "stop=false" >> $GITHUB_OUTPUT
+          fi
+
+  build-and-push:
+    runs-on: ubuntu-latest
+    needs: determine-branch
+    if: ${{ needs.determine-branch.outputs.stop == 'false' }}
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          ref: ${{ env.BRANCH }}
+          ref: ${{ needs.determine-branch.outputs.branch }}
           fetch-tags: true
 
       - name: Get Git tag
         run: |
-          GIT_TAG=$(git describe --tags --exact-match ${{ env.BRANCH }} || echo "")
+          GIT_TAG=$(git describe --tags --exact-match ${{ needs.determine-branch.outputs.branch }} || echo "")
           if [ -z "$GIT_TAG" ]; then
             echo "No tag found for this commit."
             exit 1

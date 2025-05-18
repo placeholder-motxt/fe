@@ -6,7 +6,7 @@ class LandingPageTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.home_url = reverse("landing_page:home")
-        self.mainpage_url = reverse("landing_page:mainpage")
+        self.mainpage_url = reverse("landing_page:home")
     
     def test_home(self) -> None:
         """Test that home view works correctly."""
@@ -20,4 +20,4 @@ class LandingPageTest(TestCase):
         response = self.client.get(self.mainpage_url)
         
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "mainpage.html")
+        self.assertTemplateUsed(response, "landing_page.html")

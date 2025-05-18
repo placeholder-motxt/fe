@@ -8,6 +8,7 @@ on:
       - main
       - staging
       - dev
+      - 'BUG-FIX-*'
 
 jobs:
   update-version:
@@ -38,11 +39,11 @@ jobs:
       - name: Run update version script
         run: |
           chmod +x .github/scripts/update_version.sh
-          .github/scripts/update_version.sh
+          .github/scripts/update_version.sh ${{ github.head_ref }}
 
       - name: Get new version
         run: |
-          NEW_VERSION=$(grep -oP 'VERSION = "\K[0-9]+\.[0-9]+\.[0-9]+' "fe/settings.py")
+          NEW_VERSION=$(grep -oP 'VERSION = "\K[0-9]+\.[0-9]+\.[0-9]+' "app/config.py")
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
       - name: Set up Git
@@ -63,6 +64,15 @@ jobs:
             echo "Pushing version update to $BRANCH branch..."
             git push origin HEAD:$BRANCH
           done
+
+      - name: Save merged branch info
+        run: echo "BRANCH=${{ github.base_ref }}" >> merge_info.env
+
+      - name: Upload merge info
+        uses: actions/upload-artifact@v4
+        with:
+          name: merge-metadata
+          path: merge_info.env
 
       - name: Create Git Tag
         uses: anothrNick/github-tag-action@1.71.0

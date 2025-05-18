@@ -1,4 +1,4 @@
-FROM python:3.10-slim-buster
+FROM python:3.11-slim-buster
 
 WORKDIR /app
 
@@ -24,18 +24,9 @@ RUN pip install -r /requirements.txt
 COPY . .
 RUN python manage.py collectstatic --noinput
 
-# Create startup script
-RUN echo '#!/bin/bash\n\
-exec gunicorn --bind 0.0.0.0:8000 --workers "$WEB_CONCURRENCY" fe.wsgi:application & \n\
-exec python manage.py runserver 0.0.0.0:8001\n' > /app/start.sh && \
-    chmod +x /app/start.sh
-
 # Run as non-root user
 RUN chown -R django:django /app
 USER django
 
-# Expose both ports. Important!
-EXPOSE 8000 8001
-
-# Run the startup script using exec form
-CMD ["/app/start.sh"]
+# Run application
+CMD ["gunicorn", "fe.wsgi:application", "--log-config-json", "./logger_conf.json"]

@@ -26,10 +26,15 @@ SECRET_KEY = 'django-insecure-mo1qat85$!41ub9c+eq-*^1#1(42)s=@9(k)ntneluf%yt=-8p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = not os.getenv("PRODUCTION", False)
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "motxt.ppl.cs.ui.ac.id", "motxt.site"]
 # ALLOWED_HOSTS = ["localhost", "127.0.0.1", "juan-maxwell-motxt.pbp.cs.ui.ac.id"]
 
-CSRF_TRUSTED_ORIGINS = ['https://motxt.ppl.cs.ui.ac.id']
+CSRF_TRUSTED_ORIGINS = [
+    'https://motxt.ppl.cs.ui.ac.id',
+    'http://motxt.ppl.cs.ui.ac.id',
+    'https://motxt.site',
+    'http://motxt.site',
+]
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_SECURE = True
@@ -39,7 +44,10 @@ SESSION_COOKIE_SAMESITE = 'None'
 SECURE_CROSS_ORIGIN_OPENER_POLICY = "unsafe-none"
 
 CORS_ALLOWED_ORIGINS = [
-    "https://motxt.ppl.cs.ui.ac.id",
+    'https://motxt.ppl.cs.ui.ac.id',
+    'http://motxt.ppl.cs.ui.ac.id',
+    'https://motxt.site',
+    'http://motxt.site',
 ]
 
 CORS_ALLOW_HEADERS=[
@@ -121,22 +129,35 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+if not os.path.exists(BASE_DIR / "logs"):
+    os.mkdir(BASE_DIR / "logs")
+if not os.path.exists(BASE_DIR / "logs/fe_django.log"):
+    with open(BASE_DIR / "logs/fe_django.log", "w") as f:
+        pass
 
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'default': {
+            'fmt': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+    },
     'handlers': {
-        'file': {
-            'level': 'ERROR',
-            'class': 'logging.FileHandler',
-            'filename': 'django_errors.log',
+        'django_file': {
+            'formatter': 'default',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'logs/fe_django.log',
+            'maxBytes': 10 * 1024 * 1024,
+            'backupCount': 5,
+            'encoding': 'utf8',
         },
     },
     'loggers': {
         'django': {
-            'handlers': ['file'],
-            'level': 'ERROR',
-            'propagate': True,
+            'handlers': ['django_file'],
+            'level': 'INFO',
+            'propagate': False,
         },
     },
 }
@@ -190,4 +211,4 @@ else:
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-VERSION = "5.8.0"
+VERSION = "5.8.2"
