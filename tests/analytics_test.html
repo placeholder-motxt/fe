@@ -90,6 +90,7 @@
         event_label: framework,
         value: fileCount,
         project_name: projectName,
+        framework_type: framework, // Added for easier filtering
       })
     }
 
@@ -100,6 +101,20 @@
         event_label: label,
         value: value,
       })
+
+      // Special handling for framework selections to track counts
+      if (action === "framework_django" || action === "framework_spring") {
+        // These events can be used to create custom metrics in GA
+        console.log(`Framework selected: ${label}`)
+      }
+
+      // Special handling for conversion failures
+      if (action === "conversion_failed") {
+        gtag("event", "exception", {
+          description: `${category}: ${label} - ${value}`,
+          fatal: false,
+        })
+      }
     }
 
     // Generate a client ID to track unique users without login
@@ -352,6 +367,7 @@
       beforeEach: function() {
         // Setup stubs
         this.gtagStub = sinon.stub(window, 'gtag');
+        this.consoleLogStub = sinon.stub(console, 'log');
 
         // Clear localStorage and sessionStorage
         localStorage.clear();
@@ -363,6 +379,7 @@
       afterEach: function() {
         // Restore stubs
         this.gtagStub.restore();
+        this.consoleLogStub.restore();
       }
     });
 
@@ -397,6 +414,7 @@
       assert.equal(args.event_label, 'django', 'Framework is correct');
       assert.equal(args.value, 3, 'File count is correct');
       assert.equal(args.project_name, 'test_project', 'Project name is correct');
+      assert.equal(args.framework_type, 'django', 'Framework type is correct');
     });
 
     QUnit.test('trackEngagement sends correct data', function(assert) {
@@ -420,6 +438,40 @@
       assert.equal(minArgs.event_category, 'User Behavior', 'Event category is correct');
       assert.equal(minArgs.event_label, null, 'Event label defaults to null');
       assert.equal(minArgs.value, null, 'Event value defaults to null');
+    });
+
+    QUnit.test('trackEngagement handles framework selection events', function(assert) {
+      // Test Django framework selection
+      window.analyticsModule.trackEngagement('framework_django', 'Framework Count', 'Django Selected', 1);
+      
+      assert.ok(window.gtag.calledOnce, 'gtag was called once');
+      assert.ok(this.consoleLogStub.calledOnce, 'console.log was called once');
+      assert.ok(this.consoleLogStub.calledWith('Framework selected: Django Selected'), 'Logged framework selection');
+      
+      // Test SpringBoot framework selection
+      window.gtag.resetHistory();
+      this.consoleLogStub.resetHistory();
+      
+      window.analyticsModule.trackEngagement('framework_spring', 'Framework Count', 'SpringBoot Selected', 1);
+      
+      assert.ok(window.gtag.calledOnce, 'gtag was called once for SpringBoot');
+      assert.ok(this.consoleLogStub.calledOnce, 'console.log was called once for SpringBoot');
+      assert.ok(this.consoleLogStub.calledWith('Framework selected: SpringBoot Selected'), 'Logged SpringBoot selection');
+    });
+
+    QUnit.test('trackEngagement handles conversion failures', function(assert) {
+      window.analyticsModule.trackEngagement('conversion_failed', 'Error', 'django - 500', 'Server error message');
+      
+      assert.ok(window.gtag.calledTwice, 'gtag was called twice');
+      
+      // Check the exception event
+      const exceptionCall = window.gtag.getCall(1);
+      assert.equal(exceptionCall.args[0], 'event', 'Called with event');
+      assert.equal(exceptionCall.args[1], 'exception', 'Called with exception event type');
+      
+      const exceptionArgs = exceptionCall.args[2];
+      assert.equal(exceptionArgs.description, 'Error: django - 500 - Server error message', 'Exception description is correct');
+      assert.equal(exceptionArgs.fatal, false, 'Exception is not fatal');
     });
 
     QUnit.test('getClientId generates and persists client ID', function(assert) {
