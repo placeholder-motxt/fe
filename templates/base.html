@@ -21,7 +21,8 @@
     {% endblock meta %}
 
     <body>
-
+        {% block user_manual %}
+        {% endblock user_manual %}
         <main class="content">{% block content %} {% endblock content %}</main>
         {% block js_page %}
         {% endblock js_page %}
