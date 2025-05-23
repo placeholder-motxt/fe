@@ -1,16 +1,16 @@
 document.addEventListener("DOMContentLoaded", function () {
     const sections = document.querySelectorAll("section");
     const navLinks = document.querySelectorAll("nav a");
-    const mainContent = document.querySelector(".flex-1");
+    const mainContent = document.getElementById("mainContent");
     let current = "";
-    let lastActiveParent = null; // Store the last active parent menu
+    console.log(mainContent)
 
     mainContent.addEventListener("scroll", () => {
         const mainContentTop = mainContent.scrollTop;
-
+        console.log("scroll")
         sections.forEach((section) => {
             const sectionTop = section.offsetTop - mainContentTop;
-
+            console.log(sectionTop)
             if (sectionTop <= 50) { // Adjust threshold as needed
                 // if (section.getAttribute("id")?.includes("sub")){
                 //     return
@@ -34,7 +34,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (link.getAttribute("href").slice(1)===current&&
                     parent.classList.contains("submenu")) {
                     parent.classList.remove("hidden");
-                    lastActiveParent = parent; // Save the last active submenu
                 }
                 
             }
@@ -57,41 +56,41 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Sidebar collapse for mobile/tablet
-        const sidebar = document.getElementById('sidebar');
-        const collapseBtn = document.getElementById('sidebarCollapseBtn');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        function closeSidebar() {
-            sidebar.style.transform = 'translateX(-100%)';
-            collapseBtn.style.display = 'flex';
-        }
-        function openSidebar() {
-            sidebar.style.transform = 'translateX(0)';
-            collapseBtn.style.display = 'none';
-        }
-        // Hide sidebar on small screens by default
-        function handleResize() {
-            if (window.innerWidth < 1280) {
-                closeSidebar();
-            } else {
-                openSidebar();
-            }
-        }
-        window.addEventListener('resize', handleResize);
-        document.addEventListener('DOMContentLoaded', () => {
-            handleResize();
-            if (sidebarToggle) {
-                sidebarToggle.addEventListener('click', () => closeSidebar());
-            }
-            if (collapseBtn) {
-                collapseBtn.addEventListener('click', () => openSidebar());
-            }
-        });
+        // const sidebar = document.getElementById('sidebar');
+        // const collapseBtn = document.getElementById('sidebarCollapseBtn');
+        // const sidebarToggle = document.getElementById('sidebarToggle');
+        // function closeSidebar() {
+        //     sidebar.style.transform = 'translateX(-100%)';
+        //     collapseBtn.style.display = 'flex';
+        // }
+        // function openSidebar() {
+        //     sidebar.style.transform = 'translateX(0)';
+        //     collapseBtn.style.display = 'none';
+        // }
+        // // Hide sidebar on small screens by default
+        // function handleResize() {
+        //     if (window.innerWidth < 1280) {
+        //         closeSidebar();
+        //     } else {
+        //         openSidebar();
+        //     }
+        // }
+        // window.addEventListener('resize', handleResize);
+        // document.addEventListener('DOMContentLoaded', () => {
+        //     handleResize();
+        //     if (sidebarToggle) {
+        //         sidebarToggle.addEventListener('click', () => closeSidebar());
+        //     }
+        //     if (collapseBtn) {
+        //         collapseBtn.addEventListener('click', () => openSidebar());
+        //     }
+        // });
 
-        // Collapsible submenu logic
-        function toggleSubmenu(id, event) {
-            event.preventDefault();
-            const submenu = document.getElementById(id);
-            if (submenu) {
-                submenu.classList.toggle('hidden');
-            }
-        }
+        // // Collapsible submenu logic
+        // function toggleSubmenu(id, event) {
+        //     event.preventDefault();
+        //     const submenu = document.getElementById(id);
+        //     if (submenu) {
+        //         submenu.classList.toggle('hidden');
+        //     }
+        // }
