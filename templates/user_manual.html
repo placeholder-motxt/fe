@@ -20,12 +20,13 @@
         })
     </script> 
     <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="MoTxT" data-description="Support me on Buy me a coffee!" data-message="Thank you for Supporting MoTxT! " data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+    <script src="{% static 'js/usermanual.js' %}"></script>
     {% endblock %}
 </head>
 {% block user_manual %}
 <body class="bg-gray-200 flex min-h-screen text-black">
     <aside id="sidebar" class="bg-[#A7BBD2] w-64 h-screen overflow-y-hidden text-black px-3 xl:py-4 flex flex-col xl:ml-20 font-[Consolas] justify-between fixed left-0 top-0 z-40 transition-transform duration-300">
-        <div class="overflow-y-auto">
+        <div class="overflow-y-auto pb-4">
             <div class="flex items-center justify-between mb-2">
                 <h1 class="text-white text-4xl font-bold text-center flex-1">MoTxT User Manual</h1>
                 <button id="sidebarToggle" class="ml-2 text-black bg-white rounded-full w-10 h-10 flex items-center justify-center focus:outline-none xl:hidden">
@@ -128,7 +129,7 @@
                 <h2 class="text-3xl font-bold">Valid Inputs for Class</h2>
                 <section id="sub2-1">
                     <div class="flex flex-col gap-2 pt-2">
-                        <h2 class="text-2xl font-bold ">Valid user string inputs</h2>
+                        <h2 class="text-2xl font-bold ">Valid User String Inputs</h2>
                         <p class="font-bold">Class Name:</p>
                         <ul>
                             <li class="list-inside list-disc">Example:</li>
@@ -237,7 +238,7 @@
                 <section id="sub3-1">
                     <div class="flex flex-col gap-2 pt-2">
                         <h2 class="text-3xl font-bold">Valid Inputs for Sequence</h2>
-                        <h2 class="text-2xl font-bold my-4">Valid user string inputs</h2>
+                        <h2 class="text-2xl font-bold my-4">Valid User String Inputs</h2>
                         <p class="font-bold">Implicit Parameter (lifeline):</p>
                         <ul>
                             <li class="list-inside list-disc">There must at least be two lifelines in a sequence diagram. These two lifelines have names:</li>
@@ -380,6 +381,5 @@
             </section>
         </div>
     </div>
-    <script src="{% static 'js/usermanual.js' %}"></script>
 </body>
 {% endblock %}

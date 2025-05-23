@@ -1,16 +1,16 @@
 document.addEventListener("DOMContentLoaded", function () {
     const sections = document.querySelectorAll("section");
     const navLinks = document.querySelectorAll("nav a");
-    const mainContent = document.querySelector(".flex-1");
+    const mainContent = document.getElementById("mainContent");
     let current = "";
-    let lastActiveParent = null; // Store the last active parent menu
+    console.log(mainContent)
 
     mainContent.addEventListener("scroll", () => {
         const mainContentTop = mainContent.scrollTop;
-
+        console.log("scroll")
         sections.forEach((section) => {
             const sectionTop = section.offsetTop - mainContentTop;
-
+            console.log(sectionTop)
             if (sectionTop <= 50) { // Adjust threshold as needed
                 // if (section.getAttribute("id")?.includes("sub")){
                 //     return
@@ -34,7 +34,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (link.getAttribute("href").slice(1)===current&&
                     parent.classList.contains("submenu")) {
                     parent.classList.remove("hidden");
-                    lastActiveParent = parent; // Save the last active submenu
                 }
                 
             }
