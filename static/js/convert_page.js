@@ -100,6 +100,61 @@
     });
   }
 
+  const navbar = document.getElementById('topNavbar');
+  
+  // Show when scrolling up, hide when scrolling down.
+  // Small threshold prevents jitter on tiny scrolls.
+  
+  // Only attach scroll/load/resize handlers if the navbar exists to avoid errors
+  if (navbar) {
+    let lastScrollY = window.scrollY;
+    const THRESHOLD = 5;
+    function onScroll() {
+      const currentY = window.scrollY;
+
+      if (currentY <= 0) {
+        // At top: always show
+        navbar.classList.remove('nav-hidden');
+      } else if (currentY > lastScrollY + THRESHOLD) {
+        // scrolling down -> hide
+        navbar.classList.add('nav-hidden');
+      } else if (currentY < lastScrollY - THRESHOLD) {
+        // scrolling up -> show
+        navbar.classList.remove('nav-hidden');
+      }
+
+      lastScrollY = currentY;
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // ensure visible on load/resize when at top
+    function onLoadOrResize() {
+      if (window.scrollY === 0) navbar.classList.remove('nav-hidden');
+      lastScrollY = window.scrollY;
+    }
+
+    window.addEventListener('load', onLoadOrResize);
+    window.addEventListener('resize', onLoadOrResize);
+  } else {
+    // Navbar not present on this page — skip adding scroll handlers.
+    // lastScrollY is still defined above in case other code reads it.
+  }
+
+  // optional: toggle dropdown for hamburger
+  const hambBtn = document.getElementById('hamburgerButton');
+  const dropdown = document.getElementById('dropdownMenu');
+  if (hambBtn && dropdown) {
+  hambBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdown.classList.toggle('hidden');
+  });
+  // close when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!hambBtn.contains(e.target) && !dropdown.contains(e.target)) dropdown.classList.add('hidden');
+  });
+  }
+
   // Toggle Group ID field and Style Options based on selected framework.
   // When SpringBoot is selected, show Group ID and hide style options.
   // When Django is selected, hide Group ID and show style options.
