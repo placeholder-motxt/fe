@@ -68,31 +68,43 @@
         <div id="notificationMessage" class="font-semibold"></div>
     </div>
 
-    <header class="flex justify-between items-center p-4 bg-white shadow-lg" style="height: 63px; background-color: var(--secondary);">
+    <header id="topNavbar" class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-4 bg-white shadow-lg" style="height:63px; background-color:var(--secondary); transition: transform .22s ease; will-change: transform;">
+      <style>
+      /* quick local styles for hide/show behavior */
+      #topNavbar.nav-hidden { transform: translateY(-110%); }
+      #topNavbar { transform: translateY(0); }
+      /* ensure page content doesn't sit under navbar */
+      body { padding-top: 63px; }
+      </style>
+
       <!-- Hamburger Menu -->
       <div class="hamburger-menu">
-          <button id="hamburgerButton" class="hamburger-button" aria-label="Navigation menu">
-              <div class="hamburger-icon">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-              </div>
-          </button>
-          <div id="dropdownMenu" class="dropdown-menu">
-              <a href="/" class="menu-item">Home</a>
-              <a href="/convert_page/" class="menu-item">Convert</a>
-              <a href="/doc/" class="menu-item">User Manual</a>
-          </div>
+      <button id="hamburgerButton" class="hamburger-button" aria-label="Navigation menu" type="button">
+        <div class="hamburger-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+        </div>
+      </button>
+      <div id="dropdownMenu" class="dropdown-menu hidden">
+        <a href="/" class="menu-item">Home</a>
+        <a href="/convert_page/" class="menu-item">Convert</a>
+        <a href="/doc/" class="menu-item">User Manual</a>
       </div>
-      
+      </div>
+
+      <div class="flex-grow flex items-center justify-center">
+      <p class="text-center font-semibold text-lg" style="color: var(--text); font-family: 'Comic Sans MS', sans-serif;">PPL D - [Placeholder]</p>
+      </div>
+
       <!-- Light Switch -->
       <div class="flex flex-col justify-center top-0 right-0 mt-4 mr-4 absolute">
-        <label class="switch">
-          <input type="checkbox" name="light-switch" id="light-switch" class="light-switch sr-only" />
-          <span class="slider round" id="slider"></span>
-        </label>
+      <label class="switch">
+        <input type="checkbox" name="light-switch" id="light-switch" class="light-switch sr-only" />
+        <span class="slider round" id="slider"></span>
+      </label>
       </div>
-  </header>
+    </header>
   
   <!-- Main content container -->
   <div id="mainContainer" class="flex flex-col flex-grow transition">
